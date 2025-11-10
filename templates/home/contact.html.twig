@@ -41,11 +41,6 @@
                         {{ form_errors(form.message) }}
                     </div>
 
-                    <div class="mb-3">
-                        {{ form_widget(form.captcha) }}
-                        {{ form_errors(form.captcha) }}
-                    </div>
-
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary btn-lg">
                             📧 Nachricht senden
@@ -54,14 +49,6 @@
 
                     {{ form_rest(form) }}
                 {{ form_end(form) }}
-                
-                <div class="mt-3">
-                    <small class="text-muted">
-                        Diese Seite ist durch reCAPTCHA geschützt. Es gelten die 
-                        <a href="https://policies.google.com/privacy" target="_blank">Datenschutzbestimmungen</a> und 
-                        <a href="https://policies.google.com/terms" target="_blank">Nutzungsbedingungen</a> von Google.
-                    </small>
-                </div>
             </div>
         </div>
     </div>

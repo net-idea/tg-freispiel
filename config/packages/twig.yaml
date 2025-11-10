@@ -1,7 +1,5 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
-    globals:
-        recaptcha3_key: '%env(RECAPTCHA3_KEY)%'
 
 when@test:
     twig:
