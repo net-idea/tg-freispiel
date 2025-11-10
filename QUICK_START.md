@@ -15,11 +15,11 @@ This guide will help you get the website up and running in under 5 minutes!
    cd tg-freispiel
    ```
 
-2. **Configure environment (optional for testing)**
+2. **Configure environment (optional)**
    ```bash
    cp .env .env.local
-   # Edit .env.local if you want to add real ReCAPTCHA keys
-   # For testing, you can skip this step
+   # Edit .env.local if you need to customize database settings
+   # For testing with defaults, you can skip this step
    ```
 
 3. **Start the application**
@@ -81,19 +81,13 @@ docker-compose down
 - **Contact Form** (`/contact`): Form to send messages to the theater group
 - **Admin Panel**: Not included (can be added with EasyAdmin bundle)
 
-## 🔑 ReCAPTCHA Configuration
+## 🛡️ Spam Protection
 
-To enable spam protection:
-
-1. Visit https://www.google.com/recaptcha/admin
-2. Register your site with reCAPTCHA v3
-3. Add keys to `.env.local`:
-   ```env
-   RECAPTCHA3_KEY=your-site-key
-   RECAPTCHA3_SECRET=your-secret-key
-   ```
-
-For local testing without real keys, the form will still work but without actual spam protection.
+The contact form uses **honeypot-based spam protection**:
+- A hidden field that bots typically fill out
+- No external API calls or tracking
+- Privacy-friendly and GDPR-compliant
+- Works automatically without configuration
 
 ## 📊 View Contact Submissions
 

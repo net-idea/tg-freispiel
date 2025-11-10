@@ -1,12 +1,12 @@
 # Theatergruppe Freispiel - Website
 
-Welcome to the official website of Theater Group "Freispiel"! This is a Symfony-based web application featuring a contact form with spam protection and visitor information.
+Welcome to the official website of Theater Group "Freispiel"! This is a Symfony 7.2-based web application featuring a contact form with spam protection and visitor information.
 
 ## 🎭 Features
 
 - **Welcome Page**: Warm welcome message for visitors
 - **Contact Form**: Allows visitors to send messages to the theater group
-- **Spam Protection**: Integrated Google reCAPTCHA v3
+- **Spam Protection**: Honeypot-based spam protection (privacy-friendly, no external tracking)
 - **Database Storage**: All contact form submissions are stored in MariaDB
 - **Bootstrap Styling**: Modern, responsive design using Bootstrap 5
 - **Docker Support**: Easy local development setup with Docker and Docker Compose
@@ -18,7 +18,7 @@ Welcome to the official website of Theater Group "Freispiel"! This is a Symfony-
 - Docker Compose v2.0 or higher
 
 ### For Local Setup (Without Docker)
-- PHP 8.1 or higher
+- PHP 8.2 or higher
 - Composer
 - MariaDB 11.5 or MySQL 8.0
 - PHP Extensions: `pdo_mysql`, `mbstring`, `xml`, `zip`, `intl`
@@ -67,15 +67,10 @@ cd tg-freispiel
 # Copy the environment file
 cp .env .env.local
 
-# Edit .env.local and set your Google reCAPTCHA keys
-# Get your keys from: https://www.google.com/recaptcha/admin
+# Edit .env.local if you need to customize settings (optional)
 ```
 
-Edit `.env.local` and update:
-```env
-RECAPTCHA3_KEY=your-site-key-here
-RECAPTCHA3_SECRET=your-secret-key-here
-```
+The application uses honeypot-based spam protection by default, so no external API keys are required.
 
 ### 4. Start the Application
 ```bash
@@ -121,16 +116,7 @@ cp .env .env.local
 # DATABASE_URL="mysql://username:password@127.0.0.1:3306/database_name?serverVersion=mariadb-11.5.0&charset=utf8mb4"
 ```
 
-### 3. Set Up ReCAPTCHA
-Get your Google reCAPTCHA v3 keys from: https://www.google.com/recaptcha/admin
-
-Add to `.env.local`:
-```env
-RECAPTCHA3_KEY=your-site-key-here
-RECAPTCHA3_SECRET=your-secret-key-here
-```
-
-### 4. Create Database
+### 3. Create Database
 ```bash
 # Create the database
 php bin/console doctrine:database:create
@@ -202,10 +188,18 @@ docker-compose exec web php bin/phpunit
 
 ## 🔒 Security
 
-- **reCAPTCHA v3**: Protects the contact form from spam
+- **Honeypot Spam Protection**: Privacy-friendly spam protection without external tracking
 - **CSRF Protection**: Built-in Symfony CSRF protection on all forms
 - **Input Validation**: All form inputs are validated server-side
 - **SQL Injection Protection**: Doctrine ORM prevents SQL injection attacks
+
+### How Honeypot Protection Works
+
+The contact form includes a hidden field that is invisible to human users but typically filled by spam bots:
+- Hidden field is styled with CSS (`visually-hidden`)
+- Field has `tabindex="-1"` and `autocomplete="off"`
+- If the field is filled, the submission is silently rejected
+- No external API calls or user tracking required
 
 ### Security Best Practices
 
@@ -213,10 +207,9 @@ docker-compose exec web php bin/phpunit
 
 1. **Update Dependencies**: Run `composer update` regularly to get security patches
 2. **Environment Variables**: Never commit `.env.local` or production secrets to git
-3. **ReCAPTCHA Keys**: Use separate keys for development and production environments
-4. **Database Credentials**: Change default passwords in production
-5. **HTTPS**: Always use HTTPS in production to protect user data
-6. **Security Audit**: Run `composer audit` regularly to check for known vulnerabilities
+3. **Database Credentials**: Change default passwords in production
+4. **HTTPS**: Always use HTTPS in production to protect user data
+5. **Security Audit**: Run `composer audit` regularly to check for known vulnerabilities
 
 ```bash
 # Check for security vulnerabilities
@@ -228,10 +221,9 @@ composer update
 
 ## 📦 Key Dependencies
 
-- **Symfony 6.1**: PHP framework
+- **Symfony 7.2**: PHP framework (latest stable LTS)
 - **Doctrine ORM**: Database abstraction layer
 - **Bootstrap 5**: Frontend framework
-- **karser/recaptcha3-bundle**: Google reCAPTCHA v3 integration
 - **MariaDB 11.5**: Database
 
 ## 🐛 Troubleshooting
@@ -256,10 +248,11 @@ chmod -R 775 var/
 2. Check database credentials in `.env.local`
 3. Verify DATABASE_URL format matches your setup
 
-### ReCAPTCHA Not Working
-1. Verify your keys are correct in `.env.local`
-2. Check that your domain is registered in Google reCAPTCHA console
-3. For local development, use `localhost` as an authorized domain
+### Spam Getting Through
+The honeypot protection is effective against most bots, but sophisticated bots may bypass it. Consider:
+1. Adding JavaScript-based validation (bots often don't execute JS)
+2. Implementing rate limiting for form submissions
+3. Adding time-based validation (bots submit forms too quickly)
 
 ## 📄 License
 
