@@ -207,6 +207,25 @@ docker-compose exec web php bin/phpunit
 - **Input Validation**: All form inputs are validated server-side
 - **SQL Injection Protection**: Doctrine ORM prevents SQL injection attacks
 
+### Security Best Practices
+
+⚠️ **Important**: Before deploying to production:
+
+1. **Update Dependencies**: Run `composer update` regularly to get security patches
+2. **Environment Variables**: Never commit `.env.local` or production secrets to git
+3. **ReCAPTCHA Keys**: Use separate keys for development and production environments
+4. **Database Credentials**: Change default passwords in production
+5. **HTTPS**: Always use HTTPS in production to protect user data
+6. **Security Audit**: Run `composer audit` regularly to check for known vulnerabilities
+
+```bash
+# Check for security vulnerabilities
+composer audit
+
+# Update dependencies to get security fixes
+composer update
+```
+
 ## 📦 Key Dependencies
 
 - **Symfony 6.1**: PHP framework
