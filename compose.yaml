@@ -1,0 +1,35 @@
+
+services:
+###> doctrine/doctrine-bundle ###
+  database:
+    image: mariadb:${MARIADB_VERSION:-11.5}
+    environment:
+      MARIADB_DATABASE: ${MYSQL_DATABASE:-app}
+      MARIADB_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-!ChangeMe!}
+      MARIADB_USER: ${MYSQL_USER:-app}
+      MARIADB_PASSWORD: ${MYSQL_PASSWORD:-!ChangeMe!}
+    volumes:
+      - database_data:/var/lib/mysql:rw
+      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+      # - ./docker/db/data:/var/lib/mysql:rw
+###< doctrine/doctrine-bundle ###
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - database
+    environment:
+      DATABASE_URL: mysql://${MYSQL_USER:-app}:${MYSQL_PASSWORD:-!ChangeMe!}@database:3306/${MYSQL_DATABASE:-app}?serverVersion=mariadb-11.5.0
+      RECAPTCHA3_KEY: ${RECAPTCHA3_KEY:-}
+      RECAPTCHA3_SECRET: ${RECAPTCHA3_SECRET:-}
+
+volumes:
+###> doctrine/doctrine-bundle ###
+  database_data:
+###< doctrine/doctrine-bundle ###

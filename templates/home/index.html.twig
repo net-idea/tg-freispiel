@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Willkommen - Theatergruppe Freispiel{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="text-center mb-5">
+            <h1 class="display-4 mb-4">🎭 Willkommen bei der Theatergruppe Freispiel! 🎭</h1>
+            <p class="lead">Wir freuen uns, Sie auf unserer neuen Webseite begrüßen zu dürfen.</p>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h2 class="card-title h4 mb-3">Herzlich Willkommen!</h2>
+                <p class="card-text">
+                    Die Theatergruppe Freispiel heißt Sie herzlich willkommen auf unserer brandneuen Website! 
+                    Wir sind eine leidenschaftliche Gemeinschaft von Theaterbegeisterten, die es liebt, 
+                    Geschichten auf die Bühne zu bringen und Emotionen zum Leben zu erwecken.
+                </p>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title h5">🌟 Unsere Mission</h3>
+                        <p class="card-text">
+                            Wir möchten durch die Kraft des Theaters Menschen berühren, unterhalten und 
+                            zum Nachdenken anregen. Jede Aufführung ist für uns eine neue Reise, die wir 
+                            gemeinsam mit unserem Publikum erleben.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title h5">🎬 Was uns bewegt</h3>
+                        <p class="card-text">
+                            Kreativität, Leidenschaft und Gemeinschaft stehen im Mittelpunkt unserer Arbeit. 
+                            Wir experimentieren gerne mit verschiedenen Theaterformen und freuen uns über 
+                            jeden, der unsere Begeisterung teilt.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-info" role="alert">
+            <h4 class="alert-heading">📣 Bleiben Sie informiert!</h4>
+            <p>
+                Möchten Sie mehr über unsere kommenden Aufführungen erfahren oder haben Sie Fragen? 
+                Wir freuen uns auf Ihre Nachricht!
+            </p>
+            <hr>
+            <p class="mb-0">
+                <a href="{{ path('contact') }}" class="btn btn-primary">Kontaktieren Sie uns</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
