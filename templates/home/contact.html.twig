@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Kontakt - Theatergruppe Freispiel{% endblock %}
+
+{% block body %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        {# Page Header #}
+        <div class="text-center mb-5">
+            <h1 class="display-4 mb-4" style="color: var(--theater-gold); font-weight: bold;">
+                📧 Kontaktieren Sie uns
+            </h1>
+        </div>
+
+        {# Info Card #}
+        <div class="card shadow-lg mb-5">
+            <div class="card-body p-4 p-md-5">
+                <p class="lead" style="font-size: 1.1rem; line-height: 1.9; color: var(--theater-text); margin: 0;">
+                    Wir freuen uns über Ihre Nachricht! Ob Sie Fragen zu unseren Aufführungen haben,
+                    an einer Zusammenarbeit interessiert sind oder einfach Hallo sagen möchten –
+                    nutzen Sie gerne unser Kontaktformular.
+                </p>
+            </div>
+        </div>
+
+        {# Contact Form Card #}
+        <div class="card shadow-lg">
+            <div class="card-header p-4" style="background: linear-gradient(135deg, rgba(139, 0, 0, 0.4), rgba(212, 175, 55, 0.3)); border-bottom: 2px solid var(--theater-gold);">
+                <h2 class="h4 mb-0" style="color: var(--theater-gold); font-weight: bold;">
+                    ✉️ Kontaktformular
+                </h2>
+            </div>
+            <div class="card-body p-4 p-md-5">
+                {{ form_start(form) }}
+                    <div class="mb-4">
+                        {{ form_label(form.name, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.name, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'Ihr Name'}}) }}
+                        {{ form_errors(form.name) }}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form_label(form.email, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.email, {'attr': {'class': 'form-control form-control-lg', 'placeholder': 'ihre@email.de'}}) }}
+                        {{ form_errors(form.email) }}
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form_label(form.message, null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.message, {'attr': {'class': 'form-control form-control-lg', 'rows': 6, 'placeholder': 'Ihre Nachricht an uns...'}}) }}
+                        {{ form_errors(form.message) }}
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg py-3" style="font-size: 1.2rem; font-weight: bold;">
+                            📧 Nachricht senden
+                        </button>
+                    </div>
+
+                    {{ form_rest(form) }}
+                {{ form_end(form) }}
+            </div>
+        </div>
+
+        {# Additional Info #}
+        <div class="text-center mt-5 p-4" style="background-color: rgba(13, 13, 13, 0.6); border-radius: 0.5rem; border: 1px solid rgba(212, 175, 55, 0.2);">
+            <p style="color: var(--theater-text-muted); margin: 0; line-height: 1.8;">
+                <strong style="color: var(--theater-gold);">Theatergruppe Freispiel</strong><br>
+                Ihre Nachricht wird vertraulich behandelt und schnellstmöglich beantwortet.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
