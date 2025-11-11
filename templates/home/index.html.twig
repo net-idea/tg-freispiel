@@ -3,44 +3,56 @@
 {% block title %}Willkommen - Theatergruppe Freispiel{% endblock %}
 
 {% block body %}
-<div class="row">
-    <div class="col-lg-8 mx-auto">
-        <div class="text-center mb-5">
-            <h1 class="display-4 mb-4">🎭 Willkommen bei der Theatergruppe Freispiel! 🎭</h1>
-            <p class="lead">Wir freuen uns, Sie auf unserer neuen Webseite begrüßen zu dürfen.</p>
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        {# Hero Section #}
+        <div class="text-center mb-5 py-5">
+            <h1 class="display-3 mb-4" style="color: var(--theater-gold); font-weight: bold;">
+                🎭 Willkommen bei der Theatergruppe Freispiel! 🎭
+            </h1>
+            <p class="lead" style="color: var(--theater-text); font-size: 1.4rem; line-height: 1.8;">
+                Wir freuen uns, Sie auf unserer Webseite begrüßen zu dürfen.<br>
+                Erleben Sie mit uns die Magie des Theaters!
+            </p>
         </div>
 
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
-                <h2 class="card-title h4 mb-3">Herzlich Willkommen!</h2>
-                <p class="card-text">
-                    Die Theatergruppe Freispiel heißt Sie herzlich willkommen auf unserer brandneuen Website! 
-                    Wir sind eine leidenschaftliche Gemeinschaft von Theaterbegeisterten, die es liebt, 
+        {# Welcome Card #}
+        <div class="card shadow-lg mb-5">
+            <div class="card-body p-4 p-md-5">
+                <h2 class="card-title h3 mb-4" style="border-bottom: 2px solid var(--theater-gold); padding-bottom: 1rem;">
+                    Herzlich Willkommen!
+                </h2>
+                <p class="card-text" style="font-size: 1.1rem; line-height: 1.9; color: var(--theater-text);">
+                    Die Theatergruppe Freispiel heißt Sie herzlich willkommen!
+                    Wir sind eine leidenschaftliche Gemeinschaft von Theaterbegeisterten aus Dormagen, die es liebt,
                     Geschichten auf die Bühne zu bringen und Emotionen zum Leben zu erwecken.
                 </p>
             </div>
         </div>
 
-        <div class="row g-4 mb-4">
+        {# Feature Cards #}
+        <div class="row g-4 mb-5">
             <div class="col-md-6">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h3 class="card-title h5">🌟 Unsere Mission</h3>
-                        <p class="card-text">
-                            Wir möchten durch die Kraft des Theaters Menschen berühren, unterhalten und 
-                            zum Nachdenken anregen. Jede Aufführung ist für uns eine neue Reise, die wir 
+                <div class="card h-100 shadow">
+                    <div class="card-body p-4">
+                        <div class="mb-3" style="font-size: 3rem; text-align: center;">🌟</div>
+                        <h3 class="card-title h4 text-center mb-3">Unsere Mission</h3>
+                        <p class="card-text" style="line-height: 1.8; color: var(--theater-text);">
+                            Wir möchten durch die Kraft des Theaters Menschen berühren, unterhalten und
+                            zum Nachdenken anregen. Jede Aufführung ist für uns eine neue Reise, die wir
                             gemeinsam mit unserem Publikum erleben.
                         </p>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h3 class="card-title h5">🎬 Was uns bewegt</h3>
-                        <p class="card-text">
-                            Kreativität, Leidenschaft und Gemeinschaft stehen im Mittelpunkt unserer Arbeit. 
-                            Wir experimentieren gerne mit verschiedenen Theaterformen und freuen uns über 
+                <div class="card h-100 shadow">
+                    <div class="card-body p-4">
+                        <div class="mb-3" style="font-size: 3rem; text-align: center;">🎬</div>
+                        <h3 class="card-title h4 text-center mb-3">Was uns bewegt</h3>
+                        <p class="card-text" style="line-height: 1.8; color: var(--theater-text);">
+                            Kreativität, Leidenschaft und Gemeinschaft stehen im Mittelpunkt unserer Arbeit.
+                            Wir experimentieren gerne mit verschiedenen Theaterformen und freuen uns über
                             jeden, der unsere Begeisterung teilt.
                         </p>
                     </div>
@@ -48,16 +60,20 @@
             </div>
         </div>
 
-        <div class="alert alert-info" role="alert">
-            <h4 class="alert-heading">📣 Bleiben Sie informiert!</h4>
-            <p>
-                Möchten Sie mehr über unsere kommenden Aufführungen erfahren oder haben Sie Fragen? 
-                Wir freuen uns auf Ihre Nachricht!
-            </p>
-            <hr>
-            <p class="mb-0">
-                <a href="{{ path('contact') }}" class="btn btn-primary">Kontaktieren Sie uns</a>
-            </p>
+        {# Call to Action #}
+        <div class="card shadow-lg" style="background: linear-gradient(135deg, rgba(139, 0, 0, 0.3), rgba(212, 175, 55, 0.2)); border: 2px solid var(--theater-gold);">
+            <div class="card-body p-4 p-md-5 text-center">
+                <h4 class="card-title h3 mb-4" style="color: var(--theater-gold);">
+                    📣 Bleiben Sie informiert!
+                </h4>
+                <p style="font-size: 1.1rem; line-height: 1.8; color: var(--theater-text); margin-bottom: 2rem;">
+                    Möchten Sie mehr über unsere kommenden Aufführungen erfahren oder haben Sie Fragen?
+                    Wir freuen uns auf Ihre Nachricht!
+                </p>
+                <a href="{{ path('contact') }}" class="btn btn-primary btn-lg px-5 py-3" style="font-size: 1.2rem; font-weight: bold;">
+                    Kontaktieren Sie uns
+                </a>
+            </div>
         </div>
     </div>
 </div>
