@@ -28,9 +28,11 @@ class HomeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Check honeypot field - if filled, it's likely a bot
             $honeypot = $form->get('website')->getData();
+
             if (!empty($honeypot)) {
                 // Silently reject spam without showing error
                 $this->addFlash('success', 'Vielen Dank für Ihre Nachricht! Wir werden uns bald bei Ihnen melden.');
+
                 return $this->redirectToRoute('contact');
             }
 

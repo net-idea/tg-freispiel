@@ -1,27 +1,62 @@
+## PHPStorm
+/.idea/
+
+## VisualStudioCode
+/.vscode/
+*.code-workspace
+
+## Environment
+.env
+
+## Composer
+composer.phar
 
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
-/public/bundles/
-/var/
-/vendor/
+/public/bundles/*
+!/public/bundles/.gitignore
+/var/*
+!/var/.gitignore
+/vendor/*
+!/vendor/.gitignore
 ###< symfony/framework-bundle ###
 
-###> phpunit/phpunit ###
-/phpunit.xml
-.phpunit.result.cache
-###< phpunit/phpunit ###
-
-###> symfony/phpunit-bridge ###
-.phpunit.result.cache
-/phpunit.xml
-###< symfony/phpunit-bridge ###
-
 ###> symfony/webpack-encore-bundle ###
-/node_modules/
-/public/build/
+/node_modules/*
+!/node_modules/.gitignore
+/public/build/*
+!/public/build/.gitignore
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit/phpunit ###
+
+###> symfony/asset-mapper ###
+#/public/assets/*
+#!/public/assets/.gitignore
+/assets/vendor/*
+!/assets/vendor/.gitignore
+###< symfony/asset-mapper ###
+
+### PHP Coding Standards Fixer
+/php-cs-fixer
+/.php_cs
+/.php_cs.cache
+/.php-cs-fixer.php
+/.php-cs-fixer.cache
+
+# DB Adminer
+adminer.php
+adminer.css
+adminer*.*
+
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###

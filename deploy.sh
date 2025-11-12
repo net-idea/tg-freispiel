@@ -141,7 +141,7 @@ fi
 echo ""
 
 # 4th: optionally run database migrations (respect SKIP_MIGRATIONS)
-if [ "${SKIP_MIGRATIONS:-true}" = "true" ]; then
+if [ "${SKIP_MIGRATIONS:-false}" = "true" ]; then
   echo "[4/5] SKIPPING database migrations (SKIP_MIGRATIONS=true)"
 else
   if [ -n "$PHP_BIN" ]; then
