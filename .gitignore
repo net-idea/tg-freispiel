@@ -38,12 +38,21 @@ yarn-error.log
 /.phpunit.cache/
 ###< phpunit/phpunit ###
 
+###> symfony/phpunit-bridge ###
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+
 ###> symfony/asset-mapper ###
 #/public/assets/*
 #!/public/assets/.gitignore
 /assets/vendor/*
 !/assets/vendor/.gitignore
 ###< symfony/asset-mapper ###
+
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###
 
 ### PHP Coding Standards Fixer
 /php-cs-fixer
@@ -52,11 +61,33 @@ yarn-error.log
 /.php-cs-fixer.php
 /.php-cs-fixer.cache
 
+## MariaDB
+/mariadb/backup/*
+!/mariadb/backup/.gitkeep
+/mariadb/data/*
+!/mariadb/data/.gitkeep
+/mariadb/log/*
+!/mariadb/log/.gitkeep
+
+## PostgreSQL
+/postgresql/backup/*
+!/postgresql/backup/.gitkeep
+/postgresql/data/*
+!/postgresql/data/.gitkeep
+
+## Redis
+/redis/data/*
+!/redis/data/.gitkeep
+
+## Certificates
+/certs/*
+!/certs/.gitkeep
+
+## OpenSSL
+/openssl/*
+!/openssl/openssl-sample.cnf
+
 # DB Adminer
 adminer.php
 adminer.css
 adminer*.*
-
-###> phpstan/phpstan ###
-phpstan.neon
-###< phpstan/phpstan ###

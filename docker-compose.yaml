@@ -1,0 +1,49 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: '${APP_NAME:-tg-freispiel}_php'
+    hostname: php
+    volumes:
+      - .:/var/www/html
+      - ./var:/var/www/html/var
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///%kernel.project_dir%/var/data_dev.db}
+      - APP_ENV=${APP_ENV:-dev}
+      - APP_DEBUG=${APP_DEBUG:-1}
+    networks:
+      - internal
+
+  nginx:
+    image: nginx:alpine
+    container_name: '${APP_NAME:-tg-freispiel}_nginx'
+    hostname: nginx
+    ports:
+      - "${NGINX_PORT:-8000}:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    networks:
+      - internal
+      - external
+
+  node:
+    image: node:20-alpine
+    container_name: '${APP_NAME:-tg-freispiel}_node'
+    hostname: node
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: sh -c "yarn install && yarn encore dev --watch"
+    ports:
+      - "${NODE_PORT:-8080}:8080"
+    networks:
+      - internal
+
+networks:
+  internal:
+  external:
+    driver: bridge

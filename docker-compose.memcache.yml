@@ -1,0 +1,13 @@
+services:
+  memcached:
+    image: memcached
+    container_name: '${APP_NAME:-tg-freispiel}_memcached'
+    hostname: memcached
+    restart: unless-stopped
+    environment:
+      MEMCACHED_MEMORY_LIMIT: 128
+    networks:
+      - internal
+
+networks:
+  internal:

@@ -1,0 +1,13 @@
+services:
+  adminer:
+    image: adminer
+    container_name: '${APP_NAME:-tg-freispiel}_adminer'
+    hostname: adminer
+    restart: unless-stopped
+    depends_on:
+      - database
+    ports:
+      - '${ADMINER_PORT:-8091}:8080'
+    networks:
+      - internal
+      - external

@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres
+    container_name: '${APP_NAME:-tg-freispiel}_postgres'
+    hostname: postgres
+    restart: unless-stopped
+    environment:
+      LANG: "de_DE.utf8"
+      POSTGRES_INITDB_ARGS: "--locale-provider=icu --icu-locale=de-DE"
+      POSTGRES_USER: "${POSTGRES_USER:-tg-freispiel}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-nopassword}"
+      POSTGRES_DB: "${POSTGRES_DB:-tg-freispiel}"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d postgres" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql/data
+      - ./postgresql/fixtures:/docker-entrypoint-initdb.d:ro,delegated
+    networks:
+      - internal
+
+networks:
+  internal:

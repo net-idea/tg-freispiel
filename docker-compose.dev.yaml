@@ -1,0 +1,20 @@
+services:
+  mailer:
+    image: axllent/mailpit
+    container_name: '${APP_NAME:-tg-freispiel}_mailer'
+    hostname: mailer
+    restart: unless-stopped
+    ports:
+      - "${MAILER_SMTP_PORT:-1025}:1025"
+      - "${MAILER_WEB_PORT:-8025}:8025"
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    networks:
+      - internal
+      - external
+
+networks:
+  internal:
+  external:
+    driver: bridge

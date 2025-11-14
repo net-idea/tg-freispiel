@@ -1,139 +1,71 @@
-# Local Development (Symfony)
+# Symfony commands and troubleshooting
 
-This document covers local development without Docker, common Symfony commands, helper scripts, and troubleshooting.
+This document lists common Symfony commands used in this project and troubleshooting tips.
 
-## Requirements
-
-- PHP 8.2 or higher
-- Composer
-- MariaDB 11.5 or MySQL 8.0 (or SQLite)
-- PHP extensions: `pdo_mysql`, `mbstring`, `xml`, `zip`, `intl`
-- Node.js + Yarn or npm (for building assets)
-- Symfony CLI (optional, recommended)
-
-## Setup and Run (Local)
+## Common commands (host)
 
 ```bash
-# Install PHP dependencies
-composer install
-
-# Create local environment config
-cp .env .env.local
-
-# Edit .env.local and configure your database
-# Example for MariaDB/MySQL:
-# DATABASE_URL="mysql://username:password@127.0.0.1:3306/database_name?serverVersion=mariadb-11.5.0&charset=utf8mb4"
-
-# Create database and run migrations
-php bin/console doctrine:database:create
-php bin/console doctrine:migrations:migrate
-
-# Start the local web server (choose one)
-php -S localhost:8000 -t public
-# or (recommended)
-symfony server:start
-```
-
-## Common Symfony and Project Commands
-
-```bash
-# Clear cache (current env)
+# Clear cache
 php bin/console cache:clear
 
-# Warm up cache (prod)
-php bin/console cache:warmup --env=prod
+# Create a new migration
+php bin/console make:migration
 
-# Generate a new APP_SECRET
-php bin/console regenerate-app-secret
-
-# Doctrine
-php bin/console doctrine:database:create
+# Run migrations
 php bin/console doctrine:migrations:migrate
+
+# Create a new controller
+php bin/console make:controller
+
+# Create a new entity
+php bin/console make:entity
+
+# Validate database schema
+php bin/console doctrine:schema:validate
+
+# Show migration status
+php bin/console doctrine:migrations:status
 
 # Run tests
 php bin/phpunit
-
-# Security checks
-composer audit
-composer update
 ```
 
-## Helper Scripts
-
-### develop.sh
-
-A convenience script that prepares and starts the dev environment:
-
-- Installs Node dependencies if `node_modules/` is missing (uses Yarn)
-- Installs PHP dependencies if `vendor/` is missing (Composer)
-- Clears Symfony cache
-- Builds assets with Webpack Encore (watch mode)
-- Starts Webpack and the Symfony local server in the background
-
-Usage:
+## Common commands (Docker)
 
 ```bash
-./develop.sh
-```
+# Clear cache
+docker compose exec web php bin/console cache:clear
 
-Notes:
-- Requires Yarn and (optionally) Symfony CLI on your PATH
-- Webpack dev server: http://localhost:8080
-- Symfony server: http://localhost:8000
-- Press Ctrl+C to stop both processes
+# Create a new migration
+docker compose exec web php bin/console make:migration
 
-### deploy.sh
+# Run migrations
+docker compose exec web php bin/console doctrine:migrations:migrate --no-interaction
 
-Production build/deploy helper. It:
+# Validate database schema
+docker compose exec web php bin/console doctrine:schema:validate
 
-1. Installs Node deps (yarn or npm)
-2. Builds production assets (Encore)
-3. Installs Composer deps (no-dev)
-4. Runs database migrations (unless `SKIP_MIGRATIONS=true`)
-5. Clears and warms Symfony prod cache
-
-Usage:
-
-```bash
-# Normal deployment
-./deploy.sh
-
-# Skip DB migrations
-SKIP_MIGRATIONS=true ./deploy.sh
-
-# Skip Composer auto-scripts during install
-SKIP_COMPOSER_AUTOSCRIPTS=true ./deploy.sh
-```
-
-Environment defaults:
-
-```bash
-APP_ENV=prod
-APP_DEBUG=0
+# Run tests
+docker compose exec web php bin/phpunit
 ```
 
 ## Troubleshooting (Symfony)
 
-### Permission issues on Linux/Ubuntu
+- Cache issues
+  - Clear cache: `php bin/console cache:clear`
+  - If using prod mode, add: `--env=prod --no-debug`
 
-```bash
-sudo chown -R $USER:$USER var/
-chmod -R 775 var/
-```
+- .env configuration
+  - Ensure correct `APP_ENV`, `DATABASE_URL`, and `APP_SECRET`.
+  - Use `.env.local` for local overrides.
 
-### Symfony server port already in use
+- Rate limiter configuration
+  - See: `config/packages/rate_limiter.yaml`
 
-Start on a different port:
+- Asset build issues
+  - Reinstall node modules: `yarn install` (or `npm ci`)
+  - Rebuild: `yarn encore dev` or `yarn build`
 
-```bash
-symfony server:start --port=8001
-```
-
-### Spam getting through the contact form
-
-The honeypot should stop most bots. If needed, consider:
-- Add additional JS-based validation
-- Rate limit form submissions
-- Add time-based validation (reject too-quick submissions)
-
-For Docker-related topics, see `docs/docker.md`. For database-specific topics, see `docs/database.md`.
+For Docker-specific or database-specific issues, see:
+- Docker: `docs/docker.md`
+- Database: `docs/database.md`
