@@ -1,0 +1,58 @@
+{% extends 'email/base.html.twig' %}
+
+{% block title %}
+  Neue Kontaktanfrage
+{% endblock %}
+
+{% block header_title %}
+  Theatergruppe Freispiel – Neue Kontaktanfrage
+{% endblock %}
+
+{% block body %}
+  <h1>Neue Kontaktanfrage von der Website</h1>
+
+  <p>
+    Sie haben eine neue Anfrage über das Kontaktformular der Theatergruppe Freispiel erhalten.
+  </p>
+
+  <h2>Kontaktdaten</h2>
+  <div class="box">
+    <p style="margin:0 0 8px;">
+      <strong>Name:</strong> {{ contact.name|e }}
+    </p>
+    <p style="margin:0 0 8px;">
+      <strong>E‑Mail:</strong> <a href="mailto:{{ contact.emailAddress|e }}">{{ contact.emailAddress|e }}</a>
+    </p>
+    {% if contact.phone %}
+      <p style="margin:0 0 8px;">
+        <strong>Telefon:</strong> <a href="tel:{{ contact.phone|e }}">{{ contact.phone|e }}</a>
+      </p>
+    {% endif %}
+    <p style="margin:0;">
+      <strong>Datum:</strong> {{ contact.createdAt|date('d.m.Y H:i') }} Uhr
+    </p>
+  </div>
+
+  <h2>Nachricht</h2>
+  <div class="box">
+    {{ contact.messageHtml|raw }}
+  </div>
+
+  {% if contact.meta %}
+    <div class="meta">
+      <strong>Technische Informationen:</strong>
+      <ul>
+        <li>IP: {{ contact.meta.ip|e }}</li>
+        <li>User‑Agent: {{ contact.meta.userAgent|e|slice(0, 80) }}{% if (contact.meta.userAgent|length) > 80 %}...{% endif %}</li>
+        <li>Zeit: {{ contact.meta.time|e }}</li>
+        <li>Host: {{ contact.meta.host|e }}</li>
+      </ul>
+    </div>
+  {% endif %}
+
+  <div class="tip-box">
+    <p style="margin:0;">
+      <strong>💡 Tipp:</strong> Sie können direkt auf diese E-Mail antworten, um dem Absender zu antworten.
+    </p>
+  </div>
+{% endblock %}

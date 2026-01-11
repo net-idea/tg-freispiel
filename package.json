@@ -21,6 +21,7 @@
     "og:build": "node generate-og.js",
     "lint:html": "prettier \"templates/**/*.html.twig\" --check",
     "lint:html:fix": "prettier \"templates/**/*.html.twig\" --write",
+    "lint:twig": "php bin/console lint:twig templates",
     "lint": "yarn run lint:css:fix && yarn run tsc:check && yarn run lint:twig && yarn run lint:html",
     "lint:fix": "yarn run lint:css:fix && yarn run lint:html:fix && yarn run lint:twig"
   },
@@ -45,7 +46,7 @@
     "postcss": "^8.4.49",
     "postcss-scss": "^4.0.9",
     "prettier": "^3.4.1",
-    "sass": "^1.81.0",
+    "sass": "^1.96.0",
     "sass-loader": "^16.0.3",
     "sharp": "^0.34.5",
     "stylelint": "^16.11.0",

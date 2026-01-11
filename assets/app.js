@@ -1,3 +1,4 @@
+import './stimulus_bootstrap.js';
 /*
  * Welcome to your app's main JavaScript file!
  *
@@ -12,7 +13,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 // Import custom CSS with dark theater theme
-import './styles/app.css';
+import './styles/app.scss';
+import './styles/navbar.scss';
 
 // Start the Stimulus application
 import './bootstrap.js';

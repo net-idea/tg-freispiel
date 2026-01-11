@@ -16,10 +16,12 @@
   },
   "include": [
     "assets/**/*.ts",
-    "assets/**/*.tsx"
+    "assets/**/*.tsx",
+    "types/**/*.d.ts"
   ],
   "exclude": [
     "node_modules",
-    "public/build"
+    "public/build",
+    "var"
   ]
 }

@@ -1,0 +1,22 @@
+{% block subject %}
+Ihre Anfrage bei Theatergruppe Freispiel
+{% endblock %}
+
+{% block body %}
+Guten Tag {{ contact.name }},
+
+vielen Dank für Ihre Nachricht an die Theatergruppe Freispiel.
+
+Wir haben Ihre Anfrage erhalten und werden sie so schnell wie möglich bearbeiten. Jemand aus unserem Team meldet sich persönlich bei Ihnen.
+
+Hier ist eine Kopie Ihrer Nachricht:
+
+--------------------------------------------------
+{{ contact.message }}
+--------------------------------------------------
+
+Beste Grüße,
+
+Ihr Freispiel Team
+Web: https://theatergruppe-freispiel.de
+{% endblock %}
