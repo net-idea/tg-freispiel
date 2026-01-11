@@ -103,8 +103,8 @@ print_service_info() {
         set +o allexport
     fi
 
-    local app_url="http://127.0.0.1:${APP_PORT:-8000}"
-    local assets_url="http://127.0.0.1:${NODE_PORT:-8080}"
+    local app_url="http://localhost:${APP_PORT:-8000}"
+    local assets_url="http://localhost:${NODE_PORT:-8080}"
 
     echo -e "${GREEN}Development environment is running and provides following endpoints:${NC}"
     echo "${YELLOW} → App:        $app_url${NC}"

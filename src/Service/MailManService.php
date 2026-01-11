@@ -17,7 +17,7 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-readonly class MailManService
+class MailManService
 {
     private const THEME_STORAGE_KEY = 'theme';
 
@@ -91,7 +91,7 @@ readonly class MailManService
             if ($contact->getCopy()) {
                 $visitorEmail = trim($contact->getEmailAddress());
                 if ('' !== $visitorEmail && filter_var($visitorEmail, FILTER_VALIDATE_EMAIL)) {
-                    $visitorSubject = 'Theatergruppe Freispiel — Ihre Kontaktanfrage';
+                    $visitorSubject = 'UniSurf — Ihre Kontaktanfrage';
                     $visitorText = $this->twig->render('email/contact_visitor.txt.twig', $context);
                     $visitorHtml = $this->twig->render('email/contact_visitor.html.twig', $context);
 
@@ -146,7 +146,7 @@ readonly class MailManService
         );
 
         try {
-            $subject = 'Theatergruppe Freispiel — Bitte bestätigen Sie Ihre Buchung';
+            $subject = 'UniSurf — Bitte bestätigen Sie Ihre Buchung';
             $text = $this->twig->render('email/booking_visitor_confirm_request.txt.twig', $context);
             $html = $this->twig->render('email/booking_visitor_confirm_request.html.twig', $context);
 
@@ -194,7 +194,7 @@ readonly class MailManService
 
         $context = ['booking' => $booking];
 
-        $subject = 'Theatergruppe Freispiel — Buchung bestätigt';
+        $subject = 'UniSurf — Buchung bestätigt';
         $text = $this->twig->render('email/booking_owner_confirmed.txt.twig', $context);
         $html = $this->twig->render('email/booking_owner_confirmed.html.twig', $context);
 

@@ -67,5 +67,6 @@ docker compose exec web php bin/phpunit
   - Rebuild: `yarn encore dev` or `yarn build`
 
 For Docker-specific or database-specific issues, see:
+
 - Docker: `docs/docker.md`
 - Database: `docs/database.md`

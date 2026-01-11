@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Lint all files
-yarn run lint:fix
+yarn prettier --write .
 
 # Type check TypeScript files
 yarn run tsc:check

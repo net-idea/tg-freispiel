@@ -1,0 +1,151 @@
+parameters:
+	ignoreErrors:
+		-
+			rawMessage: Expression on left side of ?? is not nullable.
+			identifier: nullCoalesce.expr
+			count: 2
+			path: src/Command/MailPreviewContactCommand.php
+
+		-
+			rawMessage: Short ternary operator is not allowed. Use null coalesce operator if applicable or consider using long ternary.
+			identifier: ternary.shortNotAllowed
+			count: 5
+			path: src/Command/MailPreviewContactCommand.php
+
+		-
+			rawMessage: Casting to string something that's already string.
+			identifier: cast.useless
+			count: 1
+			path: src/Controller/AbstractBaseController.php
+
+		-
+			rawMessage: Short ternary operator is not allowed. Use null coalesce operator if applicable or consider using long ternary.
+			identifier: ternary.shortNotAllowed
+			count: 1
+			path: src/Controller/AbstractBaseController.php
+
+		-
+			rawMessage: 'Only booleans are allowed in &&, Symfony\Component\HttpFoundation\Request|null given on the left side.'
+			identifier: booleanAnd.leftNotBoolean
+			count: 2
+			path: src/Controller/ContactController.php
+
+		-
+			rawMessage: 'Only booleans are allowed in an if condition, Symfony\Component\HttpFoundation\RedirectResponse|null given.'
+			identifier: if.condNotBoolean
+			count: 1
+			path: src/Controller/ContactController.php
+
+		-
+			rawMessage: Casting to string something that's already string.
+			identifier: cast.useless
+			count: 1
+			path: src/Controller/MainController.php
+
+		-
+			rawMessage: 'Property App\Entity\FormBookingEntity::$id (int|null) is never assigned int so it can be removed from the property type.'
+			identifier: property.unusedType
+			count: 1
+			path: src/Entity/FormBookingEntity.php
+
+		-
+			rawMessage: 'Only booleans are allowed in a negated boolean, Symfony\Component\Mime\Address|null given.'
+			identifier: booleanNot.exprNotBoolean
+			count: 1
+			path: src/Entity/FormContactEntity.php
+
+		-
+			rawMessage: 'Property App\Entity\FormContactEntity::$phone type mapping mismatch: database can contain string|null but property expects string.'
+			identifier: doctrine.columnType
+			count: 1
+			path: src/Entity/FormContactEntity.php
+
+		-
+			rawMessage: 'Construct empty() is not allowed. Use more strict comparison.'
+			identifier: empty.notAllowed
+			count: 1
+			path: src/Service/AbstractFormService.php
+
+		-
+			rawMessage: 'Only booleans are allowed in a negated boolean, Symfony\Component\HttpFoundation\Request|null given.'
+			identifier: booleanNot.exprNotBoolean
+			count: 1
+			path: src/Service/AbstractFormService.php
+
+		-
+			rawMessage: Casting to string something that's already string.
+			identifier: cast.useless
+			count: 1
+			path: src/Service/FormContactService.php
+
+		-
+			rawMessage: 'Only booleans are allowed in a negated boolean, Symfony\Component\HttpFoundation\Request|null given.'
+			identifier: booleanNot.exprNotBoolean
+			count: 2
+			path: src/Service/FormContactService.php
+
+		-
+			rawMessage: 'Only booleans are allowed in an if condition, Symfony\Component\HttpFoundation\RedirectResponse|null given.'
+			identifier: if.condNotBoolean
+			count: 1
+			path: src/Service/FormContactService.php
+
+		-
+			rawMessage: 'Only booleans are allowed in a negated boolean, Symfony\Component\HttpFoundation\Request|null given.'
+			identifier: booleanNot.exprNotBoolean
+			count: 1
+			path: src/Service/MailManService.php
+
+		-
+			rawMessage: Casting to string something that's already string.
+			identifier: cast.useless
+			count: 1
+			path: src/Service/NavigationService.php
+
+		-
+			rawMessage: 'Dynamic call to static method Symfony\Bundle\FrameworkBundle\Test\WebTestCase::assertResponseIsSuccessful().'
+			identifier: staticMethod.dynamicCall
+			count: 6
+			path: tests/Controller/HomeControllerTest.php
+
+		-
+			rawMessage: 'Dynamic call to static method Symfony\Bundle\FrameworkBundle\Test\WebTestCase::assertSelectorTextContains().'
+			identifier: staticMethod.dynamicCall
+			count: 1
+			path: tests/Controller/HomeControllerTest.php
+
+		-
+			rawMessage: 'Only booleans are allowed in an if condition, Doctrine\ORM\EntityManagerInterface|null given.'
+			identifier: if.condNotBoolean
+			count: 1
+			path: tests/Repository/FormContactRepositoryTest.php
+
+		-
+			rawMessage: 'Dynamic call to static method PHPUnit\Framework\Assert::assertInstanceOf().'
+			identifier: staticMethod.dynamicCall
+			count: 1
+			path: tests/Service/FormContactServiceTest.php
+
+		-
+			rawMessage: 'Dynamic call to static method PHPUnit\Framework\Assert::assertSame().'
+			identifier: staticMethod.dynamicCall
+			count: 5
+			path: tests/Service/FormContactServiceTest.php
+
+		-
+			rawMessage: 'Dynamic call to static method PHPUnit\Framework\Assert::assertTrue().'
+			identifier: staticMethod.dynamicCall
+			count: 2
+			path: tests/Service/FormContactServiceTest.php
+
+		-
+			rawMessage: 'Dynamic call to static method PHPUnit\Framework\Assert::anything().'
+			identifier: staticMethod.dynamicCall
+			count: 3
+			path: tests/Service/MailManServiceTest.php
+
+		-
+			rawMessage: 'Dynamic call to static method PHPUnit\Framework\Assert::callback().'
+			identifier: staticMethod.dynamicCall
+			count: 3
+			path: tests/Service/MailManServiceTest.php

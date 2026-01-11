@@ -12,24 +12,13 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🎭</text></svg>" />
 
     {% block stylesheets %}
-      {# Use local Bootstrap via Webpack Encore #}
       {{ encore_entry_link_tags('app') }}
-    {% endblock %}
-
-    {% block javascripts %}
-      {% block importmap %}
-        {{ importmap('app') }}
-      {% endblock %}
-      {# Use local Bootstrap via Webpack Encore #}
-      {{ encore_entry_script_tags('app') }}
     {% endblock %}
   </head>
   <body>
     <div class="content-wrapper">
-      {# Navigation partial #}
       {% include '_partials/navbar.html.twig' %}
 
-      {# Main content area #}
       <main class="flex-grow-1">
         <div class="container py-4">
           {# Flash messages partial #}
@@ -42,8 +31,11 @@
         </div>
       </main>
 
-      {# Footer partial #}
       {% include '_partials/footer.html.twig' %}
     </div>
   </body>
+
+  {% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
+  {% endblock %}
 </html>
