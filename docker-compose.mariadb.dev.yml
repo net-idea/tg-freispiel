@@ -1,7 +1,11 @@
 services:
-  database:
+  mariadb:
+    volumes:
+      - ./mariadb/data:/var/lib/mysql
+      - ./mariadb/log:/var/log/mysql
+      - ./mariadb/fixtures:/docker-entrypoint-initdb.d:ro,delegated
     ports:
-      - "${DB_PORT:-3306}:3306"
+      - '${DB_PORT:-3306}:3306'
     networks:
       - internal
       - external

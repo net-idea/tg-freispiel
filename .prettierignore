@@ -1,0 +1,37 @@
+# Dependencies
+vendor/
+node_modules/
+
+# Build outputs
+public/build/
+public/bundles/
+var/
+
+# Database
+mariadb/
+postgresql/
+redis/
+
+# IDE
+.idea/
+.vscode/
+
+# Certificates
+certs/
+openssl/
+
+# Lock files
+composer.lock
+yarn.lock
+package-lock.json
+
+# SVG and font files
+*.svg
+*.woff
+*.woff2
+*.ttf
+*.eot
+
+# Compiled files
+*.min.js
+*.min.css

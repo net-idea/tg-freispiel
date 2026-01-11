@@ -1,0 +1,14 @@
+{
+  "extends": ["stylelint-config-standard", "stylelint-config-standard-scss"],
+  "plugins": ["stylelint-scss"],
+  "rules": {
+    "media-feature-range-notation": null,
+    "no-descending-specificity": null,
+    "scss/at-import-partial-extension": null,
+    "scss/load-no-partial-leading-underscore": null,
+    "scss/no-global-function-names": null,
+    "color-hex-length": null,
+    "value-keyword-case": null,
+    "font-family-name-quotes": null
+  }
+}

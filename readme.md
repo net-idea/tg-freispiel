@@ -103,7 +103,7 @@ php -S 127.0.0.1:8000 -t public
 Open the app:
 
 ```
-http://localhost:8000
+http://127.0.0.1:8000
 ```
 
 ### Configure environment variables
@@ -112,7 +112,7 @@ All configuration is via environment variables. Typical keys:
 
 - APP_ENV: dev | prod (default: dev)
 - APP_SECRET: random string (generate via `php bin/console regenerate-app-secret`)
-- DEFAULT_URI: base URL used for URL generation in CLI contexts (e.g. http://localhost)
+- DEFAULT_URI: base URL used for URL generation in CLI contexts (e.g. http://127.0.0.1)
 - LOCK_DSN: lock store DSN (default in dev: `flock`). Examples: `flock`, `semaphore`, `redis://localhost:6379`
 - DATABASE_URL: Doctrine DSN
     - SQLite (default): `DATABASE_URL="sqlite:///%kernel.project_dir%/var/data_%kernel.environment%.db"`

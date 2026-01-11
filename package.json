@@ -8,7 +8,7 @@
     "Adam Ibrom <adam@net-i.de>"
   ],
   "scripts": {
-    "start": "bash ./deploy.sh",
+    "start": "bash ./develop.sh",
     "dev-server": "encore dev-server",
     "dev": "encore dev",
     "watch": "encore dev --watch",
@@ -18,35 +18,44 @@
     "tsc:watch": "tsc --noEmit -w",
     "lint:css": "stylelint 'assets/**/*.{css,scss}'",
     "lint:css:fix": "stylelint 'assets/**/*.{css,scss}' --fix",
-    "og:build": "node generate-og.js"
+    "og:build": "node generate-og.js",
+    "lint:html": "prettier \"templates/**/*.html.twig\" --check",
+    "lint:html:fix": "prettier \"templates/**/*.html.twig\" --write",
+    "lint": "yarn run lint:css:fix && yarn run tsc:check && yarn run lint:twig && yarn run lint:html",
+    "lint:fix": "yarn run lint:css:fix && yarn run lint:html:fix && yarn run lint:twig"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "7.1.0",
     "@hotwired/stimulus": "^3.2.2",
-    "@hotwired/turbo": "^8.0.20",
-    "@symfony/stimulus-bridge": "^3.2.3",
+    "@hotwired/turbo": "^8.0.12",
+    "@symfony/stimulus-bridge": "^4.0.1",
     "@symfony/ux-turbo": "^2.31.0",
-    "@symfony/webpack-encore": "^5.2.0",
-    "core-js": "^3.38.0"
+    "@symfony/webpack-encore": "^5.0.1",
+    "core-js": "^3.39.0"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
     "@babel/preset-env": "^7.26.0",
-    "babel-loader": "^9.2.1",
-    "bootstrap": "^5.3.8",
+    "@popperjs/core": "^2.11.8",
+    "@zackad/prettier-plugin-twig": "^0.16.0",
+    "babel-loader": "^10.0.0",
+    "bootstrap": "^5.3.3",
+    "file-loader": "^6.2.0",
     "fork-ts-checker-webpack-plugin": "^9.0.2",
-    "postcss": "^8.4.47",
+    "postcss": "^8.4.49",
     "postcss-scss": "^4.0.9",
-    "sass": "^1.80.6",
-    "sass-loader": "^16.0.1",
-    "sharp": "^0.34.4",
-    "stylelint": "^16.9.0",
-    "stylelint-config-standard": "^36.0.1",
-    "stylelint-config-standard-scss": "^13.0.0",
-    "stylelint-scss": "^6.5.0",
+    "prettier": "^3.4.1",
+    "sass": "^1.81.0",
+    "sass-loader": "^16.0.3",
+    "sharp": "^0.34.5",
+    "stylelint": "^16.11.0",
+    "stylelint-config-standard": "^39.0.1",
+    "stylelint-config-standard-scss": "^16.0.0",
+    "stylelint-scss": "^6.8.1",
     "ts-loader": "^9.5.1",
-    "typescript": "^5.6.3",
-    "webpack": "^5.101.3",
+    "typescript": "^5.7.2",
+    "webpack": "^5.97.1",
     "webpack-cli": "^6.0.1",
-    "webpack-dev-server": "^5.2.2"
+    "webpack-dev-server": "^5.2.0"
   }
 }

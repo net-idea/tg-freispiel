@@ -1,46 +1,38 @@
 services:
-  database:
-    image: mariadb:latest
+  mariadb:
+    image: mariadb:11.4.3
     container_name: '${APP_NAME:-tg-freispiel}_mariadb'
-    hostname: database
+    hostname: mariadb
     restart: unless-stopped
-    command: [
-      '--character-set-server=utf8mb4',
-      '--collation-server=utf8mb4_unicode_ci',
-      '--transaction-isolation=READ-COMMITTED',
-      '--log-bin=binlog',
-      '--binlog-format=ROW',
-    ]
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci', '--transaction-isolation=READ-COMMITTED', '--log-bin=binlog', '--binlog-format=ROW']
     environment:
-      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD:-nopassword}"
-      MYSQL_DATABASE: "${DB_NAME:-tg-freispiel}"
-      MYSQL_USER: "${DB_USER:-tg-freispiel}"
-      MYSQL_PASSWORD: "${DB_PASSWORD:-nopassword}"
+      MYSQL_ROOT_PASSWORD: '${DB_ROOT_PASSWORD:-nopassword}'
+      MYSQL_DATABASE: '${DB_NAME:-tg-freispiel}'
+      MYSQL_USER: '${DB_USER:-tg-freispiel}'
+      MYSQL_PASSWORD: '${DB_PASSWORD:-nopassword}'
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 30s
     volumes:
-      - ./mariadb/data:/var/lib/mysql
-      - ./mariadb/log:/var/log/mysql
       - ./mariadb/fixtures:/docker-entrypoint-initdb.d:ro,delegated
     networks:
       - internal
 
-  database-backup:
+  mariadb-backup:
     image: dsteinkopf/backup-all-mysql:latest
-    platform: linux/amd64  # Use Rosetta 2 emulation on ARM64 Macs
+    platform: linux/amd64 # Use Rosetta 2 emulation on ARM64 Macs
     container_name: '${APP_NAME:-tg-freispiel}_mariadb_backup'
-    hostname: database-backup
+    hostname: mariadb-backup
     restart: unless-stopped
     environment:
       BACKUP_INTERVAL: 86400
       BACKUP_FIRSTDELAY: 4000
-      MYSQL_CONNECTION_PARAMS: "--user=${DB_USER:-tg-freispiel} --host=database --password=${DB_PASSWORD:-nopassword}"
+      MYSQL_CONNECTION_PARAMS: '--user=${DB_USER:-tg-freispiel} --host=database --password=${DB_PASSWORD:-nopassword}'
     depends_on:
-      database:
+      mariadb:
         condition: service_started
     volumes:
       - ./mariadb/backup:/var/dbdumps

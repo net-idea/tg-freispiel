@@ -148,8 +148,8 @@ DATABASE_URL="postgresql://tg-freispiel:nopassword@postgres:5432/tg-freispiel?se
 | Service | Description | Port | Access |
 |---------|-------------|------|--------|
 | php | PHP 8.3 FPM | - | Internal only |
-| nginx | Nginx web server | 8000 | http://localhost:8000 |
-| node | Node.js 20 (Webpack Encore) | 8080 | http://localhost:8080 |
+| nginx | Nginx web server | 8000 | http://127.0.0.1:8000 |
+| node | Node.js 20 (Webpack Encore) | 8080 | http://127.0.0.1:8080 |
 
 ### Database Services
 
@@ -164,8 +164,8 @@ DATABASE_URL="postgresql://tg-freispiel:nopassword@postgres:5432/tg-freispiel?se
 
 | Service | Description | Port | Access |
 |---------|-------------|------|--------|
-| adminer | Lightweight DB admin | 8091 | http://localhost:8091 |
-| phpmyadmin | MySQL/MariaDB admin | 8092 | http://localhost:8092 |
+| adminer | Lightweight DB admin | 8091 | http://127.0.0.1:8091 |
+| phpmyadmin | MySQL/MariaDB admin | 8092 | http://127.0.0.1:8092 |
 
 ### Caching Services
 
@@ -396,10 +396,10 @@ See the main `readme.md` and `deploy.sh` for production deployment strategies.
 
 When running the full stack:
 
-- **Application**: http://localhost:8000
-- **Webpack Dev Server**: http://localhost:8080
-- **Adminer**: http://localhost:8091
-- **PHPMyAdmin**: http://localhost:8092
+- **Application**: http://127.0.0.1:8000
+- **Webpack Dev Server**: http://127.0.0.1:8080
+- **Adminer**: http://127.0.0.1:8091
+- **PHPMyAdmin**: http://127.0.0.1:8092
 
 Database connection (from external tools when using `mariadb.dev.yml`):
 - **Host**: localhost

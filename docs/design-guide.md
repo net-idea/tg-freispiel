@@ -233,8 +233,8 @@ yarn build
 symfony server:start
 
 # Visit:
-http://localhost:8000/          # Homepage
-http://localhost:8000/contact   # Contact
+http://127.0.0.1:8000/          # Homepage
+http://127.0.0.1:8000/contact   # Contact
 ```
 
 ---
