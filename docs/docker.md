@@ -46,6 +46,7 @@ The easiest way to start the development environment:
 ```
 
 This script will:
+
 1. Start all necessary containers (PHP, Nginx, Node, MariaDB, Adminer, PHPMyAdmin)
 2. Wait for the database to be ready
 3. Install Composer dependencies
@@ -67,6 +68,7 @@ docker compose -p tg-freispiel -f docker-compose.yaml up -d --build
 ```
 
 This starts:
+
 - PHP-FPM container
 - Nginx web server (port 8000)
 - Node container with Webpack Encore (port 8080)
@@ -78,6 +80,7 @@ docker compose -p tg-freispiel -f docker-compose.yaml -f docker-compose.mariadb.
 ```
 
 Adds:
+
 - MariaDB server (internal network only)
 - Automatic database backups
 
@@ -88,6 +91,7 @@ docker compose -p tg-freispiel -f docker-compose.yaml -f docker-compose.mariadb.
 ```
 
 Adds:
+
 - Adminer (port 8091)
 - PHPMyAdmin (port 8092)
 
@@ -108,6 +112,7 @@ docker compose -p tg-freispiel -f docker-compose.yaml -f docker-compose.redis.ym
 ```
 
 Update your `.env.local`:
+
 ```env
 # For sessions
 SESSION_HANDLER_ID=redis://redis:6379
@@ -126,6 +131,7 @@ docker compose -p tg-freispiel -f docker-compose.yaml -f docker-compose.memcache
 ```
 
 Update your `.env.local`:
+
 ```env
 CACHE_DSN=memcached://memcached:11211
 ```
@@ -137,6 +143,7 @@ docker compose -p tg-freispiel -f docker-compose.yaml -f docker-compose.postgres
 ```
 
 Update your `.env.local`:
+
 ```env
 DATABASE_URL="postgresql://tg-freispiel:nopassword@postgres:5432/tg-freispiel?serverVersion=16&charset=utf8"
 ```
@@ -145,34 +152,34 @@ DATABASE_URL="postgresql://tg-freispiel:nopassword@postgres:5432/tg-freispiel?se
 
 ### Core Services
 
-| Service | Description | Port | Access |
-|---------|-------------|------|--------|
-| php | PHP 8.3 FPM | - | Internal only |
-| nginx | Nginx web server | 8000 | http://localhost:8000 |
-| node | Node.js 20 (Webpack Encore) | 8080 | http://localhost:8080 |
+| Service | Description                 | Port | Access                |
+| ------- | --------------------------- | ---- | --------------------- |
+| php     | PHP 8.3 FPM                 | -    | Internal only         |
+| nginx   | Nginx web server            | 8000 | http://127.0.0.1:8000 |
+| node    | Node.js 20 (Webpack Encore) | 8080 | http://127.0.0.1:8080 |
 
 ### Database Services
 
-| Service | Description | Port | Access |
-|---------|-------------|------|--------|
-| database (MariaDB) | MariaDB database | 3306* | Internal (or exposed with mariadb.dev.yml) |
-| postgres | PostgreSQL database | 5432* | Internal |
+| Service            | Description         | Port   | Access                                     |
+| ------------------ | ------------------- | ------ | ------------------------------------------ |
+| database (MariaDB) | MariaDB database    | 3306\* | Internal (or exposed with mariadb.dev.yml) |
+| postgres           | PostgreSQL database | 5432\* | Internal                                   |
 
-*Only exposed to host with `.dev.yml` variants
+\*Only exposed to host with `.dev.yml` variants
 
 ### Database Admin Tools
 
-| Service | Description | Port | Access |
-|---------|-------------|------|--------|
-| adminer | Lightweight DB admin | 8091 | http://localhost:8091 |
-| phpmyadmin | MySQL/MariaDB admin | 8092 | http://localhost:8092 |
+| Service    | Description          | Port | Access                |
+| ---------- | -------------------- | ---- | --------------------- |
+| adminer    | Lightweight DB admin | 8091 | http://127.0.0.1:8091 |
+| phpmyadmin | MySQL/MariaDB admin  | 8092 | http://127.0.0.1:8092 |
 
 ### Caching Services
 
-| Service | Description | Port | Access |
-|---------|-------------|------|--------|
-| redis | Redis cache/sessions | 6379 | Internal only |
-| memcached | Memcached cache | 11211 | Internal only |
+| Service   | Description          | Port  | Access        |
+| --------- | -------------------- | ----- | ------------- |
+| redis     | Redis cache/sessions | 6379  | Internal only |
+| memcached | Memcached cache      | 11211 | Internal only |
 
 ## Environment Configuration
 
@@ -266,6 +273,7 @@ docker compose -p tg-freispiel pull
 ### docker-start.sh
 
 Interactive startup script that handles the complete initialization:
+
 - Starts core services + MariaDB + admin tools
 - Waits for database readiness
 - Installs dependencies
@@ -396,18 +404,20 @@ See the main `readme.md` and `deploy.sh` for production deployment strategies.
 
 When running the full stack:
 
-- **Application**: http://localhost:8000
-- **Webpack Dev Server**: http://localhost:8080
-- **Adminer**: http://localhost:8091
-- **PHPMyAdmin**: http://localhost:8092
+- **Application**: http://127.0.0.1:8000
+- **Webpack Dev Server**: http://127.0.0.1:8080
+- **Adminer**: http://127.0.0.1:8091
+- **PHPMyAdmin**: http://127.0.0.1:8092
 
 Database connection (from external tools when using `mariadb.dev.yml`):
+
 - **Host**: localhost
 - **Port**: 3306
 - **User**: tg-freispiel
 - **Password**: nopassword
 - **Database**: tg-freispiel
-```
+
+````
 
 ## Database migrations (Docker)
 
@@ -417,7 +427,7 @@ docker compose exec web php bin/console make:migration
 
 # Run migrations
 docker compose exec web php bin/console doctrine:migrations:migrate --no-interaction
-```
+````
 
 ## Useful Docker commands
 

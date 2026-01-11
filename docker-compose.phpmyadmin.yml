@@ -7,9 +7,7 @@ services:
     restart: unless-stopped
     environment:
       PMA_HOST: database
-      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD:-nopassword}"
-    depends_on:
-      - database
+      MYSQL_ROOT_PASSWORD: '${DB_ROOT_PASSWORD:-nopassword}'
     ports:
       - '${PHPMYADMIN_PORT:-8092}:80'
     networks:

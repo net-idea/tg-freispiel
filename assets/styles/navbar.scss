@@ -1,0 +1,43 @@
+.glass-navbar {
+  background: linear-gradient(180deg, rgb(13 13 13 / 90%), rgb(13 13 13 / 85%)) !important;
+  backdrop-filter: blur(12px) saturate(150%) !important;
+  border-bottom: 2px solid rgb(212 175 55 / 30%) !important;
+  border-top: 1px solid rgb(255 255 255 / 10%) !important;
+  box-shadow:
+    0 4px 16px 0 rgb(0 0 0 / 40%),
+    inset 0 1px 0 0 rgb(255 255 255 / 10%) !important;
+}
+
+.navbar .nav-link {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.navbar .nav-link::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: var(--theater-gold);
+  transition: width 0.3s ease;
+}
+
+.navbar .nav-link:hover {
+  color: var(--theater-gold) !important;
+}
+
+.navbar .nav-link:hover::before {
+  width: 80%;
+}
+
+.navbar .nav-link.active {
+  color: var(--theater-gold) !important;
+  font-weight: 500;
+}
+
+.navbar .nav-link.active::before {
+  width: 80%;
+}

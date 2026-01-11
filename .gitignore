@@ -15,7 +15,8 @@ composer.phar
 /.env.local
 /.env.local.php
 /.env.*.local
-/config/secrets/prod/prod.decrypt.private.php
+/config/secrets/*
+!/config/secrets/.gitignore
 /public/bundles/*
 !/public/bundles/.gitignore
 /var/*
@@ -40,8 +41,10 @@ yarn-error.log
 
 ###> symfony/phpunit-bridge ###
 .phpunit.result.cache
-/phpunit.xml
 ###< symfony/phpunit-bridge ###
+
+## Doctrine memory cache files
+/memdb*
 
 ###> symfony/asset-mapper ###
 #/public/assets/*

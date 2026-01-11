@@ -1,0 +1,160 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  Kontakt - Theatergruppe Freispiel
+{% endblock %}
+
+{% block body %}
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      {# Page Header #}
+      <div class="text-center mb-5">
+        <h1 class="display-4 mb-4" style="color: var(--theater-gold); font-weight: bold;">📧 Kontaktieren Sie uns</h1>
+      </div>
+
+      {# Status + validation handling #}
+      {% set submit = app.request.query.get('submit') %}
+      {% set error = app.request.query.get('error') %}
+
+      {% for message in app.flashes('success') %}
+        <div class="alert alert-success mb-3" role="alert" id="contact-success">
+          {{ message }}
+        </div>
+      {% endfor %}
+      {% for message in app.flashes('error') %}
+        <div class="alert alert-danger mb-3" role="alert" id="contact-error">
+          {{ message }}
+        </div>
+      {% endfor %}
+
+      {% if submit %}
+        <div id="contact-success-redirect" class="alert alert-success mb-3" role="alert">
+          Vielen Dank! Ihre Nachricht wurde erfolgreich versendet. Wir melden uns zeitnah bei Ihnen.
+        </div>
+      {% endif %}
+
+      {% if error %}
+        <div id="contact-error-redirect" class="alert alert-danger mb-3" role="alert">
+          {% if error == 'rate' %}
+            Bitte warten Sie einen Moment, bevor Sie das Formular erneut absenden.
+          {% elseif error == 'mail' %}
+            Leider konnte die E-Mail nicht versendet werden. Bitte versuchen Sie es in Kürze erneut.
+          {% else %}
+            Es ist ein Fehler aufgetreten. Bitte prüfen Sie Ihre Eingaben und versuchen Sie es erneut.
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if form.vars.submitted and not form.vars.valid %}
+        <div class="alert alert-danger" role="alert">
+          <p class="mb-2">
+            Bitte korrigieren Sie folgende Fehler:
+          </p>
+          <ul class="mb-0">
+            {% for child in form.children %}
+              {% if (child.vars.errors|length) > 0 %}
+                {% for errorItem in child.vars.errors %}
+                  <li><strong>{{ child.vars.label }}:</strong> {{ errorItem.message }}</li>
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      {# Info Card #}
+      <div class="card shadow-lg mb-5">
+        <div class="card-body p-4 p-md-5">
+          <p class="lead" style="font-size: 1.1rem; line-height: 1.9; color: var(--theater-text); margin: 0;">
+            Wir freuen uns über Ihre Nachricht! Ob Sie Fragen zu unseren Aufführungen haben, an einer Zusammenarbeit interessiert sind oder einfach Hallo sagen möchten – nutzen Sie gerne unser Kontaktformular.
+          </p>
+        </div>
+      </div>
+
+      {# Contact Form Card #}
+      <div class="card shadow-lg">
+        <div class="card-header p-4" style="background: linear-gradient(135deg, rgba(139, 0, 0, 0.4), rgba(212, 175, 55, 0.3)); border-bottom: 2px solid var(--theater-gold);">
+          <h2 class="h4 mb-0" style="color: var(--theater-gold); font-weight: bold;">✉️ Kontaktformular</h2>
+        </div>
+        <div class="card-body p-4 p-md-5">
+          {{ form_start(form, { action: path('app_contact'), attr: { class: 'vstack gap-4', novalidate: 'novalidate', 'data-turbo': 'false' } }) }}
+          <div class="mb-4">
+            {{ form_label(form.name, null, { label_attr: { class: 'form-label' } }) }}
+            {{ form_widget(form.name, { attr: { class: (form.name.vars.errors|length) > 0 ? 'form-control form-control-lg is-invalid' : 'form-control form-control-lg', placeholder: 'Ihr Name' } }) }}
+            {% for errorItem in form.name.vars.errors %}
+              <div class="invalid-feedback d-block">
+                {{ errorItem.message }}
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="mb-4">
+            {{ form_label(form.email, null, { label_attr: { class: 'form-label' } }) }}
+            {{ form_widget(form.email, { attr: { class: (form.email.vars.errors|length) > 0 ? 'form-control form-control-lg is-invalid' : 'form-control form-control-lg', placeholder: 'ihre@email.de' } }) }}
+            {% for errorItem in form.email.vars.errors %}
+              <div class="invalid-feedback d-block">
+                {{ errorItem.message }}
+              </div>
+            {% endfor %}
+          </div>
+
+          {% if form.phone is defined %}
+            <div class="mb-4">
+              {{ form_label(form.phone, null, { label_attr: { class: 'form-label' } }) }}
+              {{ form_widget(form.phone, { attr: { class: (form.phone.vars.errors|length) > 0 ? 'form-control form-control-lg is-invalid' : 'form-control form-control-lg', placeholder: 'Telefon (optional)' } }) }}
+              {% for errorItem in form.phone.vars.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ errorItem.message }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <div class="mb-4">
+            {{ form_label(form.message, null, { label_attr: { class: 'form-label' } }) }}
+            {{ form_widget(form.message, { attr: { class: (form.message.vars.errors|length) > 0 ? 'form-control form-control-lg is-invalid' : 'form-control form-control-lg', rows: 6, placeholder: 'Ihre Nachricht an uns...' } }) }}
+            {% for errorItem in form.message.vars.errors %}
+              <div class="invalid-feedback d-block">
+                {{ errorItem.message }}
+              </div>
+            {% endfor %}
+          </div>
+
+          {% if form.website is defined or form.emailrep is defined %}
+            <div style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;" aria-hidden="true">
+              {% if form.website is defined %}{{ form_row(form.website) }}{% endif %}
+              {% if form.emailrep is defined %}{{ form_row(form.emailrep) }}{% endif %}
+            </div>
+          {% endif %}
+
+          {% if form.consent is defined %}
+            <div class="mb-4">
+              {{ form_widget(form.consent, { attr: { class: (form.consent.vars.errors|length) > 0 ? 'form-check-input is-invalid' : 'form-check-input' } }) }}
+              {{ form_label(form.consent, null, { label_attr: { class: 'form-check-label' } }) }}
+              {% for errorItem in form.consent.vars.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ errorItem.message }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg py-3" style="font-size: 1.2rem; font-weight: bold;">Absenden</button>
+          </div>
+
+          {{ form_rest(form) }}
+          {{ form_end(form) }}
+        </div>
+      </div>
+
+      {# Additional Info #}
+      <div class="text-center mt-5 p-4" style="background-color: rgba(13, 13, 13, 0.6); border-radius: 0.5rem; border: 1px solid rgba(212, 175, 55, 0.2);">
+        <p style="color: var(--theater-text-muted); margin: 0; line-height: 1.8;">
+          <strong style="color: var(--theater-gold);">Theatergruppe Freispiel</strong><br />
+          Ihre Nachricht wird vertraulich behandelt und schnellstmöglich beantwortet.
+        </p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

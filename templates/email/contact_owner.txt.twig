@@ -1,0 +1,26 @@
+{% block subject %}
+Anfrage via Theatergruppe-Freispiel.de von {{ contact.name }}
+{% endblock %}
+
+{% block body %}
+Guten Tag,
+
+es ist eine neue Kontaktanfrage über die Webseite eingegangen.
+
+Absender:
+
+Name: {{ contact.name }}
+E-Mail: {{ contact.emailAddress }}
+{% if contact.phone %}Telefon: {{ contact.phone }}{% endif %}
+
+Nachricht:
+
+--------------------------------------------------
+{{ contact.message }}
+--------------------------------------------------
+
+Bitte zeitnah bearbeiten.
+
+Beste Grüße,
+Ihr Freispiel-System
+{% endblock %}

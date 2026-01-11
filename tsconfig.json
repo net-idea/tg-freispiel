@@ -14,12 +14,6 @@
       "@/*": ["assets/*"]
     }
   },
-  "include": [
-    "assets/**/*.ts",
-    "assets/**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules",
-    "public/build"
-  ]
+  "include": ["assets/**/*.ts", "assets/**/*.tsx", "types/**/*.d.ts"],
+  "exclude": ["node_modules", "public/build", "var"]
 }

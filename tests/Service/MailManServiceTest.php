@@ -1,0 +1,181 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Tests\Service;
+
+use App\Entity\FormContactEntity;
+use App\Service\MailManService;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
+use Symfony\Component\Mailer\MailerInterface;
+use Twig\Environment as Twig;
+
+class MailManServiceTest extends TestCase
+{
+    public function testDoesNotSendVisitorEmailWhenCopyFalse(): void
+    {
+        $mailer = $this->createMock(MailerInterface::class);
+
+        // Only owner email => exactly 1 send
+        $mailer->expects($this->exactly(1))
+            ->method('send');
+
+        $twig = $this->createMock(Twig::class);
+
+        // Only owner templates are rendered (text + HTML) => 2 times
+        $twig->expects($this->exactly(2))
+            ->method('render')
+            ->willReturn('x');
+
+        $service = $this->makeService($mailer, $twig);
+        $service->sendContactForm($this->makeContact(false));
+    }
+
+    public function testSendsVisitorEmailWhenCopyTrue(): void
+    {
+        $mailer = $this->createMock(MailerInterface::class);
+
+        // Owner + Visitor => 2 sends
+        $mailer->expects($this->exactly(2))
+            ->method('send');
+
+        $twig = $this->createMock(Twig::class);
+
+        // Owner (2) + Visitor (2) => 4 renders
+        $twig->expects($this->exactly(4))
+            ->method('render')
+            ->willReturn('x');
+
+        $service = $this->makeService($mailer, $twig);
+        $service->sendContactForm($this->makeContact(true));
+    }
+
+    public function testPassesLightThemeToTemplates(): void
+    {
+        $mailer = $this->createMock(MailerInterface::class);
+        $mailer->expects($this->once())->method('send');
+
+        $twig = $this->createMock(Twig::class);
+
+        // Verify that theme 'light' is passed in context
+        $twig->expects($this->exactly(2))
+            ->method('render')
+            ->with(
+                $this->anything(),
+                $this->callback(function ($context) {
+                    return isset($context['theme']) && 'light' === $context['theme'];
+                })
+            )
+            ->willReturn('rendered template');
+
+        $service = $this->makeService($mailer, $twig, 'light');
+        $service->sendContactForm($this->makeContact(false));
+    }
+
+    public function testPassesDarkThemeToTemplates(): void
+    {
+        $mailer = $this->createMock(MailerInterface::class);
+        $mailer->expects($this->once())->method('send');
+
+        $twig = $this->createMock(Twig::class);
+
+        // Verify that theme 'dark' is passed in context
+        $twig->expects($this->exactly(2))
+            ->method('render')
+            ->with(
+                $this->anything(),
+                $this->callback(function ($context) {
+                    return isset($context['theme']) && 'dark' === $context['theme'];
+                })
+            )
+            ->willReturn('rendered template');
+
+        $service = $this->makeService($mailer, $twig, 'dark');
+        $service->sendContactForm($this->makeContact(false));
+    }
+
+    public function testDefaultsToLightThemeWhenNoRequest(): void
+    {
+        $mailer = $this->createMock(MailerInterface::class);
+        $mailer->expects($this->once())->method('send');
+
+        $twig = $this->createMock(Twig::class);
+
+        // When no request is available, should default to light theme
+        $twig->expects($this->exactly(2))
+            ->method('render')
+            ->with(
+                $this->anything(),
+                $this->callback(function ($context) {
+                    return isset($context['theme']) && 'light' === $context['theme'];
+                })
+            )
+            ->willReturn('rendered template');
+
+        // Create RequestStack without a current request
+        $requestStack = new RequestStack();
+
+        $service = new MailManService(
+            $mailer,
+            $twig,
+            'from@example.com',
+            'From Name',
+            'to@example.com',
+            'To Name',
+            new NullLogger(),
+            $requestStack,
+        );
+
+        $service->sendContactForm($this->makeContact(false));
+    }
+
+    private function makeService(
+        MailerInterface $mailer,
+        Twig $twig,
+        string $theme = 'light'
+    ): MailManService {
+        $requestStack = $this->createRequestStackWithTheme($theme);
+
+        return new MailManService(
+            $mailer,
+            $twig,
+            'from@example.com',
+            'From Name',
+            'to@example.com',
+            'To Name',
+            new NullLogger(),
+            $requestStack,
+        );
+    }
+
+    private function createRequestStackWithTheme(string $theme): RequestStack
+    {
+        $session = new Session(new MockArraySessionStorage());
+        $session->set('theme', $theme);
+
+        $request = new Request();
+        $request->setSession($session);
+
+        $requestStack = new RequestStack();
+        $requestStack->push($request);
+
+        return $requestStack;
+    }
+
+    private function makeContact(bool $copy): FormContactEntity
+    {
+        $contactForm = new FormContactEntity();
+        $contactForm->setName('Tester');
+        $contactForm->setEmailAddress('visitor@example.com');
+        $contactForm->setMessage('Hello');
+        $contactForm->setConsent(true);
+        $contactForm->setCopy($copy);
+
+        return $contactForm;
+    }
+}

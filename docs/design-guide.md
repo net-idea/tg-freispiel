@@ -3,6 +3,7 @@
 ## 🏠 Homepage (/)
 
 ### Hero Section
+
 ```
 ┌─────────────────────────────────────────────────┐
 │                                                 │
@@ -15,12 +16,14 @@
 │              ↓ scroll indicator                 │
 └─────────────────────────────────────────────────┘
 ```
+
 - Full-screen gradient background (purple/blue)
 - Animated title and subtitle
 - Glowing call-to-action buttons
 - Smooth scroll indicator
 
 ### Features Section
+
 ```
 ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐
 │ 🏔️       │ │ ✨       │ │ 🎿       │ │ 🔥       │
@@ -28,11 +31,13 @@
 │  Views   │ │ Comfort  │ │          │ │ Ambiance │
 └──────────┘ └──────────┘ └──────────┘ └──────────┘
 ```
+
 - 4 glass-effect feature cards
 - Icons with pulse animation
 - Hover lift effect
 
 ### About Section
+
 ```
 ┌─────────────┐  ┌────────────────────────────┐
 │             │  │ Your Perfect Mountain      │
@@ -43,11 +48,13 @@
 └─────────────┘  │ [Get in Touch]             │
                  └────────────────────────────┘
 ```
+
 - Image showcase with badge
 - Detailed description
 - Call-to-action button
 
 ### Amenities Section
+
 ```
 ┌─────────────┐ ┌─────────────┐ ┌─────────────┐
 │ 📶 WiFi     │ │ 🍳 Kitchen  │ │ 🛏️ Bedrooms │
@@ -56,11 +63,13 @@
 │ 🅿️ Parking  │ │ 🌡️ Heating  │ │ 🧺 Laundry  │
 └─────────────┘ └─────────────┘ └─────────────┘
 ```
+
 - 6 amenity cards in grid
 - Glass effect with icons
 - Slide animation on hover
 
 ### CTA Section
+
 ```
 ┌─────────────────────────────────────────────────┐
 │                                                 │
@@ -71,6 +80,7 @@
 │                                                 │
 └─────────────────────────────────────────────────┘
 ```
+
 - Full-width gradient section
 - Large glowing button
 
@@ -79,6 +89,7 @@
 ## 📧 Contact Page (/contact)
 
 ### Contact Hero
+
 ```
 ┌─────────────────────────────────────────────────┐
 │                                                 │
@@ -87,10 +98,12 @@
 │                                                 │
 └─────────────────────────────────────────────────┘
 ```
+
 - Smaller hero with gradient
 - Clear messaging
 
 ### Contact Form Layout
+
 ```
 ┌──────────────────┐  ┌─────────────────────────┐
 │ Contact Info     │  │ Send us a Message       │
@@ -106,6 +119,7 @@
 │                  │  │                         │
 └──────────────────┘  └─────────────────────────┘
 ```
+
 - Two-column responsive layout
 - Sticky contact info on scroll (desktop)
 - Glass-effect cards
@@ -113,6 +127,7 @@
 - Full-width submit button
 
 ### Stats Section
+
 ```
 ┌────────────────────────────────────────────────┐
 │         Why Choose Hütte9?                     │
@@ -121,6 +136,7 @@
 │   Rating       Satisfaction   Support         │
 └────────────────────────────────────────────────┘
 ```
+
 - Trust indicators
 - Large numbers for impact
 
@@ -129,6 +145,7 @@
 ## 🎨 Theme Switcher
 
 Located in navigation bar:
+
 ```
 ┌─────────────────────────────────┐
 │ 🌓 Theme ▼                      │
@@ -146,6 +163,7 @@ Located in navigation bar:
 3. **Dark**: Deep blue/purple with enhanced glow effects
 
 **Features:**
+
 - Instant switching (no page reload)
 - Saved in localStorage
 - No flash on page load
@@ -156,18 +174,21 @@ Located in navigation bar:
 ## 🎯 Key Design Elements
 
 ### Glass Morphism
+
 - Semi-transparent backgrounds
 - Backdrop blur effect
 - Subtle borders
 - Layered depth
 
 ### Animations
+
 - ✨ Fade-in on load
 - 🎭 Hover transformations
 - 💫 Pulsing icons
 - 🌊 Smooth transitions
 
 ### Typography
+
 - Bold, large headings
 - Clear hierarchy
 - Readable body text
@@ -176,12 +197,14 @@ Located in navigation bar:
 ### Colors
 
 **Light Theme:**
+
 - Background: White → Light Gray gradient
 - Primary: Blue (#0d6efd)
 - Text: Dark gray/black
 - Glass: White (80% opacity)
 
 **Dark Theme:**
+
 - Background: Dark Blue → Purple gradient
 - Primary: Same blue (consistency)
 - Text: White/light gray
@@ -192,17 +215,20 @@ Located in navigation bar:
 ## 📱 Responsive Design
 
 ### Desktop (>992px)
+
 - Two-column layouts
 - Full hero sections
 - Hover effects active
 - Sticky elements
 
 ### Tablet (768px-991px)
+
 - Stacked columns
 - Adjusted spacing
 - Touch-optimized
 
 ### Mobile (<768px)
+
 - Single column
 - Hamburger menu
 - Larger touch targets
@@ -233,8 +259,8 @@ yarn build
 symfony server:start
 
 # Visit:
-http://localhost:8000/          # Homepage
-http://localhost:8000/contact   # Contact
+http://127.0.0.1:8000/          # Homepage
+http://127.0.0.1:8000/contact   # Contact
 ```
 
 ---

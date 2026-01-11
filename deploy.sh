@@ -69,7 +69,7 @@ echo ""
 # 4th: check if php is available and then run database migrations
 if [ "${SKIP_MIGRATIONS:-false}" = "true" ]; then
   echo "[4/5] Skipping database migrations (SKIP_MIGRATIONS=true)"
-elif command -v php >/dev/null 2>&1; then
+else
   # Only attempt to run migrations if there are actual migration classes in the configured folder.
   # This avoids the Doctrine error when no migrations are registered (e.g. clean installs without migrations).
   MIGRATIONS_DIR="$ROOT_DIR/migrations"
@@ -82,8 +82,6 @@ elif command -v php >/dev/null 2>&1; then
   else
     echo "[4/5] No migration classes found in $MIGRATIONS_DIR — skipping migrations"
   fi
-else
-  echo "⚠ PHP not found. Skipping database migrations." >&2
 fi
 
 echo ""

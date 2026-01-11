@@ -103,7 +103,7 @@ php -S 127.0.0.1:8000 -t public
 Open the app:
 
 ```
-http://localhost:8000
+http://127.0.0.1:8000
 ```
 
 ### Configure environment variables
@@ -112,12 +112,12 @@ All configuration is via environment variables. Typical keys:
 
 - APP_ENV: dev | prod (default: dev)
 - APP_SECRET: random string (generate via `php bin/console regenerate-app-secret`)
-- DEFAULT_URI: base URL used for URL generation in CLI contexts (e.g. http://localhost)
+- DEFAULT_URI: base URL used for URL generation in CLI contexts (e.g. http://127.0.0.1)
 - LOCK_DSN: lock store DSN (default in dev: `flock`). Examples: `flock`, `semaphore`, `redis://localhost:6379`
 - DATABASE_URL: Doctrine DSN
-    - SQLite (default): `DATABASE_URL="sqlite:///%kernel.project_dir%/var/data_%kernel.environment%.db"`
-    - MariaDB/MySQL: `DATABASE_URL="mysql://user:pass@127.0.0.1:3306/db?serverVersion=10.11.2-MariaDB&charset=utf8mb4"`
-    - Postgres: `DATABASE_URL="postgresql://user:pass@127.0.0.1:5432/db?serverVersion=16&charset=utf8"`
+  - SQLite (default): `DATABASE_URL="sqlite:///%kernel.project_dir%/var/data_%kernel.environment%.db"`
+  - MariaDB/MySQL: `DATABASE_URL="mysql://user:pass@127.0.0.1:3306/db?serverVersion=10.11.2-MariaDB&charset=utf8mb4"`
+  - Postgres: `DATABASE_URL="postgresql://user:pass@127.0.0.1:5432/db?serverVersion=16&charset=utf8"`
 - MESSENGER_TRANSPORT_DSN: default `doctrine://default?auto_setup=0` (use `sync://` for simple dev)
 - Mail settings (compose into MAILER_DSN): MAIL_SCHEME, MAIL_HOST, MAIL_ENCRYPTION, MAIL_PORT, MAIL_USER, MAIL_PASSWORD
 
@@ -131,7 +131,7 @@ If you prefer Docker for a fully containerized setup, see:
 
 ### Docker and Docker Compose
 
-To start the application with services like *MariaDB*, *Adminer* and *PHPMyAdmin*  the **Docker Compose** is used:
+To start the application with services like _MariaDB_, _Adminer_ and _PHPMyAdmin_ the **Docker Compose** is used:
 
 ```shell
 # Start only the basic web application
@@ -153,6 +153,7 @@ The project includes several linting and formatting tools to ensure code quality
 ```
 
 This aggregate script runs:
+
 - CSS/SCSS linting with auto-fix (Stylelint)
 - TypeScript type checking
 - Twig template linting
@@ -205,6 +206,7 @@ Run the full PHPUnit test suite:
 ```
 
 Or directly:
+
 ```bash
 ./vendor/bin/phpunit tests
 ```
@@ -241,6 +243,7 @@ yarn build
 ### develop.sh
 
 Local development helper that:
+
 - Installs dependencies (Yarn and Composer)
 - Clears Symfony cache (dev)
 - Builds front-end assets
@@ -253,6 +256,7 @@ Usage:
 ```
 
 Notes:
+
 - Requires Node/Yarn (or NPM), PHP and Composer available on your machine.
 - Press Ctrl+C to stop both background processes.
 
@@ -282,6 +286,7 @@ SKIP_COMPOSER_AUTOSCRIPTS=true ./deploy.sh
 ## 🧰 Symfony commands
 
 Moved to:
+
 - docs/symfony.md
 
 ## 🆘 Troubleshooting

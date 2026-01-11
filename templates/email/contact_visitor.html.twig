@@ -1,0 +1,59 @@
+{% extends 'email/base.html.twig' %}
+
+{% block title %}
+  Ihre Kontaktanfrage
+{% endblock %}
+
+{% block header_title %}
+  Theatergruppe Freispiel – Bestätigung Ihrer Anfrage
+{% endblock %}
+
+{% block body %}
+  <h1>Vielen Dank für Ihre Nachricht!</h1>
+
+  <p>
+    Hallo {{ contact.name|e }},
+  </p>
+
+  <p>
+    vielen Dank für Ihre Kontaktanfrage bei der Theatergruppe Freispiel. Wir haben Ihre Nachricht erhalten und melden uns so schnell wie möglich bei Ihnen.
+  </p>
+
+  <h2>Ihre Kontaktdaten</h2>
+  <div class="box">
+    <p style="margin:0 0 8px;">
+      <strong>Name:</strong> {{ contact.name|e }}
+    </p>
+    <p style="margin:0 0 8px;">
+      <strong>E‑Mail:</strong> {{ contact.emailAddress|e }}
+    </p>
+    {% if contact.phone %}
+      <p style="margin:0;">
+        <strong>Telefon:</strong> {{ contact.phone|e }}
+      </p>
+    {% endif %}
+  </div>
+
+  <h2>Ihre Nachricht</h2>
+  <div class="box">
+    {{ contact.messageHtml|raw }}
+  </div>
+
+  <div class="info-box">
+    <p style="margin:0;">
+      <strong>Theatergruppe Freispiel</strong><br />
+      Bei Rückfragen erreichen Sie uns unter:<br />
+      📧 <a href="mailto:kontakt@theatergruppe-freispiel.de">kontakt@theatergruppe-freispiel.de</a><br />
+      🌐 <a href="https://theatergruppe-freispiel.de">https://theatergruppe-freispiel.de</a>
+    </p>
+  </div>
+
+  <p>
+    Beste Grüße<br />
+    Ihr Freispiel-Team
+  </p>
+
+  <p class="meta">
+    Dies ist eine automatische Bestätigung Ihrer Kontaktanfrage. Ihre Daten werden vertraulich behandelt und nur zum Zweck der Kontaktaufnahme verwendet. Bei Rückfragen können Sie direkt auf diese E‑Mail antworten.
+  </p>
+{% endblock %}

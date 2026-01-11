@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
@@ -18,7 +19,7 @@ class HomeControllerTest extends WebTestCase
     public function testContactPageIsSuccessful(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/contact');
+        $crawler = $client->request('GET', '/kontakt');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Kontaktieren Sie uns');
@@ -27,13 +28,13 @@ class HomeControllerTest extends WebTestCase
     public function testContactFormIsPresent(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/contact');
+        $crawler = $client->request('GET', '/kontakt');
 
         $this->assertResponseIsSuccessful();
-        
-        // Check form fields are present
-        $this->assertCount(1, $crawler->filter('input[name="contact[name]"]'));
-        $this->assertCount(1, $crawler->filter('input[name="contact[email]"]'));
-        $this->assertCount(1, $crawler->filter('textarea[name="contact[message]"]'));
+
+        // Check form fields are present (Symfony form name is form_contact)
+        $this->assertCount(1, $crawler->filter('input[name="form_contact[name]"]'));
+        $this->assertCount(1, $crawler->filter('input[name="form_contact[email]"]'));
+        $this->assertCount(1, $crawler->filter('textarea[name="form_contact[message]"]'));
     }
 }

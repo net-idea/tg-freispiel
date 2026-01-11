@@ -1,0 +1,30 @@
+{
+  "useTabs": false,
+  "tabWidth": 2,
+  "printWidth": 280,
+  "singleQuote": true,
+  "trailingComma": "es5",
+  "semi": true,
+  "htmlWhitespaceSensitivity": "ignore",
+  "bracketSameLine": false,
+  "plugins": ["@zackad/prettier-plugin-twig"],
+  "overrides": [
+    {
+      "files": "*.md",
+      "options": {
+        "printWidth": 0
+      }
+    },
+    {
+      "files": ["*.twig", "*.html"],
+      "options": {
+        "printWidth": 768,
+        "bracketSameLine": true,
+        "htmlWhitespaceSensitivity": "ignore",
+        "singleAttributePerLine": false,
+        "twigMultiTags": ["block"],
+        "twigAlwaysBreakObjects": false
+      }
+    }
+  ]
+}
