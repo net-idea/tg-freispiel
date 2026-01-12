@@ -1,11 +1,5 @@
-web_profiler:
-  toolbar: true
+# Web profiler configuration was environment specific and has been moved to
+# config/packages/dev/web_profiler.yaml and config/packages/test/web_profiler.yaml
+# to avoid loading the web_profiler config in production where the bundle is not enabled.
 
-framework:
-  profiler:
-    collect_serializer_data: true
-
-# test environment override (kept here for dev/test location)
-when@test:
-  framework:
-    profiler: { collect: false }
+# This file intentionally left minimal to avoid loading web_profiler in prod.
