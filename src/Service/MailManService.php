@@ -91,7 +91,7 @@ class MailManService
             if ($contact->getCopy()) {
                 $visitorEmail = trim($contact->getEmailAddress());
                 if ('' !== $visitorEmail && filter_var($visitorEmail, FILTER_VALIDATE_EMAIL)) {
-                    $visitorSubject = 'UniSurf — Ihre Kontaktanfrage';
+                    $visitorSubject = 'Theatergruppe Freispiel — Ihre Kontaktanfrage';
                     $visitorText = $this->twig->render('email/contact_visitor.txt.twig', $context);
                     $visitorHtml = $this->twig->render('email/contact_visitor.html.twig', $context);
 
@@ -146,7 +146,7 @@ class MailManService
         );
 
         try {
-            $subject = 'UniSurf — Bitte bestätigen Sie Ihre Buchung';
+            $subject = 'Theatergruppe Freispiel — Bitte bestätigen Sie Ihre Buchung';
             $text = $this->twig->render('email/booking_visitor_confirm_request.txt.twig', $context);
             $html = $this->twig->render('email/booking_visitor_confirm_request.html.twig', $context);
 
@@ -194,7 +194,7 @@ class MailManService
 
         $context = ['booking' => $booking];
 
-        $subject = 'UniSurf — Buchung bestätigt';
+        $subject = 'Theatergruppe Freispiel — Buchung bestätigt';
         $text = $this->twig->render('email/booking_owner_confirmed.txt.twig', $context);
         $html = $this->twig->render('email/booking_owner_confirmed.html.twig', $context);
 

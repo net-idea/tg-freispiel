@@ -1,38 +1,34 @@
-<footer style="background-color: rgba(13, 13, 13, 0.95); border-top: 2px solid rgba(212, 175, 55, 0.3); padding: 3rem 0 2rem; margin-top: 5rem;">
+<footer class="py-5 mt-5">
   <div class="container">
     <div class="row">
       <div class="col-md-6 mb-4 mb-md-0">
-        <h5 style="color: var(--theater-gold); font-weight: bold; margin-bottom: 1.5rem;">🎭 Theatergruppe Freispiel</h5>
-        <p style="color: var(--theater-text-muted); line-height: 1.8;">
+        <h5 class="footer-heading">🎭 Theatergruppe Freispiel</h5>
+        <p class="footer-text">
           Wir sind eine leidenschaftliche Gemeinschaft von Theaterbegeisterten aus Dormagen.<br />
           Durch die Kraft des Theaters möchten wir Menschen berühren, unterhalten und zum Nachdenken anregen.
         </p>
       </div>
       <div class="col-md-3 mb-4 mb-md-0">
-        <h6 style="color: var(--theater-gold); font-weight: bold; margin-bottom: 1.5rem;">Navigation</h6>
+        <h6 class="footer-heading">Navigation</h6>
         <ul class="list-unstyled">
-          <li class="mb-2"><a href="{{ path('app_index') }}" style="color: var(--theater-text-muted); text-decoration: none;">Home</a></li>
-          <li class="mb-2"><a href="{{ path('app_contact') }}" style="color: var(--theater-text-muted); text-decoration: none;">Kontakt</a></li>
+          <li class="mb-2"><a href="{{ path('app_index') }}" class="footer-link">Home</a></li>
+          <li class="mb-2"><a href="{{ path('app_contact') }}" class="footer-link">Kontakt</a></li>
         </ul>
       </div>
       <div class="col-md-3">
-        <h6 style="color: var(--theater-gold); font-weight: bold; margin-bottom: 1.5rem;">Kontakt</h6>
-        <p style="color: var(--theater-text-muted); line-height: 1.8; margin: 0;">
+        <h6 class="footer-heading">Kontakt</h6>
+        <p class="footer-text mb-0">
           Theatergruppe Freispiel<br />
           Dormagen<br />
-          <a href="{{ path('app_contact') }}" style="color: var(--theater-gold); text-decoration: none;">→ Kontaktformular</a>
+          <a href="{{ path('app_contact') }}" class="footer-gold-link">→ Kontaktformular</a>
         </p>
       </div>
     </div>
-    <hr style="border-color: rgba(212, 175, 55, 0.2); margin: 2rem 0 1.5rem;" />
+    <hr class="footer-divider" />
     <div class="text-center">
-      <p style="color: var(--theater-text-muted); margin: 0; font-size: 0.9rem;">
+      <p class="footer-copy mb-0">
         &copy; {{ 'now'|date('Y') }} Theatergruppe Freispiel ❤️
       </p>
     </div>
   </div>
 </footer>
-
-<style>
-  footer a:hover { color: var(--theater-gold) !important; text-decoration: underline !important; }
-</style>

@@ -14,7 +14,7 @@ if [ -f "$PROJECT_DIR/.env" ]; then
   set +o allexport
 fi
 
-APP_NAME="${APP_NAME:-unisurf}"
+APP_NAME="${APP_NAME:-Theatergruppe Freispiel}"
 ENGINE="${DB:-mariadb}" # mariadb or postgres
 MODE="compose" # or local
 RESET_DB=false
@@ -67,7 +67,7 @@ wait_for_db() {
   local tries=${1:-60}
   local delay=${2:-1}
   if [ "$ENGINE" = "postgres" ]; then
-    local check_cmd=(docker compose "${COMPOSE_ARGS[@]}" exec -T "$DB_SERVICE" pg_isready -U "${POSTGRES_USER:-unisurf}")
+    local check_cmd=(docker compose "${COMPOSE_ARGS[@]}" exec -T "$DB_SERVICE" pg_isready -U "${POSTGRES_USER:-Theatergruppe Freispiel}")
   else
     local pw="${DB_ROOT_PASSWORD:-nopassword}"
     local check_cmd=(docker compose "${COMPOSE_ARGS[@]}" exec -T "$DB_SERVICE" sh -lc "(command -v mariadb >/dev/null 2>&1 && mariadb -uroot -p\"$pw\" -h\"$DB_SERVICE\" -e 'SELECT 1' >/dev/null) || (command -v mysql >/dev/null 2>&1 && mysql -uroot -p\"$pw\" -h\"$DB_SERVICE\" -e 'SELECT 1' >/dev/null)")

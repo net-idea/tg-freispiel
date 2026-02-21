@@ -1,4 +1,4 @@
-// Generates Open Graph images for UniSurf into public/og
+// Generates Open Graph images for Theatergruppe Freispiel into public/og
 const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
@@ -13,14 +13,14 @@ const PAD_TOP = 70;
 const PAD_RIGHT = 40;
 const LOGO_PADDING_Y = 40;
 
-const BRAND = 'UniSurf';
+const BRAND = 'Theatergruppe Freispiel';
 const BRAND_SUBLINE = 'Unique Surfing';
-const FOOTER_DOMAIN = 'unisurf.de';
+const FOOTER_DOMAIN = 'Theatergruppe Freispiel.de';
 
 // IMPORTANT: fileName must match the expected basename from content/_pages.php (e.g. /assets/og/home.jpg)
 const pages = [
-  { fileName: 'start', title: 'UniSurf', subtitle: 'Professionelles Web Hosting & Managed IT' },
-  { fileName: 'home', title: 'UniSurf', subtitle: 'Professionelles Web Hosting & Managed IT' },
+  { fileName: 'start', title: 'Theatergruppe Freispiel', subtitle: 'Professionelles Web Hosting & Managed IT' },
+  { fileName: 'home', title: 'Theatergruppe Freispiel', subtitle: 'Professionelles Web Hosting & Managed IT' },
   { fileName: 'services', title: 'Services', subtitle: 'Webentwicklung, Hosting & digitale Lösungen' },
   { fileName: 'entwicklung', title: 'Entwicklung', subtitle: 'Internetseiten, Webshops & Plattformen' },
   { fileName: 'hosting', title: 'Hosting', subtitle: 'Sicher, zuverlässig & individuell betreut' },
@@ -29,7 +29,7 @@ const pages = [
   { fileName: 'datenschutz', title: 'Datenschutz', subtitle: 'Informationen zur Verarbeitung personenbezogener Daten' },
 ];
 
-// Palettes aligned to UniSurf brand (greens + supporting contrasts)
+// Palettes aligned to Theatergruppe Freispiel brand (greens + supporting contrasts)
 const palettes = {
   start: ['#008000', '#66b366', '#85c285', '#064a2c'],
   home: ['#008000', '#66b366', '#85c285', '#064a2c'],
@@ -42,12 +42,12 @@ const palettes = {
 };
 
 // Use the site PNG logo instead of favicon.svg; fallback to no logo if not present
-const LOGO_IMG_PATH = path.join(process.cwd(), 'assets', 'images', 'unisurf-logo.png');
+const LOGO_IMG_PATH = path.join(process.cwd(), 'assets', 'images', 'Theatergruppe Freispiel-logo.png');
 let logoBuffer = null;
 try {
   logoBuffer = fs.readFileSync(LOGO_IMG_PATH);
 } catch (e) {
-  console.warn('Logo image not found at assets/images/unisurf-logo.png — continuing without embedded logo.');
+  console.warn('Logo image not found at assets/images/Theatergruppe Freispiel-logo.png — continuing without embedded logo.');
 }
 
 // Prefer a local font if present; otherwise fall back to system fonts.

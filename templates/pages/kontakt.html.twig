@@ -9,7 +9,7 @@
     <div class="col-lg-8">
       {# Page Header #}
       <div class="text-center mb-5">
-        <h1 class="display-4 mb-4" style="color: var(--theater-gold); font-weight: bold;">📧 Kontaktieren Sie uns</h1>
+        <h1 class="display-4 hero-title">📧 Kontaktieren Sie uns</h1>
       </div>
 
       {# Status + validation handling #}
@@ -65,7 +65,7 @@
       {# Info Card #}
       <div class="card shadow-lg mb-5">
         <div class="card-body p-4 p-md-5">
-          <p class="lead" style="font-size: 1.1rem; line-height: 1.9; color: var(--theater-text); margin: 0;">
+          <p class="lead card-text mb-0">
             Wir freuen uns über Ihre Nachricht! Ob Sie Fragen zu unseren Aufführungen haben, an einer Zusammenarbeit interessiert sind oder einfach Hallo sagen möchten – nutzen Sie gerne unser Kontaktformular.
           </p>
         </div>
@@ -73,8 +73,8 @@
 
       {# Contact Form Card #}
       <div class="card shadow-lg">
-        <div class="card-header p-4" style="background: linear-gradient(135deg, rgba(139, 0, 0, 0.4), rgba(212, 175, 55, 0.3)); border-bottom: 2px solid var(--theater-gold);">
-          <h2 class="h4 mb-0" style="color: var(--theater-gold); font-weight: bold;">✉️ Kontaktformular</h2>
+        <div class="card-header card-header-accent p-4">
+          <h2 class="h4 mb-0 fw-bold">✉️ Kontaktformular</h2>
         </div>
         <div class="card-body p-4 p-md-5">
           {{ form_start(form, { action: path('app_contact'), attr: { class: 'vstack gap-4', novalidate: 'novalidate', 'data-turbo': 'false' } }) }}
@@ -121,7 +121,7 @@
           </div>
 
           {% if form.website is defined or form.emailrep is defined %}
-            <div style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;" aria-hidden="true">
+            <div class="honeypot" aria-hidden="true">
               {% if form.website is defined %}{{ form_row(form.website) }}{% endif %}
               {% if form.emailrep is defined %}{{ form_row(form.emailrep) }}{% endif %}
             </div>
@@ -140,7 +140,7 @@
           {% endif %}
 
           <div class="d-grid">
-            <button type="submit" class="btn btn-primary btn-lg py-3" style="font-size: 1.2rem; font-weight: bold;">Absenden</button>
+            <button type="submit" class="btn btn-primary btn-lg py-3 fw-bold fs-5">Absenden</button>
           </div>
 
           {{ form_rest(form) }}
@@ -149,9 +149,9 @@
       </div>
 
       {# Additional Info #}
-      <div class="text-center mt-5 p-4" style="background-color: rgba(13, 13, 13, 0.6); border-radius: 0.5rem; border: 1px solid rgba(212, 175, 55, 0.2);">
-        <p style="color: var(--theater-text-muted); margin: 0; line-height: 1.8;">
-          <strong style="color: var(--theater-gold);">Theatergruppe Freispiel</strong><br />
+      <div class="info-box text-center mt-5 p-4">
+        <p class="footer-text mb-0">
+          <strong class="info-box-gold">Theatergruppe Freispiel</strong><br />
           Ihre Nachricht wird vertraulich behandelt und schnellstmöglich beantwortet.
         </p>
       </div>

@@ -5,7 +5,7 @@
 set -u
 set -o pipefail
 
-# UniSurf CI/CD Pipeline - Local Execution
+# Theatergruppe Freispiel CI/CD Pipeline - Local Execution
 # This script runs all checks from GitHub Actions workflows locally
 # Exit on first error unless --continue-on-error is specified
 
@@ -16,18 +16,27 @@ YELLOW='\033[1;33m'
 BLUE='\033[1;34m'
 NC='\033[0m' # No Color
 
-# Configuration
-CONTINUE_ON_ERROR=true
+# Configuration - safe defaults
+CONTINUE_ON_ERROR=false
 VERBOSE=false
-PHP_VERSION=$(php -r "echo PHP_VERSION;")
-NODE_VERSION=$(node --version)
+PHP_VERSION='unknown'
+NODE_VERSION='unknown'
+
+# detect versions safely
+if command -v php > /dev/null 2>&1; then
+  PHP_VERSION=$(php -r "echo PHP_VERSION;")
+fi
+
+if command -v node > /dev/null 2>&1; then
+  NODE_VERSION=$(node --version)
+fi
 
 # Collect failed checks (each entry: "Description|Reproduction command")
 FAILED_CHECKS=()
 
-# Parse arguments
-for arg in "$@"; do
-  case $arg in
+# Parse arguments (POSIX-friendly)
+while [[ $# -gt 0 ]]; do
+  case "$1" in
     --continue-on-error)
       CONTINUE_ON_ERROR=true
       shift
@@ -50,6 +59,10 @@ for arg in "$@"; do
       echo "  - Code Formatting (Prettier)"
       echo "  - Template Linting (Twig)"
       exit 0
+      ;;
+    *)
+      echo "Warning: Unknown option: $1"
+      shift
       ;;
   esac
 done
@@ -93,20 +106,19 @@ handle_error() {
 }
 
 run_command() {
-  local description=$1
+  local description="$1"
   shift
-  local cmd=("$@")
+  local -a cmd=("$@")
 
   print_step "$description"
   echo -e "${YELLOW}Command:${NC} ${cmd[*]}"
 
-  if $VERBOSE; then
+  if [ "$VERBOSE" = true ]; then
     if "${cmd[@]}"; then
       print_success "$description - OK"
       return 0
     else
       print_error "$description - FAILED"
-      # record failure and a reproducer command
       local cmd_str
       cmd_str=$(printf "%s " "${cmd[@]}")
       FAILED_CHECKS+=("$description|$cmd_str")
@@ -118,7 +130,6 @@ run_command() {
       return 0
     else
       print_error "$description - FAILED"
-      # record failure and a reproducer command
       local cmd_str
       cmd_str=$(printf "%s " "${cmd[@]}")
       FAILED_CHECKS+=("$description|$cmd_str")
@@ -148,23 +159,28 @@ run_php_cs_fixer_check() {
   if ! run_command "Run PHP CS Fixer check" php ./vendor/bin/php-cs-fixer check -n --config=.php-cs-fixer.dist.php; then
     print_info "Hint: Run './php-cs-fixer.sh' to auto-fix issues"
 
-    while true; do
-      read -p "Do you want to auto-fix with PHP CS Fixer? (y/n): " yn
+    # Prompt only when interactive
+    if [ -t 0 ]; then
+      while true; do
+        read -p "Do you want to auto-fix with PHP CS Fixer? (y/n): " yn
 
-      case $yn in
-        [Yy]*)
-          print_step "Running PHP CS Fixer auto-fix"
-          php ./vendor/bin/php-cs-fixer fix -n --config=.php-cs-fixer.dist.php
-          break
-          ;;
-        [Nn]*)
-          break
-          ;;
-        *)
-          echo "Please answer y or n."
-          ;;
-      esac
-    done
+        case $yn in
+          [Yy]*)
+            print_step "Running PHP CS Fixer auto-fix"
+            php ./vendor/bin/php-cs-fixer fix -n --config=.php-cs-fixer.dist.php
+            break
+            ;;
+          [Nn]*)
+            break
+            ;;
+          *)
+            echo "Please answer y or n."
+            ;;
+        esac
+      done
+    else
+      print_info "Non-interactive shell - skipping auto-fix prompt"
+    fi
 
     return 1
   fi
@@ -178,7 +194,7 @@ main() {
   start_time=$(date +%s)
   local failed_checks=0
 
-  print_header "UniSurf CI/CD Pipeline"
+  print_header "Theatergruppe Freispiel CI/CD Pipeline"
 
   echo "PHP Version: $PHP_VERSION"
   echo "Node Version: $NODE_VERSION"
@@ -269,7 +285,8 @@ main() {
   print_header "Code Formatting Check"
 
   # 11. Prettier check
-  if ! run_command "Check code formatting with Prettier" npx prettier --check .; then
+  # Run Prettier only on frontend assets and templates; exclude PHP to use PHP CS Fixer instead
+  if ! run_command "Check code formatting with Prettier" npx prettier --check "**/*.{js,ts,tsx,css,scss,html,twig,json,md}"; then
     ((failed_checks++))
     print_warning "Hint: Run 'npx prettier --write .' or './format.sh' to auto-fix issues"
     handle_error

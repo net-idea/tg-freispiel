@@ -8,7 +8,7 @@ if [ -f .env ]; then
 fi
 
 # Dynamic container naming based on APP_NAME from .env
-APP_NAME="${APP_NAME:-unisurf}"
+APP_NAME="${APP_NAME:-Theatergruppe Freispiel}"
 PROJECT_NAME="$APP_NAME"
 ENGINE="${DB:-mariadb}"
 COMPOSE_FILES=()

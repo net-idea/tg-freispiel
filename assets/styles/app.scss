@@ -1,4 +1,12 @@
-/* Dark Theater Theme */
+/* ==========================================================================
+   Dark Theater Theme - Theatergruppe Freispiel
+   Custom styles layered on top of Bootstrap 5.
+   Do NOT redefine Bootstrap utilities or components here.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. CSS Custom Properties (Design Tokens)
+   -------------------------------------------------------------------------- */
 :root {
   --theater-dark: #1a1a1a;
   --theater-darker: #0d0d0d;
@@ -6,94 +14,114 @@
   --theater-accent-light: #b22222;
   --theater-gold: #d4af37;
   --theater-text: #e0e0e0;
-  --theater-text-muted: #a0a0a0;
+  --theater-text-muted: #808080;
 }
 
+/* --------------------------------------------------------------------------
+   2. Base / Body
+   -------------------------------------------------------------------------- */
 body {
   background: var(--theater-dark);
   color: var(--theater-text);
-  position: relative;
   min-height: 100vh;
 }
 
-/* Background Stage Image - Portrait format (832x1248) with centered focus */
+/* --------------------------------------------------------------------------
+   3. Full-screen Stage Background Image
+   The source image is portrait (832×1248). We fill the full viewport
+   width, crop top/bottom and keep focus on the center third of the image.
+   -------------------------------------------------------------------------- */
 body::before {
   content: '';
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('/images/stage-background.png');
-  background-size: cover;
-  background-position: center center; /* Zentriere das Bild horizontal und vertikal */
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-
-  /* opacity: 0.3; /* Erhöht für bessere Sichtbarkeit */
+  inset: 0;
   z-index: -1;
+  background: url('/images/stage-background.png') center center / cover no-repeat;
 }
 
-/* Alternative for very wide screens - show more of the height */
-@media (min-aspect-ratio: 16 / 9) {
-  body::before {
-    background-size: auto 100%; /* Zeige volle Höhe auf breiten Bildschirmen */
-    background-position: center center;
-  }
-}
-
-/* For mobile/portrait screens - show more of the width */
-@media (max-aspect-ratio: 3 / 4) {
-  body::before {
-    background-size: 100% auto; /* Zeige volle Breite auf schmalen Bildschirmen */
-    background-position: center center;
-  }
-}
-
-/* Content overlay for better readability with glass effect */
+/* --------------------------------------------------------------------------
+   4. Content Wrapper (glass overlay for readability)
+   -------------------------------------------------------------------------- */
 .content-wrapper {
   position: relative;
   z-index: 1;
-  background: rgb(26 26 26 / 65%); /* Weniger Deckkraft für mehr Durchsicht */
-  backdrop-filter: blur(4px) saturate(120%);
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
+  background: rgb(26 26 26 / 65%);
+  backdrop-filter: blur(4px) saturate(120%);
 }
 
-/* Card styling with Vista Aero Glass Effect */
+/* --------------------------------------------------------------------------
+   5. Typography
+   -------------------------------------------------------------------------- */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--theater-gold);
+}
+
+a {
+  color: var(--theater-gold);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--theater-accent-light);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   6. Cards - Vista-style glass effect
+   -------------------------------------------------------------------------- */
 .card {
+  --bs-card-bg: transparent;
+
   background: linear-gradient(135deg, rgb(255 255 255 / 10%) 0%, rgb(255 255 255 / 5%) 50%, rgb(0 0 0 / 10%) 100%);
   backdrop-filter: blur(12px) saturate(150%);
   border: 1px solid rgb(255 255 255 / 18%);
-  border-top: 1px solid rgb(255 255 255 / 25%);
-  border-left: 1px solid rgb(255 255 255 / 25%);
+  border-top-color: rgb(255 255 255 / 25%);
+  border-left-color: rgb(255 255 255 / 25%);
   box-shadow:
-    0 8px 32px 0 rgb(0 0 0 / 37%),
-    inset 0 1px 0 0 rgb(255 255 255 / 10%);
+    0 8px 32px rgb(0 0 0 / 37%),
+    inset 0 1px 0 rgb(255 255 255 / 10%);
   color: var(--theater-text);
-  position: relative;
   overflow: hidden;
-  transition: all 0.3s ease;
-}
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
 
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 40%) 50%, transparent);
-}
+  /* Top highlight line */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 40%) 50%, transparent);
+    pointer-events: none;
+  }
 
-.card::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgb(212 175 55 / 5%) 0%, transparent 60%);
-  pointer-events: none;
+  /* Subtle gold sheen */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgb(212 175 55 / 5%) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow:
+      0 12px 40px rgb(0 0 0 / 50%),
+      inset 0 1px 0 rgb(255 255 255 / 15%);
+    border-color: rgb(212 175 55 / 40%);
+  }
 }
 
 .card-title {
@@ -102,52 +130,55 @@ body::before {
   z-index: 1;
 }
 
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow:
-    0 12px 40px 0 rgb(0 0 0 / 50%),
-    inset 0 1px 0 0 rgb(255 255 255 / 15%);
-  border-color: rgb(212 175 55 / 40%);
-}
-
 .card-body {
   position: relative;
   z-index: 1;
 }
 
-/* Link colors */
-a {
-  color: var(--theater-gold);
-  text-decoration: none;
+.card-header {
+  position: relative;
+  z-index: 1;
 }
 
-a:hover {
-  color: var(--theater-accent-light);
+.card-text {
+  line-height: 1.8;
+  color: var(--theater-text);
 }
 
-/* Form elements with glass effect */
+/* Card with a gradient accent (used for CTA sections) */
+.card-cta {
+  background: linear-gradient(135deg, rgb(139 0 0 / 30%), rgb(212 175 55 / 20%));
+  border: 2px solid var(--theater-gold);
+}
+
+/* Card header with gradient background */
+.card-header-accent {
+  background: linear-gradient(135deg, rgb(139 0 0 / 40%), rgb(212 175 55 / 30%));
+  border-bottom: 2px solid var(--theater-gold);
+}
+
+/* --------------------------------------------------------------------------
+   7. Forms - dark themed inputs
+   -------------------------------------------------------------------------- */
 .form-control {
   background: linear-gradient(135deg, rgb(26 26 26 / 70%), rgb(26 26 26 / 85%));
   backdrop-filter: blur(8px);
   border: 1px solid rgb(212 175 55 / 30%);
-  border-top: 1px solid rgb(255 255 255 / 15%);
   color: var(--theater-text);
   box-shadow: inset 0 1px 3px rgb(0 0 0 / 30%);
-}
 
-.form-control:focus {
-  background: linear-gradient(135deg, rgb(26 26 26 / 80%), rgb(26 26 26 / 95%));
-  backdrop-filter: blur(10px);
-  border-color: var(--theater-gold);
-  border-top-color: rgb(255 255 255 / 30%);
-  color: var(--theater-text);
-  box-shadow:
-    0 0 0 0.25rem rgb(212 175 55 / 25%),
-    inset 0 1px 3px rgb(0 0 0 / 30%);
-}
+  &:focus {
+    background: linear-gradient(135deg, rgb(26 26 26 / 80%), rgb(26 26 26 / 95%));
+    border-color: var(--theater-gold);
+    color: var(--theater-text);
+    box-shadow:
+      0 0 0 0.5rem rgb(212 175 55 / 25%),
+      inset 0 1px 3px rgb(0 0 0 / 30%);
+  }
 
-.form-control::placeholder {
-  color: var(--theater-text-muted);
+  &::placeholder {
+    color: var(--theater-text-muted);
+  }
 }
 
 .form-label {
@@ -159,111 +190,212 @@ textarea.form-control {
   min-height: 150px;
 }
 
-/* Form errors */
 .form-error-message,
 .invalid-feedback {
   color: var(--theater-accent-light);
 }
 
-/* Buttons with glass effect */
+/* --------------------------------------------------------------------------
+   8. Buttons - glass-style primary button
+   -------------------------------------------------------------------------- */
 .btn-primary {
+  --bs-btn-bg: rgb(139 0 0 / 90%);
+  --bs-btn-border-color: rgb(255 255 255 / 20%);
+  --bs-btn-hover-bg: rgb(178 34 34 / 95%);
+  --bs-btn-hover-border-color: rgb(255 255 255 / 30%);
+  --bs-btn-active-bg: rgb(139 0 0);
+  --bs-btn-active-border-color: rgb(255 255 255 / 20%);
+
   background: linear-gradient(135deg, rgb(178 34 34 / 90%), rgb(139 0 0 / 90%));
-  backdrop-filter: blur(8px);
-  border: 1px solid rgb(255 255 255 / 20%);
-  border-top: 1px solid rgb(255 255 255 / 30%);
-  color: white;
+  border-top-color: rgb(255 255 255 / 30%);
   box-shadow:
-    0 4px 12px 0 rgb(139 0 0 / 50%),
-    inset 0 1px 0 0 rgb(255 255 255 / 20%);
-  transition: all 0.3s ease;
+    0 4px 12px rgb(139 0 0 / 50%),
+    inset 0 1px 0 rgb(255 255 255 / 20%);
+  color: #fff;
   position: relative;
   overflow: hidden;
+  transition: all 0.3s ease;
+
+  /* Shine sweep on hover */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 30%), transparent);
+    transition: left 0.5s ease;
+  }
+
+  &:hover {
+    background: linear-gradient(135deg, rgb(200 50 50 / 95%), rgb(178 34 34 / 95%));
+    transform: translateY(-2px);
+    box-shadow:
+      0 6px 20px rgb(178 34 34 / 60%),
+      inset 0 1px 0 rgb(255 255 255 / 30%);
+
+    &::before {
+      left: 100%;
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow:
+      0 2px 8px rgb(139 0 0 / 50%),
+      inset 0 1px 0 rgb(255 255 255 / 20%);
+  }
 }
 
-.btn-primary::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 30%), transparent);
-  transition: left 0.5s ease;
-}
-
-.btn-primary:hover {
-  background: linear-gradient(135deg, rgb(200 50 50 / 95%), rgb(178 34 34 / 95%));
-  border-color: rgb(255 255 255 / 30%);
-  transform: translateY(-2px);
-  box-shadow:
-    0 6px 20px 0 rgb(178 34 34 / 60%),
-    inset 0 1px 0 0 rgb(255 255 255 / 30%);
-}
-
-.btn-primary:hover::before {
-  left: 100%;
-}
-
-.btn-primary:active {
-  transform: translateY(0);
-  box-shadow:
-    0 2px 8px 0 rgb(139 0 0 / 50%),
-    inset 0 1px 0 0 rgb(255 255 255 / 20%);
-}
-
-/* Alerts with glass effect */
+/* --------------------------------------------------------------------------
+   9. Alerts - themed glass alerts
+   -------------------------------------------------------------------------- */
 .alert {
   backdrop-filter: blur(10px) saturate(150%);
-  border-top: 1px solid rgb(255 255 255 / 20%);
-  border-left: 1px solid rgb(255 255 255 / 20%);
-  box-shadow: 0 4px 16px 0 rgb(0 0 0 / 30%);
+  color: var(--theater-text);
 }
 
 .alert-info {
+  --bs-alert-bg: transparent;
+
   background: linear-gradient(135deg, rgb(139 0 0 / 25%), rgb(139 0 0 / 15%));
-  border-color: rgb(var(--theater-accent), 0.4);
-  color: var(--theater-text);
+
+  --bs-alert-border-color: rgb(139 0 0 / 40%);
+  --bs-alert-color: var(--theater-text);
 }
 
 .alert-success {
+  --bs-alert-bg: transparent;
+
   background: linear-gradient(135deg, rgb(212 175 55 / 30%), rgb(212 175 55 / 15%));
-  border-color: rgb(212 175 55 / 50%);
-  color: var(--theater-text);
+
+  --bs-alert-border-color: rgb(212 175 55 / 50%);
+  --bs-alert-color: var(--theater-text);
 }
 
 .alert-danger {
+  --bs-alert-bg: transparent;
+
   background: linear-gradient(135deg, rgb(139 0 0 / 35%), rgb(139 0 0 / 20%));
-  border-color: rgb(178 34 34 / 50%);
-  color: var(--theater-text);
+
+  --bs-alert-border-color: rgb(178 34 34 / 50%);
+  --bs-alert-color: var(--theater-text);
 }
 
-/* Footer with glass effect */
+.alert-warning {
+  --bs-alert-bg: transparent;
+
+  background: linear-gradient(135deg, rgb(255 193 7 / 25%), rgb(255 193 7 / 10%));
+
+  --bs-alert-border-color: rgb(255 193 7 / 50%);
+  --bs-alert-color: var(--theater-text);
+}
+
+/* --------------------------------------------------------------------------
+   10. Footer
+   -------------------------------------------------------------------------- */
 footer {
   background: linear-gradient(180deg, rgb(13 13 13 / 85%), rgb(13 13 13 / 95%));
   backdrop-filter: blur(10px) saturate(120%);
   border-top: 2px solid rgb(212 175 55 / 30%);
-  box-shadow: 0 -4px 16px 0 rgb(0 0 0 / 30%);
-  color: var(--theater-text-muted);
+  box-shadow: 0 -4px 16px rgb(0 0 0 / 30%);
+  margin-top: auto;
 }
 
-/* Typography */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+.footer-heading {
   color: var(--theater-gold);
+  font-weight: bold;
+  margin-bottom: 1.5rem;
 }
 
-.display-4 {
+.footer-text {
+  color: var(--theater-text-muted);
+  line-height: 1.8;
+}
+
+.footer-link {
+  color: var(--theater-text-muted);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--theater-gold);
+    text-decoration: underline;
+  }
+}
+
+.footer-gold-link {
+  color: var(--theater-gold);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--theater-gold);
+    text-decoration: underline;
+  }
+}
+
+.footer-divider {
+  border-color: rgb(212 175 55 / 20%);
+  margin: 2rem 0 1.5rem;
+}
+
+.footer-copy {
+  color: var(--theater-text-muted);
+  font-size: 0.9rem;
+}
+
+/* --------------------------------------------------------------------------
+   11. Page-specific: Hero Section
+   -------------------------------------------------------------------------- */
+.hero-title {
+  color: var(--theater-gold);
+  font-weight: bold;
   text-shadow: 2px 2px 4px rgb(0 0 0 / 50%);
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  body::before {
-    background-size: cover;
-    background-position: center;
-  }
+.hero-lead {
+  color: var(--theater-text);
+  font-size: 1.4rem;
+  line-height: 1.8;
+}
+
+/* --------------------------------------------------------------------------
+   12. Page-specific: Section titles with gold underline
+   -------------------------------------------------------------------------- */
+.section-title {
+  border-bottom: 2px solid var(--theater-gold);
+  padding-bottom: 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   13. Page-specific: Info box (bottom of contact page, etc.)
+   -------------------------------------------------------------------------- */
+.info-box {
+  background-color: rgb(13 13 13 / 60%);
+  border-radius: 0.5rem;
+  border: 1px solid rgb(212 175 55 / 20%);
+}
+
+.info-box-gold {
+  color: var(--theater-gold);
+}
+
+/* --------------------------------------------------------------------------
+   14. Feature icon (emoji blocks in cards)
+   -------------------------------------------------------------------------- */
+.feature-icon {
+  font-size: 3rem;
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   15. Honeypot field (spam protection)
+   -------------------------------------------------------------------------- */
+.honeypot {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }

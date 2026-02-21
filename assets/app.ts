@@ -8,6 +8,9 @@
 // Import self-hosted web fonts first (Montserrat, Roboto Slab)
 import './styles/fonts.scss';
 
+// Import Bootstrap CSS first
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 // Main styles based and Bootstrap
 import './styles/app.scss';
 import './styles/navbar.scss';

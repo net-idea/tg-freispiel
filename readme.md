@@ -1,4 +1,4 @@
-# Theatergruppe Freispiel - Web Hosting and Infrastructure Development
+# Theatergruppe Freispiel
 
 A modern Symfony web application for the theater group "Theatergruppe Freispiel", build with ❤️ and modern web technologies.
 
