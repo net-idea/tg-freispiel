@@ -43,7 +43,7 @@ class MailPreviewContactCommand extends Command
         $formContact->setEmailAddress($toAddress);
         $formContact->setName($toName);
         $formContact->setPhone('+49 170 1234567');
-        $formContact->setMessage("Hallo, ich interessiere mich für einen Schwimmkurs. Können Sie mir bitte weitere Informationen zusenden?\nVielen Dank!");
+        $formContact->setMessage("Hallo, ich interessiere mich für eure Theatergruppe und würde gerne bei einer Probestunde vorbeikommen. Könnt ihr mir bitte weitere Informationen zusenden?\nVielen Dank!");
         $formContact->setConsent(true);
         $formContact->setCopy(true); // ensures visitor mail is also sent
 

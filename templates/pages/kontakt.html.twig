@@ -9,7 +9,7 @@
     <div class="col-lg-8">
       {# Page Header #}
       <div class="text-center mb-5">
-        <h1 class="display-4 hero-title">📧 Kontaktieren Sie uns</h1>
+        <h1 class="display-4 hero-title">📧 Kontaktiere uns</h1>
       </div>
 
       {# Status + validation handling #}
@@ -29,18 +29,18 @@
 
       {% if submit %}
         <div id="contact-success-redirect" class="alert alert-success mb-3" role="alert">
-          Vielen Dank! Ihre Nachricht wurde erfolgreich versendet. Wir melden uns zeitnah bei Ihnen.
+          Vielen Dank! Deine Nachricht wurde erfolgreich versendet. Wir melden uns zeitnah bei dir.
         </div>
       {% endif %}
 
       {% if error %}
         <div id="contact-error-redirect" class="alert alert-danger mb-3" role="alert">
           {% if error == 'rate' %}
-            Bitte warten Sie einen Moment, bevor Sie das Formular erneut absenden.
+            Bitte warte einen Moment, bevor du das Formular erneut absendest.
           {% elseif error == 'mail' %}
-            Leider konnte die E-Mail nicht versendet werden. Bitte versuchen Sie es in Kürze erneut.
+            Leider konnte die E-Mail nicht versendet werden. Bitte versuche es in Kürze erneut.
           {% else %}
-            Es ist ein Fehler aufgetreten. Bitte prüfen Sie Ihre Eingaben und versuchen Sie es erneut.
+            Es ist ein Fehler aufgetreten. Bitte prüfe deine Eingaben und versuche es erneut.
           {% endif %}
         </div>
       {% endif %}
@@ -48,7 +48,7 @@
       {% if form.vars.submitted and not form.vars.valid %}
         <div class="alert alert-danger" role="alert">
           <p class="mb-2">
-            Bitte korrigieren Sie folgende Fehler:
+            Bitte korrigiere folgende Fehler:
           </p>
           <ul class="mb-0">
             {% for child in form.children %}
@@ -66,7 +66,7 @@
       <div class="card shadow-lg mb-5">
         <div class="card-body p-4 p-md-5">
           <p class="lead card-text mb-0">
-            Wir freuen uns über Ihre Nachricht! Ob Sie Fragen zu unseren Aufführungen haben, an einer Zusammenarbeit interessiert sind oder einfach Hallo sagen möchten – nutzen Sie gerne unser Kontaktformular.
+            Wir freuen uns über deine Nachricht! Ob du Fragen zu unseren Aufführungen hast, an einer Zusammenarbeit interessiert bist oder einfach Hallo sagen möchtest – nutze gerne unser Kontaktformular.
           </p>
         </div>
       </div>
@@ -80,7 +80,7 @@
           {{ form_start(form, { action: path('app_contact'), attr: { class: 'vstack gap-4', novalidate: 'novalidate', 'data-turbo': 'false' } }) }}
           <div class="mb-4">
             {{ form_label(form.name, null, { label_attr: { class: 'form-label' } }) }}
-            {{ form_widget(form.name, { attr: { class: (form.name.vars.errors|length) > 0 ? 'form-control form-control-lg is-invalid' : 'form-control form-control-lg', placeholder: 'Ihr Name' } }) }}
+            {{ form_widget(form.name, { attr: { class: (form.name.vars.errors|length) > 0 ? 'form-control form-control-lg is-invalid' : 'form-control form-control-lg', placeholder: 'Dein Name' } }) }}
             {% for errorItem in form.name.vars.errors %}
               <div class="invalid-feedback d-block">
                 {{ errorItem.message }}
@@ -90,7 +90,7 @@
 
           <div class="mb-4">
             {{ form_label(form.email, null, { label_attr: { class: 'form-label' } }) }}
-            {{ form_widget(form.email, { attr: { class: (form.email.vars.errors|length) > 0 ? 'form-control form-control-lg is-invalid' : 'form-control form-control-lg', placeholder: 'ihre@email.de' } }) }}
+            {{ form_widget(form.email, { attr: { class: (form.email.vars.errors|length) > 0 ? 'form-control form-control-lg is-invalid' : 'form-control form-control-lg', placeholder: 'deine@email.de' } }) }}
             {% for errorItem in form.email.vars.errors %}
               <div class="invalid-feedback d-block">
                 {{ errorItem.message }}
@@ -112,7 +112,7 @@
 
           <div class="mb-4">
             {{ form_label(form.message, null, { label_attr: { class: 'form-label' } }) }}
-            {{ form_widget(form.message, { attr: { class: (form.message.vars.errors|length) > 0 ? 'form-control form-control-lg is-invalid' : 'form-control form-control-lg', rows: 6, placeholder: 'Ihre Nachricht an uns...' } }) }}
+            {{ form_widget(form.message, { attr: { class: (form.message.vars.errors|length) > 0 ? 'form-control form-control-lg is-invalid' : 'form-control form-control-lg', rows: 6, placeholder: 'Deine Nachricht an uns...' } }) }}
             {% for errorItem in form.message.vars.errors %}
               <div class="invalid-feedback d-block">
                 {{ errorItem.message }}
@@ -152,7 +152,7 @@
       <div class="info-box text-center mt-5 p-4">
         <p class="footer-text mb-0">
           <strong class="info-box-gold">Theatergruppe Freispiel</strong><br />
-          Ihre Nachricht wird vertraulich behandelt und schnellstmöglich beantwortet.
+          Deine Nachricht wird vertraulich behandelt und schnellstmöglich beantwortet.
         </p>
       </div>
     </div>

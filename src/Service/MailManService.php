@@ -91,7 +91,7 @@ class MailManService
             if ($contact->getCopy()) {
                 $visitorEmail = trim($contact->getEmailAddress());
                 if ('' !== $visitorEmail && filter_var($visitorEmail, FILTER_VALIDATE_EMAIL)) {
-                    $visitorSubject = 'Theatergruppe Freispiel — Ihre Kontaktanfrage';
+                    $visitorSubject = 'Theatergruppe Freispiel — Deine Kontaktanfrage';
                     $visitorText = $this->twig->render('email/contact_visitor.txt.twig', $context);
                     $visitorHtml = $this->twig->render('email/contact_visitor.html.twig', $context);
 
@@ -146,7 +146,7 @@ class MailManService
         );
 
         try {
-            $subject = 'Theatergruppe Freispiel — Bitte bestätigen Sie Ihre Buchung';
+            $subject = 'Theatergruppe Freispiel — Bitte bestätige deine Buchung';
             $text = $this->twig->render('email/booking_visitor_confirm_request.txt.twig', $context);
             $html = $this->twig->render('email/booking_visitor_confirm_request.html.twig', $context);
 

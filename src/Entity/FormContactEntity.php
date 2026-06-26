@@ -13,30 +13,30 @@ use Symfony\Component\Validator\Constraints as Assert;
 class FormContactEntity
 {
     #[ORM\Column(type: 'string', length: 160)]
-    #[Assert\NotBlank(message: 'Bitte geben Sie Ihren Namen an.')]
-    #[Assert\Length(max: 120, maxMessage: 'Bitte verwenden Sie höchstens {{ limit }} Zeichen.')]
+    #[Assert\NotBlank(message: 'Bitte gib deinen Namen an.')]
+    #[Assert\Length(max: 120, maxMessage: 'Bitte verwende höchstens {{ limit }} Zeichen.')]
     protected string $name = '';
 
     #[ORM\Column(type: 'string', length: 200)]
-    #[Assert\NotBlank(message: 'Bitte geben Sie Ihre E‑Mail‑Adresse an.')]
-    #[Assert\Email(message: 'Bitte geben Sie eine gültige E‑Mail‑Adresse an.')]
-    #[Assert\Length(max: 200, maxMessage: 'Bitte verwenden Sie höchstens {{ limit }} Zeichen.')]
+    #[Assert\NotBlank(message: 'Bitte gib deine E‑Mail‑Adresse an.')]
+    #[Assert\Email(message: 'Bitte gib eine gültige E‑Mail‑Adresse an.')]
+    #[Assert\Length(max: 200, maxMessage: 'Bitte verwende höchstens {{ limit }} Zeichen.')]
     protected string $emailAddress = '';
 
     // Not persisted; convenience for emails
     protected ?Address $email = null;
 
     #[ORM\Column(type: 'string', length: 40, nullable: true)]
-    #[Assert\Length(max: 40, maxMessage: 'Bitte verwenden Sie höchstens {{ limit }} Zeichen.')]
+    #[Assert\Length(max: 40, maxMessage: 'Bitte verwende höchstens {{ limit }} Zeichen.')]
     protected string $phone = '';
 
     #[ORM\Column(type: 'boolean')]
-    #[Assert\IsTrue(message: 'Bitte stimmen Sie der Datenverarbeitung zu.')]
+    #[Assert\IsTrue(message: 'Bitte stimme der Datenverarbeitung zu.')]
     protected bool $consent = false;
 
     #[ORM\Column(type: 'text')]
-    #[Assert\NotBlank(message: 'Bitte geben Sie eine Nachricht ein.')]
-    #[Assert\Length(min: 10, max: 5000, minMessage: 'Bitte geben Sie mindestens {{ limit }} Zeichen ein.', maxMessage: 'Bitte verwenden Sie höchstens {{ limit }} Zeichen.')]
+    #[Assert\NotBlank(message: 'Bitte gib eine Nachricht ein.')]
+    #[Assert\Length(min: 10, max: 5000, minMessage: 'Bitte gib mindestens {{ limit }} Zeichen ein.', maxMessage: 'Bitte verwende höchstens {{ limit }} Zeichen.')]
     protected string $message = '';
 
     #[ORM\Column(type: 'boolean')]

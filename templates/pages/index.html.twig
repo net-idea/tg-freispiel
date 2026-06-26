@@ -11,8 +11,8 @@
       <div class="text-center mb-5 py-5">
         <h1 class="display-3 hero-title mb-4">🎭 Willkommen bei der Theatergruppe Freispiel! 🎭</h1>
         <p class="hero-lead">
-          Wir freuen uns, Sie auf unserer Webseite begrüßen zu dürfen.<br />
-          Erleben Sie mit uns die Magie des Theaters!
+          Wir freuen uns, dich auf unserer Webseite begrüßen zu dürfen.<br />
+          Erlebe mit uns die Magie des Theaters!
         </p>
       </div>
 
@@ -21,10 +21,40 @@
         <div class="card-body p-4 p-md-5">
           <h2 class="card-title h3 section-title mb-4">Herzlich Willkommen!</h2>
           <p class="card-text fs-5">
-            Die Theatergruppe Freispiel heißt Sie herzlich willkommen! Wir sind eine leidenschaftliche Gemeinschaft von Theaterbegeisterten aus Dormagen, die es liebt, Geschichten auf die Bühne zu bringen und Emotionen zum Leben zu erwecken.
+            Die Theatergruppe Freispiel heißt dich herzlich willkommen! Wir sind eine leidenschaftliche Gemeinschaft von Theaterbegeisterten aus Dormagen, die es liebt, Geschichten auf die Bühne zu bringen und Emotionen zum Leben zu erwecken.
           </p>
         </div>
       </div>
+
+      {# Recruiting — "Spotlight" stage panel, sharing the print flyer's identity #}
+      <section class="recruit mb-5" aria-labelledby="recruit-heading">
+        <div class="recruit-spotlight" aria-hidden="true"></div>
+        <span class="recruit-badge" aria-hidden="true">mach<br />mit!</span>
+        <div class="recruit-inner">
+          <p class="recruit-eyebrow">
+            Vorhang auf!
+          </p>
+          <h2 id="recruit-heading" class="recruit-title">
+            <span class="recruit-title-top">Wir suchen</span>
+            <span class="recruit-title-big">Dich!</span>
+          </h2>
+          <p class="recruit-lead">
+            … um mit uns die Bühne zu bespielen.
+          </p>
+          <p class="recruit-text">
+            Du hast Lust auf ein verrücktes Team, liebst das Unkonventionelle und Kreative und suchst nach neuen Herausforderungen? Dann bist du bei uns genau richtig — komm einfach zu einer Probestunde vorbei, völlig unverbindlich.
+          </p>
+          <ul class="recruit-pills" aria-hidden="true">
+            <li class="recruit-pill recruit-pill-red">unkonventionell</li>
+            <li class="recruit-pill recruit-pill-blue">Improvisation</li>
+            <li class="recruit-pill recruit-pill-green">neue Herausforderungen</li>
+          </ul>
+          <div class="recruit-actions">
+            <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg recruit-cta">Mach mit – kontaktiere uns</a>
+            <a href="/20260626-freispiel-flyer.html" class="recruit-ghost" target="_blank" rel="noopener">Flyer ansehen</a>
+          </div>
+        </div>
+      </section>
 
       {# Feature Cards #}
       <div class="row g-4 mb-5">
@@ -59,11 +89,11 @@
       {# Call to Action #}
       <div class="card card-cta shadow-lg">
         <div class="card-body p-4 p-md-5 text-center">
-          <h4 class="card-title h3 mb-4">📣 Bleiben Sie informiert!</h4>
+          <h4 class="card-title h3 mb-4">📣 Bleib informiert!</h4>
           <p class="card-text fs-5 mb-4">
-            Möchten Sie mehr über unsere kommenden Aufführungen erfahren oder haben Sie Fragen? Wir freuen uns auf Ihre Nachricht!
+            Möchtest du mehr über unsere kommenden Aufführungen erfahren oder hast du Fragen? Wir freuen uns auf deine Nachricht!
           </p>
-          <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg px-5 py-3 fw-bold fs-5">Kontaktieren Sie uns</a>
+          <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg px-5 py-3 fw-bold fs-5">Kontaktiere uns</a>
         </div>
       </div>
     </div>

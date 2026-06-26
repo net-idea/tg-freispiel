@@ -1,25 +1,25 @@
 {% extends 'email/base.html.twig' %}
 
 {% block title %}
-  Ihre Kontaktanfrage
+  Deine Kontaktanfrage
 {% endblock %}
 
 {% block header_title %}
-  Theatergruppe Freispiel – Bestätigung Ihrer Anfrage
+  Theatergruppe Freispiel – Bestätigung deiner Anfrage
 {% endblock %}
 
 {% block body %}
-  <h1>Vielen Dank für Ihre Nachricht!</h1>
+  <h1>Vielen Dank für deine Nachricht!</h1>
 
   <p>
     Hallo {{ contact.name|e }},
   </p>
 
   <p>
-    vielen Dank für Ihre Kontaktanfrage bei der Theatergruppe Freispiel. Wir haben Ihre Nachricht erhalten und melden uns so schnell wie möglich bei Ihnen.
+    vielen Dank für deine Kontaktanfrage bei der Theatergruppe Freispiel. Wir haben deine Nachricht erhalten und melden uns so schnell wie möglich bei dir.
   </p>
 
-  <h2>Ihre Kontaktdaten</h2>
+  <h2>Deine Kontaktdaten</h2>
   <div class="box">
     <p style="margin:0 0 8px;">
       <strong>Name:</strong> {{ contact.name|e }}
@@ -34,7 +34,7 @@
     {% endif %}
   </div>
 
-  <h2>Ihre Nachricht</h2>
+  <h2>Deine Nachricht</h2>
   <div class="box">
     {{ contact.messageHtml|raw }}
   </div>
@@ -42,7 +42,7 @@
   <div class="info-box">
     <p style="margin:0;">
       <strong>Theatergruppe Freispiel</strong><br />
-      Bei Rückfragen erreichen Sie uns unter:<br />
+      Bei Rückfragen erreichst du uns unter:<br />
       📧 <a href="mailto:kontakt@theatergruppe-freispiel.de">kontakt@theatergruppe-freispiel.de</a><br />
       🌐 <a href="https://theatergruppe-freispiel.de">https://theatergruppe-freispiel.de</a>
     </p>
@@ -50,10 +50,10 @@
 
   <p>
     Beste Grüße<br />
-    Ihr Freispiel-Team
+    Dein Freispiel-Team
   </p>
 
   <p class="meta">
-    Dies ist eine automatische Bestätigung Ihrer Kontaktanfrage. Ihre Daten werden vertraulich behandelt und nur zum Zweck der Kontaktaufnahme verwendet. Bei Rückfragen können Sie direkt auf diese E‑Mail antworten.
+    Dies ist eine automatische Bestätigung deiner Kontaktanfrage. Deine Daten werden vertraulich behandelt und nur zum Zweck der Kontaktaufnahme verwendet. Bei Rückfragen kannst du direkt auf diese E‑Mail antworten.
   </p>
 {% endblock %}

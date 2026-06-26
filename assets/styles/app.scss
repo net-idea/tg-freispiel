@@ -399,3 +399,233 @@ footer {
   height: 1px;
   overflow: hidden;
 }
+
+/* --------------------------------------------------------------------------
+   16. Recruiting "Spotlight" stage panel (homepage)
+   Shares the print flyer's identity: a stage spotlight, an oversized
+   condensed "DICH!", tilted keyword pills and the "mach mit!" badge.
+   Everything fluid via clamp() so desktop and mobile both hold up.
+   -------------------------------------------------------------------------- */
+.recruit {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  padding: clamp(2.5rem, 1.5rem + 4vw, 4.5rem) clamp(1.25rem, 0.5rem + 3vw, 3.5rem);
+  text-align: center;
+  background:
+    radial-gradient(120% 85% at 50% -12%, rgb(212 175 55 / 16%), transparent 55%),
+    linear-gradient(180deg, rgb(13 13 13 / 88%), rgb(10 10 10 / 94%));
+  border: 1px solid rgb(212 175 55 / 35%);
+  box-shadow:
+    0 18px 50px rgb(0 0 0 / 55%),
+    inset 0 1px 0 rgb(255 255 255 / 8%);
+}
+
+/* Soft stage beam from the top centre */
+.recruit-spotlight {
+  position: absolute;
+  z-index: 0;
+  top: -12%;
+  left: 50%;
+  width: min(680px, 92%);
+  height: 72%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgb(227 178 74 / 22%), rgb(212 175 55 / 6%) 55%, transparent 72%);
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+/* "mach mit!" badge, echoing the flyer's round sticker */
+.recruit-badge {
+  position: absolute;
+  z-index: 2;
+  top: 1.25rem;
+  right: 1.25rem;
+  display: grid;
+  place-content: center;
+  width: clamp(78px, 9vw, 104px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #ffc21e;
+  color: #1a1410;
+  font-family: 'Bungee', sans-serif;
+  font-size: clamp(0.85rem, 0.7rem + 0.4vw, 1.05rem);
+  line-height: 1.02;
+  text-align: center;
+  transform: rotate(9deg);
+  box-shadow:
+    0 10px 24px rgb(0 0 0 / 55%),
+    inset 0 0 0 4px rgb(26 20 16 / 92%);
+}
+
+.recruit-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  margin-inline: auto;
+}
+
+.recruit-eyebrow {
+  margin: 0 0 0.35rem;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(1.1rem, 1rem + 1.2vw, 1.7rem);
+  color: #e3b24a;
+  transform: rotate(-1.5deg);
+  text-shadow: 0 2px 12px rgb(0 0 0 / 70%);
+}
+
+.recruit-title {
+  margin: 0;
+  line-height: 0.84;
+  text-transform: uppercase;
+}
+
+.recruit-title-top {
+  display: block;
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+  font-size: clamp(1.9rem, 1rem + 6vw, 4.5rem);
+  letter-spacing: 0.02em;
+  color: var(--theater-text);
+  text-shadow: 0 4px 22px rgb(0 0 0 / 60%);
+}
+
+.recruit-title-big {
+  display: block;
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+  font-size: clamp(4.5rem, 2rem + 16vw, 9.5rem);
+  letter-spacing: 0.01em;
+  color: var(--theater-gold);
+  text-shadow:
+    0 6px 0 rgb(0 0 0 / 22%),
+    0 10px 32px rgb(0 0 0 / 55%);
+}
+
+.recruit-lead {
+  margin: 0.9rem 0 0;
+  font-family: 'Montserrat', sans-serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(1.1rem, 1rem + 0.9vw, 1.5rem);
+  color: rgb(224 224 224 / 96%);
+  text-shadow: 0 2px 10px rgb(0 0 0 / 70%);
+}
+
+.recruit-text {
+  max-width: 600px;
+  margin: 1rem auto 0;
+  font-size: clamp(1rem, 0.95rem + 0.35vw, 1.18rem);
+  line-height: 1.7;
+  color: var(--theater-text);
+  text-wrap: pretty;
+}
+
+/* Tilted keyword pills, in the flyer's accent colours */
+.recruit-pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem 0.9rem;
+  margin: 1.9rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.recruit-pill {
+  font-family: 'Bungee', sans-serif;
+  font-size: clamp(0.78rem, 0.7rem + 0.35vw, 1rem);
+  color: #fff;
+  padding: 0.7em 1.2em;
+  border-radius: 999px;
+  box-shadow:
+    0 6px 0 rgb(0 0 0 / 20%),
+    0 12px 22px rgb(0 0 0 / 45%);
+  transition: transform 0.25s ease;
+}
+
+.recruit-pill-red {
+  background: #f0473e;
+  transform: rotate(-4deg);
+}
+
+.recruit-pill-blue {
+  background: #2e72d2;
+  transform: rotate(3deg);
+}
+
+.recruit-pill-green {
+  background: #3fb45a;
+  color: #1a1410;
+  transform: rotate(-2deg);
+}
+
+.recruit-pill:hover {
+  transform: translateY(-3px) rotate(0deg);
+}
+
+.recruit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2.2rem 0 0;
+}
+
+.recruit-cta {
+  padding: 0.9rem 2.2rem;
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+/* Gold outline ("ghost") button for the secondary action */
+.recruit-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.9rem 2.2rem;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--theater-gold);
+  background: rgb(212 175 55 / 6%);
+  border: 2px solid rgb(212 175 55 / 60%);
+  border-radius: 0.5rem;
+  text-decoration: none;
+  transition:
+    transform 0.25s ease,
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease;
+
+  &:hover {
+    color: #1a1410;
+    background: var(--theater-gold);
+    border-color: var(--theater-gold);
+    transform: translateY(-2px);
+  }
+}
+
+@media (width <= 575.98px) {
+  .recruit-badge {
+    display: none;
+  }
+
+  .recruit-actions {
+    flex-direction: column;
+  }
+
+  .recruit-cta,
+  .recruit-ghost {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recruit-pill,
+  .recruit-ghost {
+    transition: none;
+  }
+}

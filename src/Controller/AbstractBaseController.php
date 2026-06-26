@@ -23,7 +23,7 @@ abstract class AbstractBaseController extends AbstractController
         /** @var array<string,mixed> $pageMeta */
         $pageMeta = $pages[$metaSlug] ?? [
             'title'       => ucfirst($metaSlug ?: 'Start'),
-            'description' => 'Theatergruppe Freispiel bietet Services für einzigartige Ideen: Webentwicklung, Hosting und digitale Lösungen für Ihr Unternehmen.',
+            'description' => 'Theatergruppe Freispiel aus Dormagen – wir bringen Geschichten auf die Bühne. Komm vorbei, mach mit und erlebe mit uns die Magie des Theaters.',
             'destination' => 'Uni',
             'canonical'   => '/' . ('start' === $metaSlug ? '' : $metaSlug),
             'robots'      => 'index,follow',
