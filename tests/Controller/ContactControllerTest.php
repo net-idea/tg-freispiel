@@ -38,10 +38,10 @@ class ContactControllerTest extends DatabaseTestCase
         $this->assertResponseIsSuccessful(); // Should return 200 (re-render)
 
         // Check for validation errors - not CSRF errors
-        $this->assertSelectorTextContains('body', 'Bitte geben Sie Ihren Namen an.');
-        $this->assertSelectorTextContains('body', 'Bitte geben Sie Ihre E‑Mail‑Adresse an.');
-        $this->assertSelectorTextContains('body', 'Bitte geben Sie eine Nachricht ein.');
-        $this->assertSelectorTextContains('body', 'Bitte stimmen Sie der Datenverarbeitung zu.');
+        $this->assertSelectorTextContains('body', 'Bitte gib deinen Namen an.');
+        $this->assertSelectorTextContains('body', 'Bitte gib deine E‑Mail‑Adresse an.');
+        $this->assertSelectorTextContains('body', 'Bitte gib eine Nachricht ein.');
+        $this->assertSelectorTextContains('body', 'Bitte stimme der Datenverarbeitung zu.');
 
         // Ensure no CSRF error is shown
         $this->assertSelectorNotExists('body:contains("CSRF")');
@@ -66,10 +66,10 @@ class ContactControllerTest extends DatabaseTestCase
         $this->assertResponseIsSuccessful();
 
         // Name error should not appear, others should
-        $this->assertSelectorNotExists('body:contains("Bitte geben Sie Ihren Namen an.")');
-        $this->assertSelectorTextContains('body', 'Bitte geben Sie Ihre E‑Mail‑Adresse an.');
-        $this->assertSelectorTextContains('body', 'Bitte geben Sie eine Nachricht ein.');
-        $this->assertSelectorTextContains('body', 'Bitte stimmen Sie der Datenverarbeitung zu.');
+        $this->assertSelectorNotExists('body:contains("Bitte gib deinen Namen an.")');
+        $this->assertSelectorTextContains('body', 'Bitte gib deine E‑Mail‑Adresse an.');
+        $this->assertSelectorTextContains('body', 'Bitte gib eine Nachricht ein.');
+        $this->assertSelectorTextContains('body', 'Bitte stimme der Datenverarbeitung zu.');
     }
 
     public function testSubmitWithInvalidEmailShowsError(): void
@@ -88,7 +88,7 @@ class ContactControllerTest extends DatabaseTestCase
         $client->submit($form);
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('body', 'Bitte geben Sie eine gültige E‑Mail‑Adresse an.');
+        $this->assertSelectorTextContains('body', 'Bitte gib eine gültige E‑Mail‑Adresse an.');
     }
 
     public function testSubmitWithTooShortMessageShowsError(): void
@@ -107,7 +107,7 @@ class ContactControllerTest extends DatabaseTestCase
         $client->submit($form);
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('body', 'Bitte geben Sie mindestens 10 Zeichen ein.');
+        $this->assertSelectorTextContains('body', 'Bitte gib mindestens 10 Zeichen ein.');
     }
 
     public function testSubmitWithoutConsentShowsError(): void
@@ -126,7 +126,7 @@ class ContactControllerTest extends DatabaseTestCase
         $client->submit($form);
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('body', 'Bitte stimmen Sie der Datenverarbeitung zu.');
+        $this->assertSelectorTextContains('body', 'Bitte stimme der Datenverarbeitung zu.');
     }
 
     public function testSubmitValidFormRedirectsWithSuccess(): void
@@ -151,7 +151,7 @@ class ContactControllerTest extends DatabaseTestCase
 
         // Check for success message
         $this->assertSelectorExists('.alert-success');
-        $this->assertSelectorTextContains('.alert-success', 'Vielen Dank! Ihre Nachricht wurde erfolgreich versendet');
+        $this->assertSelectorTextContains('.alert-success', 'Vielen Dank! Deine Nachricht wurde erfolgreich versendet');
     }
 
     public function testFormHasAllRequiredFields(): void

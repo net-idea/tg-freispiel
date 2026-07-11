@@ -8,6 +8,8 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item"><a class="nav-link {% if app.request is defined and app.request and app.request.attributes.get('_route') == 'app_index' %}active{% endif %}" href="{{ path('app_index') }}">Home</a></li>
+        <li class="nav-item"><a class="nav-link {% if app.request is defined and app.request and app.request.attributes.get('_route') == 'app_termine' %}active{% endif %}" href="{{ path('app_termine') }}">Termine</a></li>
+        <li class="nav-item"><a class="nav-link {% if app.request is defined and app.request and app.request.attributes.get('_route') == 'app_anmeldung' %}active{% endif %}" href="{{ path('app_anmeldung') }}">Anmeldung</a></li>
         <li class="nav-item"><a class="nav-link {% if app.request is defined and app.request and app.request.attributes.get('_route') == 'app_contact' %}active{% endif %}" href="{{ path('app_contact') }}">Kontakt</a></li>
       </ul>
     </div>

@@ -128,9 +128,12 @@
           {% endif %}
 
           {% if form.consent is defined %}
-            <div class="mb-4">
+            <div class="form-check mb-4">
               {{ form_widget(form.consent, { attr: { class: (form.consent.vars.errors|length) > 0 ? 'form-check-input is-invalid' : 'form-check-input' } }) }}
-              {{ form_label(form.consent, null, { label_attr: { class: 'form-check-label' } }) }}
+              <label class="form-check-label" for="{{ form.consent.vars.id }}">
+                Ich willige in die Verarbeitung meiner Angaben zum Zweck der Kontaktaufnahme ein
+                (<a href="/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a>).
+              </label>
               {% for errorItem in form.consent.vars.errors %}
                 <div class="invalid-feedback d-block">
                   {{ errorItem.message }}

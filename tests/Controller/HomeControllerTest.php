@@ -22,7 +22,7 @@ class HomeControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/kontakt');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1', 'Kontaktieren Sie uns');
+        $this->assertSelectorTextContains('h1', 'Kontaktiere uns');
     }
 
     public function testContactFormIsPresent(): void

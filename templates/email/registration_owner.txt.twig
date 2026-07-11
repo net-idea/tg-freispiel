@@ -1,0 +1,39 @@
+{% block subject %}
+Anmeldung zur Probestunde via Theatergruppe-Freispiel.de von {{ registration.name }}
+{% endblock %}
+
+{% block body %}
+Guten Tag,
+
+es ist eine neue Anmeldung zur Probestunde über die Webseite eingegangen.
+
+Kontaktdaten:
+
+Name: {{ registration.name }}
+E-Mail: {{ registration.emailAddress }}
+Telefon: {{ registration.phone }}
+
+Was motiviert dich mitzumachen?
+
+--------------------------------------------------
+{{ registration.motivation }}
+--------------------------------------------------
+
+Wenn du dir eine Rolle aussuchen könntest, wäre sie …? Und warum?
+
+--------------------------------------------------
+Rollen: {{ registration.roleTypes|join(', ') }}
+{{ registration.roleReason }}
+--------------------------------------------------
+
+Was erwartest du von uns?
+
+--------------------------------------------------
+{{ registration.expectations }}
+--------------------------------------------------
+
+Bitte zeitnah bearbeiten.
+
+Beste Grüße,
+Dein Freispiel-System
+{% endblock %}

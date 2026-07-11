@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\FormBookingEntity;
 use App\Entity\FormContactEntity;
+use App\Entity\FormRegistrationEntity;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -114,6 +115,56 @@ class MailManService
             }
         } catch (TransportExceptionInterface $e) {
             // Logs transport failures (bad DSN, auth, SSL, DNS, etc.)
+            $this->logger->error('Mailer send failed: ' . $e->getMessage(), ['exception' => $e]);
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Notify the owner about a new Anmeldung zur Probestunde (casting registration).
+     *
+     * @throws TransportExceptionInterface|RuntimeError|LoaderError|SyntaxError
+     */
+    public function sendRegistrationForm(FormRegistrationEntity $registration): void
+    {
+        $from = $this->makeAddressOrFallback($this->fromAddress, $this->fromName, 'no-reply@localhost');
+        $to = $this->makeAddressOrFallback($this->toAddress, $this->toName, 'owner@localhost');
+
+        $context = [
+            'registration' => $registration,
+            'theme'        => $this->getEmailTheme(),
+        ];
+
+        $subject = 'Theatergruppe Freispiel — Neue Anmeldung zur Probestunde';
+        $text = $this->twig->render('email/registration_owner.txt.twig', $context);
+        $html = $this->twig->render('email/registration_owner.html.twig', $context);
+
+        $email = (new Email())
+            ->from($from)
+            ->to($to)
+            ->subject($subject)
+            ->text($text)
+            ->html($html);
+
+        // Try to set replyTo if the visitor supplied a valid email
+        try {
+            $visitorEmail = trim($registration->getEmailAddress());
+
+            if ('' !== $visitorEmail) {
+                $email->replyTo(new Address($visitorEmail, $registration->getName()));
+            }
+        } catch (\Throwable $e) {
+            $this->logger->warning('Invalid visitor email for replyTo; skipping replyTo header', ['email' => $registration->getEmailAddress(), 'exception' => $e]);
+        }
+
+        try {
+            $this->mailer->send($email);
+            $this->logger->info('Registration mail sent to owner', [
+                'to'    => $to->getAddress(),
+                'email' => $registration->getEmailAddress(),
+            ]);
+        } catch (TransportExceptionInterface $e) {
             $this->logger->error('Mailer send failed: ' . $e->getMessage(), ['exception' => $e]);
 
             throw $e;

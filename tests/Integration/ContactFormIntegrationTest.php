@@ -63,7 +63,7 @@ class ContactFormIntegrationTest extends DatabaseTestCase
         $crawler = $client->followRedirect();
 
         $this->assertSelectorExists('.alert-success');
-        $this->assertSelectorTextContains('.alert-success', 'Vielen Dank! Ihre Nachricht wurde erfolgreich versendet');
+        $this->assertSelectorTextContains('.alert-success', 'Vielen Dank! Deine Nachricht wurde erfolgreich versendet');
     }
 
     public function testFormValidationErrorsPersistOnResubmission(): void
@@ -157,7 +157,7 @@ class ContactFormIntegrationTest extends DatabaseTestCase
         $crawler = $client->followRedirect();
 
         $this->assertSelectorExists('.alert-danger');
-        $this->assertSelectorTextContains('.alert-danger', 'Bitte warten Sie einen Moment');
+        $this->assertSelectorTextContains('.alert-danger', 'Bitte warte einen Moment');
     }
 
     public function testFormPreservesDataAfterMailSendFailure(): void

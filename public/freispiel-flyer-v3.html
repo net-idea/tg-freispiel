@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500;1,600&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap" rel="stylesheet">
+</helmet>
+<div style="position:relative; width:840px; height:1188px; overflow:hidden; background:#0a0807 url('assets/stage-photo.png') {{ bgPos }} / {{ bgSize }} no-repeat; font-family:'Hanken Grotesk', system-ui, sans-serif; color:#F4ECDA; -webkit-font-smoothing:antialiased;">
+
+  <div style="position:absolute; inset:0; z-index:1; pointer-events:none; background:linear-gradient(180deg, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0.22) 24%, rgba(0,0,0,0.42) 46%, rgba(0,0,0,0.46) 66%, rgba(8,5,4,0.66) 100%);"></div>
+
+  <sc-if value="{{extraKontrast}}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; z-index:1; pointer-events:none; background:rgba(6,4,2,0.34);"></div>
+  </sc-if>
+
+  <div style="position:relative; z-index:3; display:flex; flex-direction:column; height:100%; padding:58px 48px 38px; box-sizing:border-box;">
+
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="transform:rotate(-1deg); margin-left:18px;">
+        <div style="font-family:'Hanken Grotesk',sans-serif; font-size:25px; font-weight:600; letter-spacing:7px; text-transform:uppercase; color:rgba(244,236,218,.82); margin-bottom:8px; text-shadow:0 2px 12px rgba(0,0,0,.95);">Theatergruppe</div>
+        <div style="font-family:Verdana, sans-serif; font-weight:700; font-size:66px; line-height:.92; letter-spacing:3px; text-transform:uppercase; color:#F4ECDA; text-shadow:0 3px 20px rgba(0,0,0,.95), 0 0 30px rgba(201,154,59,.25);">Freispiel</div>
+      </div>
+      <div style="width:140px; height:140px; border-radius:50%; background:radial-gradient(circle at 42% 36%, #F6EBCF, #E7D2A6); color:#C42026; display:flex; align-items:center; justify-content:center; text-align:center; transform:rotate(20deg); box-shadow:0 12px 26px rgba(0,0,0,.6), inset 0 0 0 3px rgba(196,32,38,.85); font-family:'Anton',sans-serif; font-weight:400; font-size:34px; line-height:1; text-transform:uppercase; letter-spacing:1px;">mach<br>mit!</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:11px; margin-top:-2px; padding-left:172px; box-sizing:border-box;">
+      <div style="font-family:'Playfair Display',serif; font-style:italic; font-weight:600; font-size:30px; color:#D8AE54; transform:rotate(-1.5deg); text-shadow:0 3px 16px rgba(0,0,0,.95);">Vorhang auf!</div>
+      <h1 style="margin:0; font-family:'Anton',sans-serif; font-weight:400; line-height:.84; letter-spacing:1px; text-transform:uppercase; text-shadow:0 5px 0 rgba(0,0,0,.28), 0 6px 30px rgba(0,0,0,.8);">
+        <span style="display:block; font-size:74px; color:#F4ECDA;">Wir suchen</span>
+        <span style="display:block; font-size:156px; color:#DA2B31; -webkit-text-stroke:3.5px #F6ECD4; text-shadow:0 6px 0 rgba(70,8,10,.5), 0 10px 38px rgba(0,0,0,.85);">Dich!</span>
+      </h1>
+      <div style="font-family:'Hanken Grotesk',sans-serif; font-style:italic; font-weight:600; font-size:26px; color:rgba(244,236,218,.97); text-shadow:0 2px 14px rgba(0,0,0,.98); margin-top:3px;">… um mit uns die Bühne zu bespielen.</div>
+      <p style="max-width:620px; margin:16px 0 0; font-size:23px; line-height:1.55; font-weight:500; color:rgba(244,236,218,.94); text-wrap:pretty; text-shadow:0 2px 14px rgba(0,0,0,.98);">Du hast Lust auf ein verrücktes Team, <br>liebst das Unkonventionelle und Kreative?<br>Du suchst nach neuen Herausforderungen?<br>Dann bist du bei uns genau richtig!</p>
+
+      <div style="display:flex; flex-wrap:wrap; gap:13px 15px; justify-content:center; align-items:center; margin-top:26px; max-width:700px;">
+        <span style="font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:16px; letter-spacing:2.5px; text-transform:uppercase; color:#F4ECDA; background:rgba(20,10,8,.42); border:1.5px solid rgba(244,236,218,.6); padding:10px 22px; border-radius:999px; transform:rotate(-5deg); box-shadow:0 8px 18px rgba(0,0,0,.5);">unkonventionell</span>
+        <span style="font-family:'Hanken Grotesk',sans-serif; font-weight:800; font-size:16px; letter-spacing:2.5px; text-transform:uppercase; color:#FBEFE0; background:#C42026; border:1.5px solid #C42026; padding:10px 22px; border-radius:999px; transform:rotate(2deg); box-shadow:0 8px 18px rgba(0,0,0,.55);">Improvisation</span>
+        <span style="font-family:'Hanken Grotesk',sans-serif; font-weight:700; font-size:16px; letter-spacing:2.5px; text-transform:uppercase; color:#E8C271; background:rgba(20,10,8,.42); border:1.5px solid rgba(216,174,84,.85); padding:10px 22px; border-radius:999px; transform:rotate(-1deg); box-shadow:0 8px 18px rgba(0,0,0,.5);">neue Herausforderungen</span>
+      </div>
+    </div>
+
+    <div style="display:flex; align-items:stretch; gap:22px; background:linear-gradient(180deg,#F6ECD4,#EFE2C4); color:#1A1410; border:3px solid #1A1410; border-radius:18px; padding:22px 26px; box-shadow:0 22px 52px rgba(0,0,0,.7);">
+      <div style="flex:1; min-width:0;">
+        <div style="font-family:'Hanken Grotesk',sans-serif; font-weight:800; font-size:13px; letter-spacing:2px; text-transform:uppercase; color:#C42026; margin-bottom:8px;">Neugierig geworden?</div>
+        <div style="font-family:'Anton',sans-serif; font-size:35px; line-height:.95; text-transform:uppercase; letter-spacing:.5px;">Melde dich zur Probestunde!</div>
+        <div style="font-size:16px; line-height:1.4; color:#5A4F45; margin-top:8px;">Komm einfach vorbei, schau's dir an – völlig unverbindlich.</div>
+        <div style="display:flex; flex-wrap:wrap; align-items:baseline; gap:8px; margin-top:14px;">
+          <span style="font-weight:700; font-size:15px; color:#1A1410;">Nächste Probestunde:</span>
+          <span style="font-weight:800; font-size:18px; color:#C42026; border-bottom:3px dashed rgba(196,32,38,.4); padding-bottom:1px;">Termin &amp; Anmeldung auf unserer Website</span>
+        </div>
+        <div style="display:flex; align-items:baseline; gap:9px; margin-top:14px;">
+          <span style="font-weight:700; font-size:15px; color:#5A4F45;">Website:</span>
+          <span style="font-family:'Hanken Grotesk',sans-serif; font-weight:800; font-size:20px; letter-spacing:.3px; color:#1A1410;">tg-freispiel.de</span>
+        </div>
+      </div>
+
+      <sc-if value="{{showQr}}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; padding-left:22px; border-left:3px dashed rgba(26,20,16,.3);">
+          <div style="width:138px; height:138px; background:#fff; border:3px solid #1A1410; border-radius:12px; padding:7px; box-sizing:border-box;">
+            <img src="assets/qr-termine.svg" alt="QR-Code zu den Terminen auf tg-freispiel.de" style="width:100%; height:100%; display:block;">
+          </div>
+          <div style="font-family:'Hanken Grotesk',sans-serif; font-weight:800; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:#C42026; text-align:center;">Scan &amp; sei dabei</div>
+        </div>
+      </sc-if>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 840, &quot;height&quot;: 1188 },
+  &quot;bildausschnitt&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;default&quot;: &quot;Links 60%&quot;, &quot;options&quot;: [&quot;Links 60%&quot;, &quot;Links vollbild&quot;, &quot;Ganze Szene&quot;], &quot;tsType&quot;: &quot;string&quot; },
+  &quot;showQr&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot; },
+  &quot;extraKontrast&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: false, &quot;tsType&quot;: &quot;boolean&quot; }
+}">
+class Component extends DCLogic {
+  renderVals() {
+    const modus = this.props.bildausschnitt ?? "Links 60%";
+    const map = {
+      "Links 60%":        { bgPos: "left center",   bgSize: "166% auto" },
+      "Links vollbild":   { bgPos: "left center",   bgSize: "cover" },
+      "Ganze Szene":      { bgPos: "center center", bgSize: "cover" },
+    };
+    const cfg = map[modus] || map["Links 60%"];
+    return {
+      bgPos: cfg.bgPos,
+      bgSize: cfg.bgSize,
+      showQr: this.props.showQr ?? true,
+      extraKontrast: this.props.extraKontrast ?? false,
+    };
+  }
+}
+</script>
+</body>
+</html>

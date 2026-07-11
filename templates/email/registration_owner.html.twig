@@ -1,0 +1,51 @@
+{% extends 'email/base.html.twig' %}
+
+{% block title %}
+  Neue Anmeldung zur Probestunde
+{% endblock %}
+
+{% block header_title %}
+  Theatergruppe Freispiel – Neue Anmeldung zur Probestunde
+{% endblock %}
+
+{% block body %}
+  <h1>Neue Anmeldung zur Probestunde</h1>
+
+  <p>
+    Über die Website hat sich jemand zur Probestunde (Casting) angemeldet.
+  </p>
+
+  <h2>Kontaktdaten</h2>
+  <div class="box">
+    <p style="margin:0 0 8px;">
+      <strong>Name:</strong> {{ registration.name|e }}
+    </p>
+    <p style="margin:0 0 8px;">
+      <strong>E‑Mail:</strong> <a href="mailto:{{ registration.emailAddress|e }}">{{ registration.emailAddress|e }}</a>
+    </p>
+    <p style="margin:0 0 8px;">
+      <strong>Telefon:</strong> <a href="tel:{{ registration.phone|e }}">{{ registration.phone|e }}</a>
+    </p>
+    <p style="margin:0;">
+      <strong>Datum:</strong> {{ registration.createdAt|date('d.m.Y H:i') }} Uhr
+    </p>
+  </div>
+
+  <h2>Was motiviert dich mitzumachen?</h2>
+  <div class="box">
+    {{ registration.motivation|e|nl2br }}
+  </div>
+
+  <h2>Wenn du dir eine Rolle aussuchen könntest, wäre sie …? Und warum?</h2>
+  <div class="box">
+    <p style="margin:0 0 8px;">
+      <strong>Rollen:</strong> {{ registration.roleTypes|join(', ')|e }}
+    </p>
+    {{ registration.roleReason|e|nl2br }}
+  </div>
+
+  <h2>Was erwartest du von uns?</h2>
+  <div class="box">
+    {{ registration.expectations|e|nl2br }}
+  </div>
+{% endblock %}

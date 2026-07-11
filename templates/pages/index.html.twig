@@ -42,16 +42,22 @@
             … um mit uns die Bühne zu bespielen.
           </p>
           <p class="recruit-text">
-            Du hast Lust auf ein verrücktes Team, liebst das Unkonventionelle und Kreative und suchst nach neuen Herausforderungen? Dann bist du bei uns genau richtig — komm einfach zu einer Probestunde vorbei, völlig unverbindlich.
+            Du hast Lust auf ein verrücktes Team, liebst das Unkonventionelle und Kreative? Du suchst nach neuen Herausforderungen? Dann bist du bei uns genau richtig — melde dich einfach zu einer Probestunde an, ganz unverbindlich.
           </p>
           <ul class="recruit-pills" aria-hidden="true">
-            <li class="recruit-pill recruit-pill-red">unkonventionell</li>
-            <li class="recruit-pill recruit-pill-blue">Improvisation</li>
-            <li class="recruit-pill recruit-pill-green">neue Herausforderungen</li>
+            <li class="recruit-pill recruit-pill-cream">unkonventionell</li>
+            <li class="recruit-pill recruit-pill-red">Improvisation</li>
+            <li class="recruit-pill recruit-pill-gold">neue Herausforderungen</li>
           </ul>
+          {% if nextTermin is defined and nextTermin %}
+            <p class="recruit-next">
+              <span class="recruit-next-label">Nächste Probestunde:</span>
+              <span class="recruit-next-date"><time datetime="{{ nextTermin.startsAt|date('Y-m-d\\TH:i') }}">{{ nextTermin.formatGerman }}</time></span>
+            </p>
+          {% endif %}
           <div class="recruit-actions">
-            <a href="{{ path('app_contact') }}" class="btn btn-primary btn-lg recruit-cta">Mach mit – kontaktiere uns</a>
-            <a href="/20260626-freispiel-flyer.html" class="recruit-ghost" target="_blank" rel="noopener">Flyer ansehen</a>
+            <a href="{{ path('app_anmeldung') }}" class="btn btn-primary btn-lg recruit-cta">Melde dich zur Probestunde!</a>
+            <a href="/freispiel-flyer.html" class="recruit-ghost" target="_blank" rel="noopener">Flyer ansehen</a>
           </div>
         </div>
       </section>
