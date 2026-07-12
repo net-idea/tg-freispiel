@@ -1,17 +1,29 @@
 services:
   mariadb:
-    image: mariadb:11.4.3
+    image: mariadb:11.8
     container_name: '${APP_NAME:-tg-freispiel}_mariadb'
     hostname: mariadb
     restart: unless-stopped
-    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci', '--transaction-isolation=READ-COMMITTED', '--log-bin=binlog', '--binlog-format=ROW']
+    command: [
+      '--port=${DB_PORT:-3308}',
+      '--character-set-server=utf8mb4',
+      '--collation-server=utf8mb4_unicode_ci',
+      '--transaction-isolation=READ-COMMITTED',
+      '--log-bin=binlog',
+      '--binlog-format=ROW'
+    ]
     environment:
       MYSQL_ROOT_PASSWORD: '${DB_ROOT_PASSWORD:-nopassword}'
       MYSQL_DATABASE: '${DB_NAME:-tg-freispiel}'
       MYSQL_USER: '${DB_USER:-tg-freispiel}'
       MYSQL_PASSWORD: '${DB_PASSWORD:-nopassword}'
     healthcheck:
-      test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
+      test: [
+        'CMD',
+        'healthcheck.sh',
+        '--connect',
+        '--innodb_initialized'
+      ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -30,10 +42,10 @@ services:
     environment:
       BACKUP_INTERVAL: 86400
       BACKUP_FIRSTDELAY: 4000
-      MYSQL_CONNECTION_PARAMS: '--user=${DB_USER:-tg-freispiel} --host=database --password=${DB_PASSWORD:-nopassword}'
+      MYSQL_CONNECTION_PARAMS: '--user=${DB_USER:-tg-freispiel} --host=mariadb --port=${DB_PORT:-3308} --password=${DB_PASSWORD:-nopassword}'
     depends_on:
       mariadb:
-        condition: service_started
+        condition: service_healthy
     volumes:
       - ./mariadb/backup:/var/dbdumps
     networks:

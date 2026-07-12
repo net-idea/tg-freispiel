@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
-use App\Dto\RegistrationStatus;
+use App\Dto\SubmissionStatus;
 use App\Entity\FormRegistrationEntity;
 use App\Service\FormRegistrationService;
 use App\Service\MailManService;
@@ -40,7 +40,7 @@ class FormRegistrationServiceTest extends TestCase
         $result = $svc->handle();
 
         $this->assertNotNull($result);
-        $this->assertSame(RegistrationStatus::INVALID, $result->status);
+        $this->assertSame(SubmissionStatus::INVALID, $result->status);
         $this->assertTrue($svc->getForm()->isSubmitted());
         $this->assertFalse($svc->getForm()->isValid());
     }
@@ -58,7 +58,7 @@ class FormRegistrationServiceTest extends TestCase
         $result = $svc->handle();
 
         $this->assertNotNull($result);
-        $this->assertSame(RegistrationStatus::SPAM, $result->status);
+        $this->assertSame(SubmissionStatus::SPAM, $result->status);
     }
 
     public function testHandleReturnsSuccessAndPersistsAndMails(): void
@@ -78,7 +78,7 @@ class FormRegistrationServiceTest extends TestCase
         $result = $svc->handle();
 
         $this->assertNotNull($result);
-        $this->assertSame(RegistrationStatus::SUCCESS, $result->status);
+        $this->assertSame(SubmissionStatus::SUCCESS, $result->status);
     }
 
     public function testHandleReturnsMailErrorWhenTransportFails(): void
@@ -93,7 +93,7 @@ class FormRegistrationServiceTest extends TestCase
         $result = $svc->handle();
 
         $this->assertNotNull($result);
-        $this->assertSame(RegistrationStatus::MAIL_ERROR, $result->status);
+        $this->assertSame(SubmissionStatus::MAIL_ERROR, $result->status);
     }
 
     public function testSecondSubmissionWithinIntervalIsRateLimited(): void
@@ -104,13 +104,13 @@ class FormRegistrationServiceTest extends TestCase
         $stack = $this->makeStack($this->makePostRequest($this->validData(), $session));
         $result = $this->makeService($stack)->handle();
         $this->assertNotNull($result);
-        $this->assertSame(RegistrationStatus::SUCCESS, $result->status);
+        $this->assertSame(SubmissionStatus::SUCCESS, $result->status);
 
         // Second submission in the same session right away is blocked
         $stack2 = $this->makeStack($this->makePostRequest($this->validData(), $session));
         $result2 = $this->makeService($stack2)->handle();
         $this->assertNotNull($result2);
-        $this->assertSame(RegistrationStatus::RATE_LIMITED, $result2->status);
+        $this->assertSame(SubmissionStatus::RATE_LIMITED, $result2->status);
     }
 
     /**
@@ -143,7 +143,7 @@ class FormRegistrationServiceTest extends TestCase
      */
     private function makePostRequest(array $data, ?Session $session = null): Request
     {
-        $request = Request::create('/termine/anmeldung', 'POST', ['form_registration' => $data]);
+        $request = Request::create('/anmeldung', 'POST', ['form_registration' => $data]);
         $request->setSession($session ?? $this->makeSession());
 
         return $request;

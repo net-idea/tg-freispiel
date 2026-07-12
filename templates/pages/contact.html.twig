@@ -1,0 +1,124 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  Kontakt - Theatergruppe Freispiel
+{% endblock %}
+
+{% block body %}
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      {# Page Header #}
+      <div class="text-center mb-5">
+        <h1 class="display-4 hero-title">📧 Kontaktiere uns</h1>
+      </div>
+
+      {# Server-rendered status (non-JS fallback); the Stimulus controller renders these inline for Ajax #}
+      {% if result is not null %}
+        {% if result.shouldPresentAsSuccess %}
+          <div class="alert alert-success mb-4" role="alert" id="contact-success">
+            {{ messages.success }}
+          </div>
+        {% elseif result.status.value == 'rate_limited' %}
+          <div class="alert alert-danger mb-4" role="alert" id="contact-error">
+            {{ messages.rate }}
+          </div>
+        {% elseif result.status.value == 'mail_error' %}
+          <div class="alert alert-danger mb-4" role="alert" id="contact-error">
+            {{ messages.mail }}
+          </div>
+        {% elseif form.vars.submitted and not form.vars.valid %}
+          <div class="alert alert-danger mb-4" role="alert" id="contact-error">
+            <p class="mb-2">
+              {{ messages.invalid }}
+            </p>
+            <ul class="mb-0">
+              {% for child in form.children %}
+                {% for errorItem in child.vars.errors %}
+                  <li><strong>{{ child.vars.label }}:</strong> {{ errorItem.message }}</li>
+                {% endfor %}
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      {% endif %}
+
+      {# Info Card #}
+      <div class="card shadow-lg mb-5">
+        <div class="card-body p-4 p-md-5">
+          <p class="lead card-text mb-0">
+            Wir freuen uns über deine Nachricht! Ob du Fragen zu unseren Aufführungen hast, an einer Zusammenarbeit interessiert bist oder einfach Hallo sagen möchtest – nutze gerne unser Kontaktformular.
+          </p>
+        </div>
+      </div>
+
+      {# Contact Form Card #}
+      <div class="card shadow-lg" data-controller="ajax-form">
+        <div class="card-header card-header-accent p-4">
+          <h2 class="h4 mb-0 fw-bold">✉️ Kontaktformular</h2>
+        </div>
+        <div class="card-body p-4 p-md-5">
+          <div data-ajax-form-target="alert"></div>
+
+          {{ form_start(form, { action: path('app_contact'), attr: { class: 'vstack gap-2', novalidate: 'novalidate', 'data-ajax-form-target': 'form', 'data-action': 'submit->ajax-form#submit' } }) }}
+
+          {% for field in [form.name, form.email, form.phone] %}
+            <div class="mb-4">
+              {{ form_label(field) }}
+              {{ form_widget(field, { attr: { class: (field.vars.errors|length) > 0 ? 'form-control form-control-lg is-invalid' : 'form-control form-control-lg' } }) }}
+              {% for errorItem in field.vars.errors %}
+                <div class="invalid-feedback d-block">
+                  {{ errorItem.message }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endfor %}
+
+          <div class="mb-4">
+            {{ form_label(form.message) }}
+            {{ form_widget(form.message, { attr: { class: (form.message.vars.errors|length) > 0 ? 'form-control form-control-lg is-invalid' : 'form-control form-control-lg', rows: 6 } }) }}
+            {% for errorItem in form.message.vars.errors %}
+              <div class="invalid-feedback d-block">
+                {{ errorItem.message }}
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="honeypot" aria-hidden="true">
+            {{ form_row(form.website) }}
+            {{ form_row(form.emailrep) }}
+          </div>
+
+          <div class="form-check mb-2">
+            {{ form_widget(form.consent, { attr: { class: (form.consent.vars.errors|length) > 0 ? 'form-check-input is-invalid' : 'form-check-input' } }) }}
+            <label class="form-check-label" for="{{ form.consent.vars.id }}">Ich willige in die Verarbeitung meiner Angaben zum Zweck der Kontaktaufnahme ein (<a href="/datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a>).</label>
+            {% for errorItem in form.consent.vars.errors %}
+              <div class="invalid-feedback d-block">
+                {{ errorItem.message }}
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="form-check mb-4">
+            {{ form_widget(form.copy, { attr: { class: 'form-check-input' } }) }}
+            {{ form_label(form.copy, null, { label_attr: { class: 'form-check-label' } }) }}
+          </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg py-3 fw-bold fs-5" data-ajax-form-target="submit">Absenden</button>
+          </div>
+
+          {{ form_rest(form) }}
+          {{ form_end(form) }}
+        </div>
+      </div>
+
+      {# Additional Info #}
+      <div class="info-box text-center mt-5 p-4">
+        <p class="footer-text mb-0">
+          <strong class="info-box-gold">Theatergruppe Freispiel</strong><br />
+          Deine Nachricht wird vertraulich behandelt und schnellstmöglich beantwortet.
+        </p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

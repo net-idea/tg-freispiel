@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres
+    image: postgres:17-alpine
     container_name: '${APP_NAME:-tg-freispiel}_postgres'
     hostname: postgres
     restart: unless-stopped

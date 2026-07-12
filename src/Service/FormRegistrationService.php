@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Dto\RegistrationResult;
+use App\Dto\SubmissionResult;
 use App\Entity\FormRegistrationEntity;
 use App\Entity\FormSubmissionMetaEntity;
 use App\Form\FormRegistrationType;
@@ -41,10 +41,10 @@ class FormRegistrationService extends AbstractFormService
 
     /**
      * Handle a registration submission. Returns null when nothing was
-     * submitted (plain GET), otherwise a RegistrationResult describing the
+     * submitted (plain GET), otherwise a SubmissionResult describing the
      * outcome. Presentation (JSON vs. HTML) is up to the controller.
      */
-    public function handle(): ?RegistrationResult
+    public function handle(): ?SubmissionResult
     {
         $boot = $this->handleFormRequest($this->requests);
 
@@ -63,7 +63,7 @@ class FormRegistrationService extends AbstractFormService
         );
 
         if ($rl['blocked']) {
-            return RegistrationResult::rateLimited();
+            return SubmissionResult::rateLimited();
         }
 
         // Honeypot: hidden website field (unmapped) or emailrep must be empty => if filled, pretend success
@@ -74,11 +74,11 @@ class FormRegistrationService extends AbstractFormService
         if ('' !== $honey || '' !== trim($registration->getEmailrep())) {
             $this->rateLimitTickNow($session, self::SESSION_RATE_KEY);
 
-            return RegistrationResult::spam();
+            return SubmissionResult::spam();
         }
 
         if (!$form->isValid()) {
-            return RegistrationResult::invalid();
+            return SubmissionResult::invalid();
         }
 
         // Prepare meta-data
@@ -101,12 +101,12 @@ class FormRegistrationService extends AbstractFormService
         try {
             $this->mailMan->sendRegistrationForm($registration);
         } catch (TransportExceptionInterface) {
-            return RegistrationResult::mailError();
+            return SubmissionResult::mailError();
         }
 
         $this->rateLimitTickNow($session, self::SESSION_RATE_KEY);
 
-        return RegistrationResult::success();
+        return SubmissionResult::success();
     }
 
     /**

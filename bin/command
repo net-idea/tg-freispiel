@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Get environment variables
+if [ -f .env ]; then
+  set -o allexport
+  source .env
+  set +o allexport
+fi
+
+# Run Symfony console command in container
+COMPOSE_CMD="docker compose"
+
+if [ "$COMPOSE" == "mutagen" ]; then
+    COMPOSE_CMD="mutagen-compose"
+fi
+
+${COMPOSE_CMD} -p "${APP_NAME:-tg-freispiel}" exec php php bin/console "$@"

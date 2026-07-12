@@ -1,9 +1,11 @@
 services:
   adminer:
-    image: adminer
+    image: adminer:latest
     container_name: '${APP_NAME:-tg-freispiel}_adminer'
     hostname: adminer
     restart: unless-stopped
+    environment:
+      ADMINER_DEFAULT_SERVER: 'mariadb:${DB_PORT:-3308}'
     ports:
       - '${ADMINER_PORT:-8091}:8080'
     networks:

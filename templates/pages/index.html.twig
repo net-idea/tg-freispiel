@@ -9,7 +9,7 @@
     <div class="col-lg-10">
       {# Hero Section #}
       <div class="text-center mb-5 py-5">
-        <h1 class="display-3 hero-title mb-4">🎭 Willkommen bei der Theatergruppe Freispiel! 🎭</h1>
+        <h1 class="display-3 hero-title mb-4">Willkommen bei der Theatergruppe Freispiel!</h1>
         <p class="hero-lead">
           Wir freuen uns, dich auf unserer Webseite begrüßen zu dürfen.<br />
           Erlebe mit uns die Magie des Theaters!
@@ -49,14 +49,14 @@
             <li class="recruit-pill recruit-pill-red">Improvisation</li>
             <li class="recruit-pill recruit-pill-gold">neue Herausforderungen</li>
           </ul>
-          {% if nextTermin is defined and nextTermin %}
+          {% if nextDate is defined and nextDate %}
             <p class="recruit-next">
               <span class="recruit-next-label">Nächste Probestunde:</span>
-              <span class="recruit-next-date"><time datetime="{{ nextTermin.startsAt|date('Y-m-d\\TH:i') }}">{{ nextTermin.formatGerman }}</time></span>
+              <span class="recruit-next-date"><time datetime="{{ nextDate.startsAt|date('Y-m-d\\TH:i') }}">{{ nextDate.formatGerman }}</time></span>
             </p>
           {% endif %}
           <div class="recruit-actions">
-            <a href="{{ path('app_anmeldung') }}" class="btn btn-primary btn-lg recruit-cta">Melde dich zur Probestunde!</a>
+            <a href="{{ path('app_registration') }}" class="btn btn-primary btn-lg recruit-cta">Melde dich zur Probestunde!</a>
             <a href="/freispiel-flyer.html" class="recruit-ghost" target="_blank" rel="noopener">Flyer ansehen</a>
           </div>
         </div>

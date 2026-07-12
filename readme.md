@@ -2,7 +2,7 @@
 
 A modern Symfony web application for the theater group "Theatergruppe Freispiel", build with ❤️ and modern web technologies.
 
-- Framework: Symfony 7.3 (PHP 8.3+)
+- Framework: Symfony 8.1 (PHP 8.4+)
 - Frontend: Webpack Encore, Stimulus, Bootstrap 5, Twig
 - Database: MariaDB (SQLite defaults also supported)
 - Tooling: Composer, Yarn, Docker and Docker Compose
@@ -11,66 +11,27 @@ A modern Symfony web application for the theater group "Theatergruppe Freispiel"
 
 ```
 tg-freispiel.de/
-├── develop.sh                    # Local dev helper (installs deps, builds, runs dev services)
-├── deploy.sh                     # Production deploy helper (builds, installs, migrates, warms cache)
-├── assets/
-│   ├── app.ts                    # TS entry (Webpack Encore)
-│   ├── bootstrap.ts              # Stimulus bootstrap (TS)
-│   ├── controllers/              # Stimulus controllers
-│   ├── controllers.json          # Stimulus bridge entry
-│   ├── scripts/
-│   │   ├── main.ts               # Main UI behaviors (TS)
-│   │   └── theme-toggle.ts       # Theme handling (TS)
-│   └── styles/
-│       ├── app.css               # App-specific styles
-│       ├── theme.css             # Shared theme styles
-│       ├── theme-light.css       # Light theme overrides
-│       └── theme-dark.css        # Dark theme overrides
-├── config/                       # Symfony configuration
-├── docs/                         # Project docs
-│   ├── docker.md                 # Docker installation & usage
-│   ├── symfony.md                # Symfony commands & troubleshooting
-│   └── database.md               # Database troubleshooting
-├── public/                       # Web root
-│   ├── index.php                 # Front controller
-│   ├── build/                    # Compiled assets (generated)
-│   └── bundles/
-├── src/
-│   ├── Controller/
-│   │   ├── HomeController.php    # Homepage
-│   │   └── ContactController.php # Contact form page
-│   ├── Entity/
-│   │   ├── FormContactEntity.php        # Contact form entity
-│   │   └── FormSubmissionMetaEntity.php # Form submission metadata
-│   ├── Form/
-│   │   └── FormContactType.php          # Contact form type
-│   ├── Repository/
-│   │   └── FormContactRepository.php    # Contact form repository
-│   └── Service/
-│       └── FormContactService.php       # Contact form service
-├── templates/
-│   ├── base.html.twig                   # Base layout with theme support
-│   ├── _partials/
-│   │   └── navbar.html.twig             # Navigation with theme switcher
-│   ├── home/
-│   │   └── index.html.twig              # Modern homepage
-│   └── contact/
-│       └── index.html.twig              # Contact form page
-├── migrations/
-├── vendor/                              # Composer deps (generated)
-├── var/                                 # Cache & logs (generated)
-├── composer.json
-├── package.json
-└── readme.md
+├── assets/         # Frontend sources (TS, SCSS, Stimulus, images)
+├── bin/            # Console & Docker wrapper scripts
+├── config/         # Symfony configuration
+├── docs/           # Project docs
+├── migrations/     # Doctrine migrations
+├── public/         # Web root
+├── src/            # PHP application code (Controller, Entity, Service, ...)
+├── templates/      # Twig templates
+├── tests/          # PHPUnit tests
+└── *.sh            # Dev, deploy, Docker and quality helper scripts
 ```
+
+For the detailed layout see [docs/structure.md](docs/structure.md).
 
 ## ✅ Local development (recommended)
 
 ### Prerequisites
 
-- PHP 8.3+
+- PHP 8.4+
 - Composer
-- Node.js 20+ and Yarn
+- Node.js 24+ and Yarn
 - Symfony CLI (optional, for local web server)
 
 ### Quick start
@@ -117,7 +78,7 @@ All configuration is via environment variables. Typical keys:
 - DATABASE_URL: Doctrine DSN
   - SQLite (default): `DATABASE_URL="sqlite:///%kernel.project_dir%/var/data_%kernel.environment%.db"`
   - MariaDB/MySQL: `DATABASE_URL="mysql://user:pass@127.0.0.1:3306/db?serverVersion=10.11.2-MariaDB&charset=utf8mb4"`
-  - Postgres: `DATABASE_URL="postgresql://user:pass@127.0.0.1:5432/db?serverVersion=16&charset=utf8"`
+  - Postgres: `DATABASE_URL="postgresql://user:pass@127.0.0.1:5432/db?serverVersion=17&charset=utf8"`
 - MESSENGER_TRANSPORT_DSN: default `doctrine://default?auto_setup=0` (use `sync://` for simple dev)
 - Mail settings (compose into MAILER_DSN): MAIL_SCHEME, MAIL_HOST, MAIL_ENCRYPTION, MAIL_PORT, MAIL_USER, MAIL_PASSWORD
 
@@ -141,6 +102,59 @@ docker compose -p tg-freispiel -f docker-compose.yml -f docker-compose.mariadb.y
 # Start the full environment with MariaDB, Adminer and PHPMyAdmin
 docker compose -p tg-freispiel -f docker-compose.yml -f docker-compose.mariadb.yml -f docker-compose.adminer.yml -f docker-compose.phpmyadmin.yml up -d --build --force-recreate
 ```
+
+### Database migrations (inside the Docker container)
+
+All Doctrine console commands run inside the `php` container of the running dev stack:
+
+```shell
+# Show which migrations are available/executed
+docker compose -p tg-freispiel exec php php bin/console doctrine:migrations:status
+
+# Migrate UP to the latest version
+docker compose -p tg-freispiel exec php php bin/console doctrine:migrations:migrate --no-interaction
+
+# Migrate DOWN one step (revert the most recent migration)
+docker compose -p tg-freispiel exec php php bin/console doctrine:migrations:migrate prev --no-interaction
+
+# Migrate UP/DOWN a single specific migration
+docker compose -p tg-freispiel exec php php bin/console doctrine:migrations:execute --up 'DoctrineMigrations\Version20260712000000'
+docker compose -p tg-freispiel exec php php bin/console doctrine:migrations:execute --down 'DoctrineMigrations\Version20260712000000'
+
+# Generate a new migration from entity changes / verify schema is in sync
+docker compose -p tg-freispiel exec php php bin/console doctrine:migrations:diff --no-interaction
+docker compose -p tg-freispiel exec php php bin/console doctrine:schema:validate
+```
+
+> ⚠️ On macOS the MariaDB data directory is a bind mount (`./mariadb/data`). `ALTER`/`DROP TABLE`
+> statements can occasionally crash the MariaDB container (it restarts automatically, and the
+> statement usually **has** been applied). Check the actual state with
+> `doctrine:migrations:status` / `doctrine:schema:validate` before re-running a failed migration.
+
+### Debugging with Adminer, phpMyAdmin and Mailpit
+
+The dev stack ships three debugging UIs (host ports are configured in `.env`):
+
+| Tool       | URL                   | Purpose                                |
+| ---------- | --------------------- | -------------------------------------- |
+| Adminer    | http://127.0.0.1:8091 | Lightweight DB client (quick queries)  |
+| phpMyAdmin | http://127.0.0.1:8092 | Full-featured DB client                |
+| Mailpit    | http://127.0.0.1:8025 | Catches all outgoing mail from the app |
+
+**Adminer** — log in with: System `MySQL`, Server `mariadb` (the compose service name, not
+localhost), user/password/database from `.env` (`DB_USER`, `DB_PASSWORD`, `DB_NAME`). Useful to
+inspect form submissions (`form_contact`, `form_registration`), the `date` table or
+`doctrine_migration_versions` after a migration.
+
+**phpMyAdmin** — pre-wired to the `mariadb` service; log in with `DB_USER`/`DB_PASSWORD` (or
+`root`/`DB_ROOT_PASSWORD` for schema-level work). Prefer it over Adminer for browsing/editing
+rows, exports and index/FK inspection.
+
+**Mailpit** — the dev `MAILER_DSN` points at the `mailer` service, so no real mail leaves the
+machine. Every mail the app sends (contact form, registration confirmations) shows up in the web
+UI at http://127.0.0.1:8025 with full HTML/text source and headers. SMTP listens on
+`127.0.0.1:1025` if you want to test with an external client. The REST API is handy in scripts,
+e.g. `curl http://127.0.0.1:8025/api/v1/messages`.
 
 ## 🧹 Code Quality & Linting
 
@@ -281,6 +295,137 @@ SKIP_MIGRATIONS=true ./deploy.sh
 
 # Skip composer auto-scripts (if you need to)
 SKIP_COMPOSER_AUTOSCRIPTS=true ./deploy.sh
+```
+
+### bin/command, bin/php and bin/yarn (Docker dev stack)
+
+Short wrappers for the running Docker dev stack — no local PHP/Node required. All load `.env`
+(project name `APP_NAME`, default `tg-freispiel`) and support `COMPOSE=mutagen` to use
+`mutagen-compose` instead of `docker compose`.
+
+- `bin/command` runs Symfony console commands in the `php` service (prefixes `bin/console`)
+- `bin/php` runs raw PHP in the `php` service (e.g. vendor binaries)
+- `bin/yarn` runs Yarn in the `node` service
+
+```bash
+./bin/command app:user:list
+./bin/command cache:clear
+./bin/php vendor/bin/phpstan --memory-limit=1G
+./bin/php vendor/bin/php-cs-fixer fix --dry-run
+./bin/yarn lint:css
+./bin/yarn tsc:check
+```
+
+The stack must be running (`./docker-start.sh`), since the scripts `exec` into the existing
+containers.
+
+## ⚙️ App console commands
+
+Naming follows `app:<domain>:<action>` with CRUD wording; the class name matches the command
+name (e.g. `app:date:create` → `DateCreateCommand`). More actions (update, delete) will come
+with the admin area.
+
+### Running commands: local PHP vs. Docker container
+
+With a local PHP setup (develop.sh option 1) run commands directly:
+
+```bash
+php bin/console app:date:list
+```
+
+With the Docker dev stack (develop.sh option 2) there is no PHP on the host path — use the
+`bin/command` wrapper, which runs `bin/console` inside the `php` container of the running stack:
+
+```bash
+./bin/command app:date:list
+```
+
+Or address the container manually:
+
+```bash
+# One-off command
+docker compose -p tg-freispiel exec php php bin/console app:date:list
+
+# In scripts/CI (no TTY): add -T
+docker compose -p tg-freispiel exec -T php php bin/console app:date:list
+
+# Or open a shell in the container and work as usual
+docker compose -p tg-freispiel exec php sh
+php bin/console app:date:list
+```
+
+The examples below use the local form; with Docker replace `php bin/console` with
+`./bin/command`.
+
+| Command                    | Description                                              |
+| -------------------------- | -------------------------------------------------------- |
+| `app:contact:list`         | List stored contact form submissions                     |
+| `app:contact:mail-preview` | Send preview emails (owner + visitor) to check templates |
+| `app:date:list`            | List public dates shown on /termine                      |
+| `app:date:create`          | Create a public date (one-off or recurring)              |
+| `app:registration:list`    | List stored trial-session registrations                  |
+| `app:user:create`          | Create a user for the upcoming admin area                |
+| `app:user:list`            | List users of the upcoming admin area                    |
+| `app:secret`               | Regenerate the APP_SECRET in the project env file        |
+
+### List submissions and dates
+
+Both list commands support `--csv` for exports; the submission lists also take `--limit` (default 100).
+
+```bash
+php bin/console app:contact:list
+php bin/console app:registration:list --limit=20
+php bin/console app:date:list            # all dates, including inactive/past
+php bin/console app:date:list --upcoming # exactly what the website shows
+php bin/console app:registration:list --csv > registrations.csv
+```
+
+### Create a date
+
+Run without arguments to be interviewed for all values (title, one-off/recurring, schedule,
+description, sort order, active):
+
+```bash
+php bin/console app:date:create
+```
+
+Or pass everything on the command line — then provide exactly one of `--starts-at` (one-off) or
+`--recurrence` (recurring).
+
+```bash
+# One-off date
+php bin/console app:date:create "Probestunde zum Reinschnuppern" --starts-at="2026-09-12 10:30"
+
+# Recurring date
+php bin/console app:date:create "Proben" --recurrence="jeden Dienstag um 19 Uhr"
+
+# Optional: --description="..." --sort=2 --inactive
+```
+
+### Create a user
+
+Run without arguments to be interviewed for all values (email, admin role, name, password):
+
+```bash
+php bin/console app:user:create
+```
+
+Or pass everything on the command line. The password is hashed before storing; omit
+`--password` to be asked interactively (hidden input, min. 8 characters).
+
+```bash
+php bin/console app:user:create admin@example.com "Admin Name" --admin
+php bin/console app:user:create member@example.com "Member Name" --password="s3cret-Pass!"
+```
+
+### Preview emails
+
+Sends the contact form emails (owner + visitor copy) to verify the templates — in the dev stack
+they land in Mailpit (http://127.0.0.1:8025).
+
+```bash
+php bin/console app:contact:mail-preview            # uses MAIL_TO_ADDRESS from .env
+php bin/console app:contact:mail-preview me@example.com "My Name"
 ```
 
 ## 🧰 Symfony commands

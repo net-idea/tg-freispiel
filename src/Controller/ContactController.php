@@ -5,11 +5,19 @@ namespace App\Controller;
 
 use App\Service\FormContactService;
 use App\Service\NavigationService;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class ContactController extends AbstractBaseController
 {
+    private const array MESSAGES = [
+        'success' => 'Vielen Dank für deine Nachricht! Wir melden uns zeitnah bei dir.',
+        'invalid' => 'Bitte korrigiere die markierten Felder und sende das Formular erneut ab.',
+        'rate'    => 'Bitte warte einen Moment, bevor du das Formular erneut absendest.',
+        'mail'    => 'Leider konnte die E-Mail nicht versendet werden. Bitte versuche es in Kürze erneut.',
+    ];
+
     public function __construct(
         private readonly NavigationService $navigation,
         private readonly FormContactService $formContactService,
@@ -21,22 +29,24 @@ class ContactController extends AbstractBaseController
         name: 'app_contact',
         methods: ['GET', 'POST']
     )]
-    public function contact(): Response
+    public function contact(Request $request): Response
     {
-        // Handle form submission first (this will process POST and return redirect on success)
-        if ($response = $this->formContactService->handle()) {
-            return $response;
-        }
-
-        // Get form for rendering (either initial GET or POST with validation errors)
+        $result = $this->formContactService->handle();
         $form = $this->formContactService->getForm();
 
+        if (null !== $result && $request->isXmlHttpRequest()) {
+            return $this->submissionJson($result, $form, self::MESSAGES);
+        }
+
         return $this->render(
-            'pages/kontakt.html.twig',
+            'pages/contact.html.twig',
             [
                 'slug'     => 'kontakt',
                 'navItems' => $this->navigation->getItems(),
+                'pageMeta' => $this->loadPageMetadata('kontakt'),
                 'form'     => $form->createView(),
+                'result'   => $result,
+                'messages' => self::MESSAGES,
             ]
         );
     }

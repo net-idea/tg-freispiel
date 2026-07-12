@@ -10,10 +10,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Account for the upcoming admin area. There is no login flow yet; the
- * entity exists so content (e.g. Termine) can already reference its author.
+ * entity exists so content (e.g. dates) can already reference its author.
  */
 #[ORM\Entity(repositoryClass: 'App\\Repository\\UserRepository')]
-#[ORM\Table(name: 'user')]
+#[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_user_EMAIL', columns: ['email'])]
 class UserEntity implements UserInterface, PasswordAuthenticatedUserInterface
 {

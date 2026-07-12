@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      target: prod
     container_name: '${APP_NAME:-tg-freispiel}_php'
     hostname: php
     # Production-oriented: no code mounts; expect code baked into image.
@@ -15,7 +16,7 @@ services:
       - internal
 
   nginx:
-    image: nginx:alpine
+    image: nginx:1.28-alpine
     container_name: '${APP_NAME:-tg-freispiel}_nginx'
     hostname: nginx
     restart: unless-stopped

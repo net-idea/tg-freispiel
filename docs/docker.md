@@ -42,20 +42,22 @@ sudo apt-get install -y docker-compose-plugin
 The easiest way to start the development environment:
 
 ```bash
-./docker-start.sh
+./docker-start.sh            # foreground: press Ctrl+C to stop all containers
+./docker-start.sh -d         # detached: script exits, containers keep running
+./docker-start.sh --build    # force an image rebuild before starting
 ```
 
 This script will:
 
-1. Start all necessary containers (PHP, Nginx, Node, MariaDB, Adminer, PHPMyAdmin)
-2. Wait for the database to be ready
+1. Start all necessary containers (PHP, Nginx, Node, MariaDB or PostgreSQL, Adminer, optional phpMyAdmin)
+2. Wait for the database healthcheck to pass
 3. Install Composer dependencies
-4. Install Yarn dependencies
-5. Clear and warm up Symfony cache
-6. Prompt to run migrations (if any exist)
-7. Start Webpack Encore in watch mode
+4. Clear and warm up Symfony cache
+5. Prompt to run migrations (if any exist)
 
-Press `Ctrl+C` to stop all containers.
+In foreground mode, press `Ctrl+C` to stop all containers. In detached mode (`-d`), stop with `docker compose -p tg-freispiel down`.
+
+Images are only rebuilt when missing or when `--build` is passed, which keeps startup output short.
 
 ### Manual Docker Compose commands
 
@@ -101,7 +103,7 @@ Adds:
 docker compose -p tg-freispiel -f docker-compose.yaml -f docker-compose.mariadb.yml -f docker-compose.mariadb.dev.yml up -d --build
 ```
 
-This exposes MariaDB on port 3306 for external tools like TablePlus, DBeaver, etc.
+This exposes MariaDB on port 3308 by default for external tools like TablePlus, DBeaver, etc.
 
 ## Optional Services
 
@@ -145,7 +147,7 @@ docker compose -p tg-freispiel -f docker-compose.yaml -f docker-compose.postgres
 Update your `.env.local`:
 
 ```env
-DATABASE_URL="postgresql://tg-freispiel:nopassword@postgres:5432/tg-freispiel?serverVersion=16&charset=utf8"
+DATABASE_URL="postgresql://tg-freispiel:nopassword@postgres:5432/tg-freispiel?serverVersion=17&charset=utf8"
 ```
 
 ## Docker Services Overview
@@ -154,16 +156,16 @@ DATABASE_URL="postgresql://tg-freispiel:nopassword@postgres:5432/tg-freispiel?se
 
 | Service | Description                 | Port | Access                |
 | ------- | --------------------------- | ---- | --------------------- |
-| php     | PHP 8.3 FPM                 | -    | Internal only         |
+| php     | PHP 8.4 FPM                 | -    | Internal only         |
 | nginx   | Nginx web server            | 8000 | http://127.0.0.1:8000 |
-| node    | Node.js 20 (Webpack Encore) | 8080 | http://127.0.0.1:8080 |
+| node    | Node.js 24 (Webpack Encore) | 8080 | http://127.0.0.1:8080 |
 
 ### Database Services
 
-| Service            | Description         | Port   | Access                                     |
-| ------------------ | ------------------- | ------ | ------------------------------------------ |
-| database (MariaDB) | MariaDB database    | 3306\* | Internal (or exposed with mariadb.dev.yml) |
-| postgres           | PostgreSQL database | 5432\* | Internal                                   |
+| Service  | Description         | Port   | Access                                                        |
+| -------- | ------------------- | ------ | ------------------------------------------------------------- |
+| mariadb  | MariaDB database    | 3308\* | Listens on 3308 in-network; host-exposed with mariadb.dev.yml |
+| postgres | PostgreSQL database | 5433\* | Internal                                                      |
 
 \*Only exposed to host with `.dev.yml` variants
 
@@ -198,15 +200,18 @@ ADMINER_PORT=8091
 PHPMYADMIN_PORT=8092
 
 # Database
-DB_HOST=database
-DB_PORT=3306
+DB_HOST=mariadb
+DB_PORT=3308
 DB_ROOT_PASSWORD=nopassword
 DB_NAME=tg-freispiel
 DB_USER=tg-freispiel
 DB_PASSWORD=nopassword
 
 # Symfony Database URL (when using MariaDB)
-DATABASE_URL="mysql://tg-freispiel:nopassword@database:3306/tg-freispiel?serverVersion=10.11.2-MariaDB&charset=utf8mb4"
+# MariaDB listens on port 3308 inside the Docker network AND on the host (DB_PORT).
+DATABASE_URL="mysql://tg-freispiel:nopassword@mariadb:3308/tg-freispiel?serverVersion=11.8.0-MariaDB&charset=utf8mb4"
+
+# Use DB_PORT=5433 if you switch to PostgreSQL with the dev compose files.
 
 # Or use SQLite (default)
 DATABASE_URL="sqlite:///%kernel.project_dir%/var/data_dev.db"
@@ -226,7 +231,7 @@ docker compose -p tg-freispiel logs -f
 # View logs for specific service
 docker compose -p tg-freispiel logs -f php
 docker compose -p tg-freispiel logs -f nginx
-docker compose -p tg-freispiel logs -f database
+docker compose -p tg-freispiel logs -f mariadb
 
 # Stop all containers
 docker compose -p tg-freispiel down
@@ -247,12 +252,12 @@ docker compose -p tg-freispiel exec php php bin/console cache:clear
 docker compose -p tg-freispiel exec php composer install
 
 # Node container
-docker compose -p tg-freispiel run --rm node yarn install
+docker compose -p tg-freispiel run --rm node yarn install --frozen-lockfile
 docker compose -p tg-freispiel run --rm node yarn build
 
 # Database container
-docker compose -p tg-freispiel exec database mysql -u tg-freispiel -pnopassword tg-freispiel
-docker compose -p tg-freispiel exec database mysqldump -u tg-freispiel -pnopassword tg-freispiel > backup.sql
+docker compose -p tg-freispiel exec mariadb mysql -u tg-freispiel -pnopassword tg-freispiel
+docker compose -p tg-freispiel exec mariadb mysqldump -u tg-freispiel -pnopassword tg-freispiel > backup.sql
 ```
 
 ### Build and rebuild
@@ -274,16 +279,17 @@ docker compose -p tg-freispiel pull
 
 Interactive startup script that handles the complete initialization:
 
-- Starts core services + MariaDB + admin tools
-- Waits for database readiness
+- Starts core services + MariaDB + admin tools (the Node dev server runs as the `node` service)
+- Waits for database readiness via healthchecks
 - Installs dependencies
 - Clears cache
 - Prompts for migrations
-- Starts asset watcher
 
 ```bash
-./docker-start.sh
+./docker-start.sh [-d|--detach] [--build]
 ```
+
+Flags: `-d`/`--detach` exits after startup and leaves the containers running; `--build` forces an image rebuild.
 
 ### docker-stop.sh
 
@@ -324,10 +330,10 @@ Wait for database to be ready:
 
 ```bash
 # Check database status
-docker compose -p tg-freispiel exec database mysqladmin ping -h"database" --silent
+docker compose -p tg-freispiel exec mariadb mysqladmin ping -h"mariadb" --silent
 
 # View database logs
-docker compose -p tg-freispiel logs database
+docker compose -p tg-freispiel logs mariadb
 ```
 
 ### Permission issues with volumes
@@ -364,7 +370,7 @@ If Yarn has issues inside the container:
 ```bash
 # Remove node_modules and reinstall
 docker compose -p tg-freispiel run --rm node rm -rf node_modules
-docker compose -p tg-freispiel run --rm node yarn install
+docker compose -p tg-freispiel run --rm node yarn install --frozen-lockfile
 ```
 
 ### Database fixtures not loading
@@ -412,7 +418,7 @@ When running the full stack:
 Database connection (from external tools when using `mariadb.dev.yml`):
 
 - **Host**: localhost
-- **Port**: 3306
+- **Port**: 3308
 - **User**: tg-freispiel
 - **Password**: nopassword
 - **Database**: tg-freispiel

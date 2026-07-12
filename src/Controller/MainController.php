@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\DateProviderService;
 use App\Service\NavigationService;
-use App\Service\TerminProviderService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
@@ -14,7 +14,7 @@ class MainController extends AbstractBaseController
 {
     public function __construct(
         private readonly NavigationService $navigation,
-        private readonly TerminProviderService $terminProvider,
+        private readonly DateProviderService $dateProvider,
     ) {
     }
 
@@ -49,8 +49,8 @@ class MainController extends AbstractBaseController
                 [
                     'slug'     => $slug,
                     'navItems' => $this->navigation->getItems(),
-                    'pageMeta'   => $this->loadPageMetadata($slug),
-                    'nextTermin' => $this->terminProvider->getNext(),
+                    'pageMeta' => $this->loadPageMetadata($slug),
+                    'nextDate' => $this->dateProvider->getNext(),
                 ]
             );
         }

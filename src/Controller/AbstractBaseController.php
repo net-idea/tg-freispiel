@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Dto\SubmissionResult;
+use App\Dto\SubmissionStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractBaseController extends AbstractController
 {
@@ -31,5 +36,60 @@ abstract class AbstractBaseController extends AbstractController
         ];
 
         return $pageMeta;
+    }
+    /**
+     * Shared Ajax response for form submissions: maps a SubmissionResult to
+     * JSON payload + HTTP status. $messages needs the keys success, invalid,
+     * rate and mail.
+     *
+     * @param array{success: string, invalid: string, rate: string, mail: string} $messages
+     */
+    protected function submissionJson(SubmissionResult $result, FormInterface $form, array $messages): JsonResponse
+    {
+        if ($result->shouldPresentAsSuccess()) {
+            return $this->json(['success' => true, 'message' => $messages['success']]);
+        }
+
+        return match ($result->status) {
+            SubmissionStatus::INVALID => $this->json(
+                [
+                    'success' => false,
+                    'message' => $messages['invalid'],
+                    'errors'  => $this->collectFormErrors($form),
+                ],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            ),
+            SubmissionStatus::RATE_LIMITED => $this->json(
+                ['success' => false, 'message' => $messages['rate']],
+                Response::HTTP_TOO_MANY_REQUESTS
+            ),
+            default => $this->json(
+                ['success' => false, 'message' => $messages['mail']],
+                Response::HTTP_SERVICE_UNAVAILABLE
+            ),
+        };
+    }
+
+    /**
+     * Collect validation messages keyed by child field name; form-level
+     * errors (e.g. CSRF) are grouped under "_global".
+     *
+     * @return array<string, array<int, string>>
+     */
+    protected function collectFormErrors(FormInterface $form): array
+    {
+        $errors = [];
+
+        foreach ($form->getErrors() as $error) {
+            $errors['_global'][] = $error->getMessage();
+        }
+
+        foreach ($form as $child) {
+            foreach ($child->getErrors() as $error) {
+                $errors[$child->getName()][] = $error->getMessage();
+            }
+        }
+
+        return $errors;
     }
 }

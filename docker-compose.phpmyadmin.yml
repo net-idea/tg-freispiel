@@ -1,12 +1,12 @@
 services:
   phpmyadmin:
-    #image: phpmyadmin/phpmyadmin
-    image: arm64v8/phpmyadmin
+    image: phpmyadmin/phpmyadmin:latest
     container_name: '${APP_NAME:-tg-freispiel}_phpmyadmin'
     hostname: phpmyadmin
     restart: unless-stopped
     environment:
-      PMA_HOST: database
+      PMA_HOST: mariadb
+      PMA_PORT: '${DB_PORT:-3308}'
       MYSQL_ROOT_PASSWORD: '${DB_ROOT_PASSWORD:-nopassword}'
     ports:
       - '${PHPMYADMIN_PORT:-8092}:80'

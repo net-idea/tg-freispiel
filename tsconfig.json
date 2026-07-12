@@ -9,11 +9,12 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@/*": ["assets/*"]
     }
   },
-  "include": ["assets/**/*.ts", "assets/**/*.tsx", "types/**/*.d.ts"],
+  "include": ["assets/**/*.ts", "assets/**/*.tsx"],
   "exclude": ["node_modules", "public/build", "var"]
 }

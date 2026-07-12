@@ -21,6 +21,7 @@ class FormRegistrationTypeTest extends TypeTestCase
             'roleReason'   => 'Weil Schurken die besten Rollen sind.',
             'expectations' => 'Spaß und Gemeinschaft.',
             'consent'      => '1',
+            'copy'         => '1',
         ];
 
         $entity = new FormRegistrationEntity();
@@ -37,6 +38,7 @@ class FormRegistrationTypeTest extends TypeTestCase
         $this->assertSame('Weil Schurken die besten Rollen sind.', $entity->getRoleReason());
         $this->assertSame('Spaß und Gemeinschaft.', $entity->getExpectations());
         $this->assertTrue($entity->getConsent());
+        $this->assertTrue($entity->getCopy());
     }
 
     public function testRoleTypesAreExpandedCheckboxes(): void

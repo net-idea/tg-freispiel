@@ -1,0 +1,61 @@
+{% extends 'email/base.html.twig' %}
+
+{% block title %}
+  Deine Anmeldung zur Probestunde
+{% endblock %}
+
+{% block header_title %}
+  Theatergruppe Freispiel – Bestätigung deiner Anmeldung
+{% endblock %}
+
+{% block body %}
+  <h1>Vielen Dank für deine Anmeldung!</h1>
+
+  <p>
+    Hallo {{ registration.name|e }},
+  </p>
+
+  <p>
+    vielen Dank für deine Anmeldung zur Probestunde bei der Theatergruppe Freispiel. Wir haben deine Anmeldung erhalten und melden uns zeitnah persönlich bei dir.
+  </p>
+
+  <h2>Deine Kontaktdaten</h2>
+  <div class="box">
+    <p style="margin:0 0 8px;">
+      <strong>Name:</strong> {{ registration.name|e }}
+    </p>
+    <p style="margin:0 0 8px;">
+      <strong>E‑Mail:</strong> {{ registration.emailAddress|e }}
+    </p>
+    <p style="margin:0;">
+      <strong>Telefon:</strong> {{ registration.phone|e }}
+    </p>
+  </div>
+
+  <h2>Was motiviert dich mitzumachen?</h2>
+  <div class="box">
+    {{ registration.motivation|e|nl2br }}
+  </div>
+
+  <h2>Wenn du dir eine Rolle aussuchen könntest, wäre sie …? Und warum?</h2>
+  <div class="box">
+    <p style="margin:0 0 8px;">
+      <strong>Rollen:</strong> {{ registration.roleTypes|join(', ')|e }}
+    </p>
+    {{ registration.roleReason|e|nl2br }}
+  </div>
+
+  <h2>Was erwartest du von uns?</h2>
+  <div class="box">
+    {{ registration.expectations|e|nl2br }}
+  </div>
+
+  <p>
+    Beste Grüße<br />
+    Dein Freispiel-Team
+  </p>
+
+  <p class="meta">
+    Dies ist eine automatische Bestätigung deiner Anmeldung. Deine Daten werden vertraulich behandelt und nur zur Organisation der Probestunde verwendet. Bei Rückfragen kannst du direkt auf diese E‑Mail antworten.
+  </p>
+{% endblock %}

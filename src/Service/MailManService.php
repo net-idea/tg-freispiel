@@ -122,7 +122,7 @@ class MailManService
     }
 
     /**
-     * Notify the owner about a new Anmeldung zur Probestunde (casting registration).
+     * Notify the owner about a new trial-session registration.
      *
      * @throws TransportExceptionInterface|RuntimeError|LoaderError|SyntaxError
      */
@@ -168,6 +168,32 @@ class MailManService
             $this->logger->error('Mailer send failed: ' . $e->getMessage(), ['exception' => $e]);
 
             throw $e;
+        }
+
+        // Send copy to visitor if requested and the address looks valid
+        if ($registration->getCopy()) {
+            $visitorEmail = trim($registration->getEmailAddress());
+
+            if ('' !== $visitorEmail && filter_var($visitorEmail, FILTER_VALIDATE_EMAIL)) {
+                $visitorSubject = 'Theatergruppe Freispiel — Deine Anmeldung zur Probestunde';
+                $visitorText = $this->twig->render('email/registration_visitor.txt.twig', $context);
+                $visitorHtml = $this->twig->render('email/registration_visitor.html.twig', $context);
+
+                $emailVisitor = (new Email())
+                    ->from($from)
+                    ->to(new Address($visitorEmail, $registration->getName()))
+                    ->subject($visitorSubject)
+                    ->text($visitorText)
+                    ->html($visitorHtml);
+
+                $this->mailer->send($emailVisitor);
+                $this->logger->info('Registration mail sent to visitor', [
+                    'to'   => $visitorEmail,
+                    'name' => $registration->getName(),
+                ]);
+            } else {
+                $this->logger->warning('Skipping visitor copy: invalid or empty visitor email', ['email' => $registration->getEmailAddress()]);
+            }
         }
     }
 

@@ -1,7 +1,5 @@
-# Dockerfile
-FROM php:8.4-fpm-alpine
+FROM php:8.4-fpm-alpine3.24 AS php-base
 
-# Install system dependencies (including bash for Symfony CLI installer)
 RUN apk add --no-cache \
     bash \
     git \
@@ -13,48 +11,48 @@ RUN apk add --no-cache \
     unzip \
     oniguruma-dev \
     libxml2-dev \
-    nodejs \
-    npm \
+    libpq-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) pdo_mysql mbstring exif pcntl bcmath gd
+    && docker-php-ext-install -j$(nproc) pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Install Yarn
-RUN npm install -g yarn
-
-# Install Symfony CLI
-RUN curl -sS https://get.symfony.com/cli/installer | bash && \
-    mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
-
-# Set working directory
 WORKDIR /var/www/html
 
-# Copy composer files
+FROM php-base AS dev
+
 COPY composer.json composer.lock ./
+RUN composer install --prefer-dist --no-interaction --no-progress --no-scripts --no-autoloader
 
-# Install PHP dependencies
-RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
-
-# Copy package.json & yarn.lock
-COPY package.json yarn.lock webpack.config.js ./
-
-# Install Node dependencies
-RUN yarn install --frozen-lockfile
-
-# Copy project
-COPY . .
-
-# Generate autoloader
-RUN composer dump-autoload --no-dev --optimize --classmap-authoritative
-
-# Create var directory if it doesn't exist and set permissions
 RUN mkdir -p /var/www/html/var/cache /var/www/html/var/log && \
     chown -R www-data:www-data /var/www/html/var && \
     chmod -R 775 /var/www/html/var
 
-# Expose port 9000 for PHP-FPM
+FROM node:24-alpine3.24 AS assets
+
+WORKDIR /app
+
+RUN corepack enable && corepack prepare yarn@1.22.22 --activate
+
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+COPY . .
+RUN yarn build
+
+FROM php-base AS prod
+
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --prefer-dist --no-interaction --no-progress --no-scripts --no-autoloader
+
+COPY . .
+COPY --from=assets /app/public/build ./public/build
+
+RUN composer dump-autoload --no-dev --optimize --classmap-authoritative && \
+    mkdir -p /var/www/html/var/cache /var/www/html/var/log && \
+    chown -R www-data:www-data /var/www/html/var && \
+    chmod -R 775 /var/www/html/var
+
 EXPOSE 9000
 
 CMD ["php-fpm"]

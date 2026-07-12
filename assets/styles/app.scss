@@ -36,7 +36,7 @@ body::before {
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: url('/images/stage-background-mystical.png') center center / cover no-repeat;
+  background: url('/images/stage-background-mystical.webp') center center / cover no-repeat;
 }
 
 /* --------------------------------------------------------------------------
@@ -409,9 +409,7 @@ footer {
 
   /* Translucent panel: the stage shows through, with a pronounced
      gold → stage-red → dark colour wash as the hero gradient. */
-  background:
-    radial-gradient(125% 95% at 50% -15%, rgb(227 178 74 / 40%), rgb(139 0 0 / 22%) 46%, transparent 72%),
-    linear-gradient(180deg, rgb(40 18 14 / 34%) 0%, rgb(13 13 13 / 46%) 55%, rgb(10 10 10 / 62%) 100%);
+  background: radial-gradient(125% 95% at 50% -15%, rgb(227 178 74 / 40%), rgb(139 0 0 / 22%) 46%, transparent 72%), linear-gradient(180deg, rgb(40 18 14 / 34%) 0%, rgb(13 13 13 / 46%) 55%, rgb(10 10 10 / 62%) 100%);
   backdrop-filter: blur(8px) saturate(150%);
   border: 1px solid rgb(212 175 55 / 45%);
   box-shadow:

@@ -114,6 +114,12 @@ class FormRegistrationType extends AbstractType
                 'attr'           => ['class' => 'form-check-input'],
                 'label_attr'     => ['class' => 'form-check-label'],
             ])
+            ->add('copy', CheckboxType::class, [
+                'label'      => 'Kopie an mich senden',
+                'required'   => false,
+                'attr'       => ['class' => 'form-check-input'],
+                'label_attr' => ['class' => 'form-check-label'],
+            ])
             // spam traps
             ->add('emailrep', TextType::class, [
                 'label'      => false,

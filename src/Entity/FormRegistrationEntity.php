@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Anmeldung zur Probestunde (Casting-Registrierung).
+ * Registration for a trial session (casting).
  */
 #[ORM\Entity(repositoryClass: 'App\\Repository\\FormRegistrationRepository')]
 #[ORM\Table(name: 'form_registration')]
@@ -58,6 +58,9 @@ class FormRegistrationEntity
     #[ORM\Column(type: 'boolean')]
     #[Assert\IsTrue(message: 'Bitte stimme der Datenverarbeitung zu.')]
     protected bool $consent = false;
+
+    #[ORM\Column(type: 'boolean')]
+    protected bool $copy = true;
 
     // Honeypot; not persisted
     protected string $emailrep = '';
@@ -189,6 +192,18 @@ class FormRegistrationEntity
     public function getConsent(): bool
     {
         return $this->consent;
+    }
+
+    public function setCopy(bool $copy): self
+    {
+        $this->copy = $copy;
+
+        return $this;
+    }
+
+    public function getCopy(): bool
+    {
+        return $this->copy;
     }
 
     public function setEmailrep($emailrep): self

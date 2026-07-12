@@ -57,6 +57,10 @@ class FormRegistrationEntityTest extends TestCase
         $entity->setConsent(true);
         $this->assertTrue($entity->getConsent());
 
+        $this->assertTrue($entity->getCopy(), 'copy defaults to true');
+        $entity->setCopy(false);
+        $this->assertFalse($entity->getCopy());
+
         $entity->setEmailrep('spam@example.com');
         $this->assertSame('spam@example.com', $entity->getEmailrep());
     }

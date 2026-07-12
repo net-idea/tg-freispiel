@@ -15,6 +15,17 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$ROOT_DIR"
 
+# Warn (don't fail) when the checkout is behind its upstream: deploy.sh
+# deliberately never pulls, and deploying stale code is the usual culprit
+# when dependency installs suddenly fail.
+if command -v git >/dev/null 2>&1 && git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  git fetch --quiet 2>/dev/null || true
+  BEHIND="$(git rev-list --count 'HEAD..@{upstream}' 2>/dev/null || echo 0)"
+  if [ "${BEHIND:-0}" -gt 0 ]; then
+    echo "⚠ Checkout is $BEHIND commit(s) behind upstream — did you forget to git pull?" >&2
+  fi
+fi
+
 # Ensure Composer/Symfony auto-scripts run in production context
 export APP_ENV=prod
 export APP_DEBUG=0
@@ -35,14 +46,17 @@ fi
 
 echo ""
 
-# 2nd: check if yarn/npm is available and then install node dependencies
+# 2nd: check if yarn/npm is available and then install node dependencies.
+# The lockfile is authoritative: never fall back to a mutable install that
+# could rewrite it on the server. If this step fails, the checkout is stale
+# or the lockfile is broken — fix that in the repository and redeploy.
 if command -v yarn >/dev/null 2>&1; then
   echo "[2/5] Installing Node.js dependencies (yarn)..."
-  yarn install --immutable 2>/dev/null || yarn install --frozen-lockfile 2>/dev/null || yarn install
+  yarn install --frozen-lockfile
   echo "✓ Node.js dependencies installed"
 elif command -v npm >/dev/null 2>&1; then
   echo "[2/5] Installing Node.js dependencies (npm)..."
-  npm ci 2>/dev/null || npm install
+  npm ci
   echo "✓ Node.js dependencies installed"
 else
   echo "⚠ Neither yarn nor npm found. Skipping Node.js install." >&2

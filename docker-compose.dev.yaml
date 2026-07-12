@@ -3,6 +3,10 @@ services:
     volumes:
       - .:/var/www/html
       - ./var:/var/www/html/var
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
     environment:
       APP_ENV: dev
       APP_DEBUG: 1
@@ -19,20 +23,24 @@ services:
       - external
 
   node:
-    image: node:20-alpine
+    image: node:24-alpine3.24
     container_name: '${APP_NAME:-tg-freispiel}_node'
     hostname: node
     working_dir: /app
     volumes:
       - .:/app
-    command: sh -c "yarn install --immutable && yarn encore dev-server --host 0.0.0.0 --port 8080 --hot --public http://127.0.0.1:8080"
+    command: >
+      sh -lc "corepack enable &&
+      corepack prepare yarn@1.22.22 --activate &&
+      yarn install --frozen-lockfile &&
+      yarn encore dev-server --host 0.0.0.0 --port 8080 --hot --public http://127.0.0.1:8080"
     ports:
       - '${NODE_PORT:-8080}:8080'
     networks:
       - internal
 
   mailer:
-    image: axllent/mailpit
+    image: axllent/mailpit:latest
     container_name: '${APP_NAME:-tg-freispiel}_mailer'
     hostname: mailer
     restart: unless-stopped
