@@ -26,10 +26,11 @@ class DateController extends AbstractBaseController
         return $this->render(
             'pages/dates.html.twig',
             [
-                'slug'     => 'termine',
-                'navItems' => $this->navigation->getItems(),
-                'pageMeta' => $this->loadPageMetadata('termine'),
-                'dates'    => $this->dateProvider->getUpcoming(),
+                'slug'        => 'termine',
+                'navItems'    => $this->navigation->getItems(),
+                'footerItems' => $this->navigation->getFooterItems(),
+                'pageMeta'    => $this->loadPageMetadata('termine'),
+                'dates'       => $this->dateProvider->getUpcoming(),
             ]
         );
     }

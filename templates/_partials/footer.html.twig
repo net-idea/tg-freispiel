@@ -4,19 +4,16 @@
       <div class="col-md-6 mb-4 mb-md-0">
         <h5 class="footer-heading">🎭 Theatergruppe Freispiel</h5>
         <p class="footer-text">
-          Wir sind eine leidenschaftliche Gemeinschaft von Theaterbegeisterten aus Dormagen.<br />
-          Durch die Kraft des Theaters möchten wir Menschen berühren, unterhalten und zum Nachdenken anregen.
+          Wir sind eine Gemeinschaft theaterbegeisterter Menschen aus Dormagen, die Geschichten mit Ausdruck, Spielfreude und Nähe zum Publikum auf die Bühne bringt.<br />
+          Mit unseren Stücken möchten wir Menschen berühren, unterhalten und zum Nachdenken anregen.
         </p>
       </div>
       <div class="col-md-3 mb-4 mb-md-0">
         <h6 class="footer-heading">Navigation</h6>
         <ul class="list-unstyled">
-          <li class="mb-2"><a href="{{ path('app_index') }}" class="footer-link">Home</a></li>
-          <li class="mb-2"><a href="{{ path('app_dates') }}" class="footer-link">Termine</a></li>
-          <li class="mb-2"><a href="{{ path('app_rehearsals') }}" class="footer-link">Proben</a></li>
-          <li class="mb-2"><a href="{{ path('app_registration') }}" class="footer-link">Anmeldung</a></li>
-          <li class="mb-2"><a href="{{ path('app_contact') }}" class="footer-link">Kontakt</a></li>
-          <li class="mb-2"><a href="/datenschutz" class="footer-link">Datenschutz</a></li>
+          {% for item in footerItems|default([]) %}
+            <li class="mb-2"><a href="{{ item.url }}" class="footer-link">{{ item.label }}</a></li>
+          {% endfor %}
         </ul>
       </div>
       <div class="col-md-3">
@@ -24,7 +21,7 @@
         <p class="footer-text mb-0">
           Theatergruppe Freispiel<br />
           Dormagen<br />
-          <a href="{{ path('app_contact') }}" class="footer-gold-link">→ Kontaktformular</a>
+          <a href="/kontakt" class="footer-gold-link">→ Kontaktformular</a>
         </p>
       </div>
     </div>

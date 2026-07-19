@@ -1,5 +1,10 @@
 const Encore = require('@symfony/webpack-encore').default;
 
+const parsePort = (value, fallback) => {
+  const parsed = Number.parseInt(String(value ?? ''), 10);
+  return Number.isNaN(parsed) ? fallback : parsed;
+};
+
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
 if (!Encore.isRuntimeEnvironmentConfigured()) {
@@ -83,13 +88,26 @@ Encore
 
   // dev-server: enable HMR/live reload and watch Twig/PHP changes
   .configureDevServerOptions((options) => {
+    const publicHost = process.env.NODE_PUBLIC_HOST || '127.0.0.1';
+    const publicPort = parsePort(process.env.NODE_PORT, 15081);
+    const bindHost = process.env.NODE_BIND_HOST || 'localhost';
+    const bindPort = parsePort(process.env.NODE_INTERNAL_PORT, publicPort);
+
     options.hot = true;
     options.liveReload = true;
-    options.client = { overlay: true, progress: true };
+    options.client = {
+      overlay: true,
+      progress: true,
+      webSocketURL: {
+        protocol: process.env.NODE_WS_PROTOCOL || 'ws',
+        hostname: publicHost,
+        port: publicPort,
+        pathname: '/ws',
+      },
+    };
     options.watchFiles = ['assets/**/*', 'templates/**/*.twig', 'src/**/*.php'];
-    // Bind to localhost for Symfony dev-server auto-detection
-    options.host = 'localhost';
-    options.port = 8080;
+    options.host = bindHost;
+    options.port = bindPort;
     options.headers = {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',

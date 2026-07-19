@@ -18,7 +18,7 @@
     "tsc:watch": "tsc --noEmit -w",
     "lint:css": "stylelint 'assets/**/*.{css,scss}'",
     "lint:css:fix": "stylelint 'assets/**/*.{css,scss}' --fix",
-    "og:build": "node generate-og.js",
+    "og:build": "node og.js",
     "lint:html": "prettier \"templates/**/*.html.twig\" --check",
     "lint:html:fix": "prettier \"templates/**/*.html.twig\" --write",
     "lint:twig": "php bin/console lint:twig templates",

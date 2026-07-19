@@ -39,23 +39,20 @@ class MainController extends AbstractBaseController
     {
         $projectDir = (string) $this->getParameter('kernel.project_dir');
 
-        // 1) if a Twig page template exists (templates/pages/{slug}.html.twig), render it
-
         $twigTemplatePath = $projectDir . '/templates/pages/' . ('' !== $slug ? $slug : 'index') . '.html.twig';
 
         if (is_file($twigTemplatePath)) {
             return $this->render(
                 'pages/' . ('' !== $slug ? $slug : 'index') . '.html.twig',
                 [
-                    'slug'     => $slug,
-                    'navItems' => $this->navigation->getItems(),
-                    'pageMeta' => $this->loadPageMetadata($slug),
-                    'nextDate' => $this->dateProvider->getNext(),
+                    'slug'        => $slug,
+                    'navItems'    => $this->navigation->getItems(),
+                    'footerItems' => $this->navigation->getFooterItems(),
+                    'pageMeta'    => $this->loadPageMetadata($slug),
+                    'nextDate'    => $this->dateProvider->getNext(),
                 ]
             );
         }
-
-        // 2) Otherwise, If a Markdown file exists under content/{slug}.md, render it via Parsedown
 
         $contentFile = $projectDir . '/content/' . ('' !== $slug ? $slug : 'index') . '.md';
 
@@ -67,10 +64,11 @@ class MainController extends AbstractBaseController
             return $this->render(
                 'pages/content.html.twig',
                 [
-                    'content'  => $html,
-                    'slug'     => $slug,
-                    'navItems' => $this->navigation->getItems(),
-                    'pageMeta' => $this->loadPageMetadata($slug),
+                    'content'     => $html,
+                    'slug'        => $slug,
+                    'navItems'    => $this->navigation->getItems(),
+                    'footerItems' => $this->navigation->getFooterItems(),
+                    'pageMeta'    => $this->loadPageMetadata($slug),
                 ]
             );
         }

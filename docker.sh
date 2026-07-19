@@ -186,6 +186,17 @@ parse_args() {
 
   if [ "$USE_DEV" -eq 1 ]; then
     add_profile "adminer"
+
+    if [ "$DB_ENGINE" = "mariadb" ]; then
+      add_profile "phpmyadmin"
+    fi
+  fi
+
+  if [ "$COMMAND" = "down" ] || [ "$COMMAND" = "destroy" ]; then
+    add_profile "adminer"
+    add_profile "redis"
+    add_profile "memcache"
+
     if [ "$DB_ENGINE" = "mariadb" ]; then
       add_profile "phpmyadmin"
     fi

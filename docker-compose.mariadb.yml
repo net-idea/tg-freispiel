@@ -4,26 +4,14 @@ services:
     container_name: '${APP_NAME:-tg-freispiel}_mariadb'
     hostname: mariadb
     restart: unless-stopped
-    command: [
-      '--port=${DB_PORT:-3308}',
-      '--character-set-server=utf8mb4',
-      '--collation-server=utf8mb4_unicode_ci',
-      '--transaction-isolation=READ-COMMITTED',
-      '--log-bin=binlog',
-      '--binlog-format=ROW'
-    ]
+    command: ['--port=${DB_PORT:-3308}', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci', '--transaction-isolation=READ-COMMITTED', '--log-bin=binlog', '--binlog-format=ROW']
     environment:
       MYSQL_ROOT_PASSWORD: '${DB_ROOT_PASSWORD:-nopassword}'
       MYSQL_DATABASE: '${DB_NAME:-tg-freispiel}'
       MYSQL_USER: '${DB_USER:-tg-freispiel}'
       MYSQL_PASSWORD: '${DB_PASSWORD:-nopassword}'
     healthcheck:
-      test: [
-        'CMD',
-        'healthcheck.sh',
-        '--connect',
-        '--innodb_initialized'
-      ]
+      test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
       interval: 10s
       timeout: 5s
       retries: 5

@@ -41,12 +41,13 @@ class ContactController extends AbstractBaseController
         return $this->render(
             'pages/contact.html.twig',
             [
-                'slug'     => 'kontakt',
-                'navItems' => $this->navigation->getItems(),
-                'pageMeta' => $this->loadPageMetadata('kontakt'),
-                'form'     => $form->createView(),
-                'result'   => $result,
-                'messages' => self::MESSAGES,
+                'slug'        => 'kontakt',
+                'navItems'    => $this->navigation->getItems(),
+                'footerItems' => $this->navigation->getFooterItems(),
+                'pageMeta'    => $this->loadPageMetadata('kontakt'),
+                'form'        => $form->createView(),
+                'result'      => $result,
+                'messages'    => self::MESSAGES,
             ]
         );
     }

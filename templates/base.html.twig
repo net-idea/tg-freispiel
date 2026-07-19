@@ -1,14 +1,37 @@
 <!DOCTYPE html>
 <html lang="de">
   <head>
+    {% set metaTitle = pageMeta.title|default('Theatergruppe Freispiel in Dormagen | Proben, Termine & Probestunde') %}
+    {% set metaDescription = pageMeta.description|default('Theatergruppe Freispiel aus Dormagen – wir bringen Geschichten auf die Bühne. Komm vorbei, mach mit und erlebe mit uns die Magie des Theaters.') %}
+    {% set metaCanonical = pageMeta.canonical|default(app.request is defined and app.request ? app.request.pathInfo : '/') %}
+    {% set metaRobots = pageMeta.robots|default('index,follow,max-image-preview:large') %}
+    {% set metaOgImage = pageMeta.og_image|default('/images/stage-background-mystical.webp') %}
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>
       {% block title %}
-        Theatergruppe Freispiel
+        {{ metaTitle }}
       {% endblock %}
     </title>
-    <meta name="description" content="Die offizielle Webseite der Theatergruppe Freispiel aus Dormagen - Leidenschaft für Theater und darstellende Kunst" />
+    <meta name="description" content="{{ metaDescription }}" />
+    <meta name="robots" content="{{ metaRobots }}" />
+    <link rel="canonical" href="{{ absolute_url(metaCanonical) }}" />
+
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Theatergruppe Freispiel" />
+    <meta property="og:title" content="{{ metaTitle }}" />
+    <meta property="og:description" content="{{ metaDescription }}" />
+    <meta property="og:url" content="{{ absolute_url(metaCanonical) }}" />
+    <meta property="og:image" content="{{ absolute_url(metaOgImage) }}" />
+    <meta property="og:image:alt" content="{{ metaTitle }}" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{ metaTitle }}" />
+    <meta name="twitter:description" content="{{ metaDescription }}" />
+    <meta name="twitter:image" content="{{ absolute_url(metaOgImage) }}" />
+
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🎭</text></svg>" />
 
     {% block stylesheets %}
@@ -21,10 +44,8 @@
 
       <main class="flex-grow-1">
         <div class="container py-4">
-          {# Flash messages partial #}
           {% include '_partials/flash_messages.html.twig' %}
 
-          {# Page content #}
           {% block body %}
 
           {% endblock %}

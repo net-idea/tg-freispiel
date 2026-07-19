@@ -41,6 +41,14 @@ Für die Proben-Fotogalerie gilt:
 
 In der Galerie wird automatisch das `.thumb`-Bild als Vorschau verwendet; beim Klick öffnet die Vollbildansicht das Originalbild.
 
+Für die Proben-Videogalerie gilt:
+
+- Video: `dateiname.mp4` (oder `.webm` / `.mov`)
+- Thumbnail für die Übersicht: `dateiname.thumb.webp`
+- Alternativ ebenfalls unterstützt: `dateiname.mp4.thumb.webp`
+
+In der Übersicht werden nur die Thumbnail-Bilder geladen. Das Video selbst wird erst beim Klick in der Vollbildansicht geladen.
+
 ## ✅ Local development (recommended)
 
 ### Prerequisites

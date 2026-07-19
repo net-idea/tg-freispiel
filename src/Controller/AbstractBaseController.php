@@ -23,20 +23,25 @@ abstract class AbstractBaseController extends AbstractController
         // Load page metadata from content/_pages.php
         $pagesFile = $projectDir . '/content/_pages.php';
         $pages = is_file($pagesFile) ? (require $pagesFile) : [];
-        $metaSlug = ('' === $slug || 'main' === $slug) ? 'start' : $slug;
+        $metaSlug = \in_array($slug, ['', 'main', 'index'], true) ? 'start' : $slug;
+        $defaultPath = '/' . ('start' === $metaSlug ? '' : $metaSlug);
 
-        /** @var array<string,mixed> $pageMeta */
-        $pageMeta = $pages[$metaSlug] ?? [
-            'title'       => ucfirst($metaSlug ?: 'Start'),
+        $defaults = [
+            'title'       => 'Theatergruppe Freispiel in Dormagen | Proben, Termine & Probestunde',
             'description' => 'Theatergruppe Freispiel aus Dormagen – wir bringen Geschichten auf die Bühne. Komm vorbei, mach mit und erlebe mit uns die Magie des Theaters.',
             'destination' => 'Uni',
-            'canonical'   => '/' . ('start' === $metaSlug ? '' : $metaSlug),
-            'robots'      => 'index,follow',
-            'og_image'    => '/assets/og/start.jpg',
+            'path'        => $defaultPath,
+            'canonical'   => $defaultPath,
+            'robots'      => 'index,follow,max-image-preview:large',
+            'og_image'    => '/images/stage-background-mystical.webp',
         ];
+
+        /** @var array<string,mixed> $pageMeta */
+        $pageMeta = array_replace($defaults, $pages[$metaSlug] ?? []);
 
         return $pageMeta;
     }
+
     /**
      * Shared Ajax response for form submissions: maps a SubmissionResult to
      * JSON payload + HTTP status. $messages needs the keys success, invalid,

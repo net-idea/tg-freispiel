@@ -43,13 +43,14 @@ class RegistrationController extends AbstractBaseController
         return $this->render(
             'pages/registration.html.twig',
             [
-                'slug'     => 'anmeldung',
-                'navItems' => $this->navigation->getItems(),
-                'pageMeta' => $this->loadPageMetadata('anmeldung'),
-                'nextDate' => $this->dateProvider->getNext(),
-                'form'     => $form->createView(),
-                'result'   => $result,
-                'messages' => self::MESSAGES,
+                'slug'        => 'anmeldung',
+                'navItems'    => $this->navigation->getItems(),
+                'footerItems' => $this->navigation->getFooterItems(),
+                'pageMeta'    => $this->loadPageMetadata('anmeldung'),
+                'nextDate'    => $this->dateProvider->getNext(),
+                'form'        => $form->createView(),
+                'result'      => $result,
+                'messages'    => self::MESSAGES,
             ]
         );
     }

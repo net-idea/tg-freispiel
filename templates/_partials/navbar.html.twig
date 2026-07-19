@@ -1,17 +1,17 @@
+{% set currentPath = app.request is defined and app.request ? app.request.pathInfo : '' %}
+
 <nav class="navbar navbar-expand-lg navbar-dark glass-navbar">
   <div class="container">
-    <a class="navbar-brand d-flex align-items-center" href="{{ path('app_index') }}">
+    <a class="navbar-brand d-flex align-items-center" href="/">
       <span class="me-2" style="font-size: 1.8rem;">🎭</span>
       Theatergruppe Freispiel
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link {% if app.request is defined and app.request and app.request.attributes.get('_route') == 'app_index' %}active{% endif %}" href="{{ path('app_index') }}">Home</a></li>
-        <li class="nav-item"><a class="nav-link {% if app.request is defined and app.request and app.request.attributes.get('_route') == 'app_rehearsals' %}active{% endif %}" href="{{ path('app_rehearsals') }}">Proben</a></li>
-        <li class="nav-item"><a class="nav-link {% if app.request is defined and app.request and app.request.attributes.get('_route') == 'app_dates' %}active{% endif %}" href="{{ path('app_dates') }}">Termine</a></li>
-        <li class="nav-item"><a class="nav-link {% if app.request is defined and app.request and app.request.attributes.get('_route') == 'app_registration' %}active{% endif %}" href="{{ path('app_registration') }}">Anmeldung</a></li>
-        <li class="nav-item"><a class="nav-link {% if app.request is defined and app.request and app.request.attributes.get('_route') == 'app_contact' %}active{% endif %}" href="{{ path('app_contact') }}">Kontakt</a></li>
+        {% for item in navItems|default([]) %}
+          <li class="nav-item"><a class="nav-link {% if currentPath == item.url %}active{% endif %}" href="{{ item.url }}">{{ item.label }}</a></li>
+        {% endfor %}
       </ul>
     </div>
   </div>
