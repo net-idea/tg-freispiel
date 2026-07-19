@@ -1,237 +1,250 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-### Development environment helper
-# This script helps starting a development environment in two modes:
-# 1) Local mode (default): uses host PHP/Node/Composer/Yarn. It:
-#    - starts MariaDB via Docker compose (dev DB compose files)
-#    - installs Composer and Yarn dependencies on host
-#    - clears and warms Symfony cache
-#    - optionally runs Doctrine migrations
-#    - starts Webpack Encore in watch mode and the PHP built-in server
-# 2) Docker Compose mode: brings up the full dev stack using Docker Compose
-#    (PHP, Nginx, Node watcher, MariaDB, Mailpit).
-#
-# Usage: ./develop.sh [-d]
-# -d: Run Docker Compose in detached mode (background)
-#
-# Press Ctrl+C to stop local watchers or the attached Docker stack.
+set -euo pipefail
 
-# Colors for output
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-NC='\033[0m' # No Color
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$SCRIPT_DIR"
 
-# Parse arguments
-DETACHED=false
-while [[ $# -gt 0 ]]; do
+MODE=""
+DETACHED=1
+
+GREEN=$'\033[0;32m'
+YELLOW=$'\033[1;33m'
+RED=$'\033[0;31m'
+BLUE=$'\033[0;34m'
+NC=$'\033[0m'
+
+usage() {
+  cat <<'EOF'
+Usage: ./develop.sh [--local|--docker] [--detach|--attach]
+
+Modes:
+  --local   Run local development stack without Docker (default)
+  --docker  Run Docker development stack via ./docker.sh up --dev
+
+Options:
+  -d, --detach  Docker mode only: detached (default)
+  -a, --attach  Docker mode only: attach logs in foreground
+  -h, --help    Show this help
+EOF
+}
+
+load_env() {
+  if [ -f "$PROJECT_DIR/.env" ]; then
+    set -o allexport
+    # shellcheck disable=SC1091
+    source "$PROJECT_DIR/.env"
+    set +o allexport
+  fi
+}
+
+choose_mode() {
+  if [ -n "$MODE" ]; then
+    return
+  fi
+
+  if [ -t 0 ]; then
+    echo -e "${BLUE}Select development mode:${NC}"
+    echo -e "${YELLOW}1) Local (without Docker)${NC}"
+    echo -e "${YELLOW}2) Docker (via docker.sh up --dev)${NC}"
+    read -r -p "Choice [1/2, default 1]: " choice
+
+    case "${choice:-1}" in
+      2) MODE="docker" ;;
+      *) MODE="local" ;;
+    esac
+  else
+    MODE="local"
+  fi
+}
+
+has_migrations() {
+  [ -d "$PROJECT_DIR/migrations" ] && \
+    find "$PROJECT_DIR/migrations" -maxdepth 1 -type f -name '*.php' -print -quit | grep -q .
+}
+
+ask_and_run_migrations_local() {
+  if ! has_migrations; then
+    return
+  fi
+
+  if [ -t 0 ]; then
+    read -r -p "Run Doctrine migrations now? [y/N] " response
+    if [[ ! "$response" =~ ^[Yy]$ ]]; then
+      echo -e "${GREEN}Migrations skipped.${NC}"
+      return
+    fi
+  fi
+
+  echo -e "${YELLOW}Running Doctrine migrations (local)...${NC}"
+  php bin/console doctrine:migrations:migrate --no-interaction
+}
+
+ask_and_run_migrations_docker() {
+  if ! has_migrations; then
+    return
+  fi
+
+  if [ -t 0 ]; then
+    read -r -p "Run Doctrine migrations in Docker now? [y/N] " response
+    if [[ ! "$response" =~ ^[Yy]$ ]]; then
+      echo -e "${GREEN}Migrations skipped.${NC}"
+      return
+    fi
+  fi
+
+  echo -e "${YELLOW}Running Doctrine migrations (docker)...${NC}"
+  "$PROJECT_DIR/docker.sh" exec --dev php php bin/console doctrine:migrations:migrate --no-interaction
+}
+
+require_local_deps() {
+  local missing=()
+  local bin
+  for bin in php composer node yarn; do
+    if ! command -v "$bin" >/dev/null 2>&1; then
+      missing+=("$bin")
+    fi
+  done
+
+  if [ "${#missing[@]}" -gt 0 ]; then
+    echo -e "${RED}Missing local dependencies: ${missing[*]}${NC}" >&2
+    exit 1
+  fi
+}
+
+print_local_overview() {
+  local app_port="${APP_PORT:-8000}"
+  local node_port="${NODE_PORT:-8080}"
+
+  echo
+  echo -e "${GREEN}Local development is running:${NC}"
+  echo -e "${YELLOW} → App:       http://127.0.0.1:${app_port}${NC}"
+  echo -e "${YELLOW} → Assets:    http://127.0.0.1:${node_port}${NC}"
+  echo -e "${YELLOW} → Runtime:   local PHP + local Node${NC}"
+  echo
+}
+
+print_docker_overview() {
+  local db="${DB:-mariadb}"
+  local db_service="mariadb"
+  local app_port="${APP_PORT:-8000}"
+  local node_port="${NODE_PORT:-8080}"
+  local mailer_web_port="${MAILER_WEB_PORT:-8025}"
+  local adminer_port="${ADMINER_PORT:-8091}"
+  local phpmyadmin_port="${PHPMYADMIN_PORT:-8092}"
+
+  if [ "$db" = "postgres" ]; then
+    db_service="postgres"
+  fi
+
+  echo
+  echo -e "${GREEN}Docker development is running:${NC}"
+  echo -e "${YELLOW} → App:        http://127.0.0.1:${app_port}${NC}"
+  echo -e "${YELLOW} → Assets:     http://127.0.0.1:${node_port}${NC}"
+  echo -e "${YELLOW} → Mailpit:    http://127.0.0.1:${mailer_web_port}${NC}"
+  echo -e "${YELLOW} → Adminer:    http://127.0.0.1:${adminer_port}${NC}"
+  if [ "$db_service" = "mariadb" ]; then
+    echo -e "${YELLOW} → phpMyAdmin: http://127.0.0.1:${phpmyadmin_port}${NC}"
+  fi
+  echo -e "${YELLOW} → DB service: ${db_service} (internal Docker network)${NC}"
+  echo
+  echo -e "${BLUE}Services:${NC}"
+  "$PROJECT_DIR/docker.sh" ps --dev || true
+  echo
+}
+
+run_local_mode() {
+  local yarn_pid=""
+  local php_pid=""
+
+  require_local_deps
+
+  echo -e "${GREEN}Starting local development environment...${NC}"
+  echo -e "${YELLOW}Installing dependencies...${NC}"
+  composer install --working-dir="$PROJECT_DIR" --prefer-dist --no-progress
+  yarn install --cwd "$PROJECT_DIR"
+
+  echo -e "${YELLOW}Preparing Symfony cache...${NC}"
+  php bin/console cache:clear --no-warmup
+  php bin/console cache:warmup
+  ask_and_run_migrations_local
+
+  cleanup_local() {
+    [ -n "$yarn_pid" ] && kill "$yarn_pid" 2>/dev/null || true
+    [ -n "$php_pid" ] && kill "$php_pid" 2>/dev/null || true
+  }
+  trap cleanup_local INT TERM EXIT
+
+  print_local_overview
+  echo -e "${YELLOW}Press Ctrl+C to stop.${NC}"
+
+  yarn encore dev-server --port "${NODE_PORT:-8080}" --host 127.0.0.1 --hot &
+  yarn_pid="$!"
+
+  sleep 2
+
+  php -S "127.0.0.1:${APP_PORT:-8000}" -t public &
+  php_pid="$!"
+
+  wait
+}
+
+run_docker_mode() {
+  echo -e "${GREEN}Starting Docker development environment...${NC}"
+  "$PROJECT_DIR/docker.sh" up --dev
+  ask_and_run_migrations_docker
+  print_docker_overview
+
+  if [ "$DETACHED" -eq 1 ]; then
+    echo -e "${GREEN}Docker dev stack is running detached.${NC}"
+    echo -e "${YELLOW}Use ./docker.sh logs --dev (or ./develop.sh --docker --attach) to follow logs.${NC}"
+    return
+  fi
+
+  echo -e "${YELLOW}Attaching Docker logs...${NC}"
+  echo -e "${YELLOW}Press Ctrl+C to stop log tailing.${NC}"
+  "$PROJECT_DIR/docker.sh" logs --dev
+}
+
+while [ $# -gt 0 ]; do
   case "$1" in
+    --local)
+      MODE="local"
+      ;;
+    --docker)
+      MODE="docker"
+      ;;
     -d|--detach)
-      DETACHED=true; shift ;;
+      DETACHED=1
+      ;;
+    -a|--attach)
+      DETACHED=0
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
     *)
-      shift ;; # Ignore other args
+      echo -e "${RED}Unknown option: $1${NC}" >&2
+      usage
+      exit 2
+      ;;
   esac
+  shift
 done
 
-PROJECT_DIR=$(pwd)
-PHP_BIN=$(which php 2>/dev/null || echo "")
-COMPOSER_BIN=$(which composer 2>/dev/null || echo "")
-SYMFONY_BIN=$(which symfony 2>/dev/null || echo "")
-NODE_BIN=$(which node 2>/dev/null || echo "")
-YARN_BIN=$(which yarn 2>/dev/null || echo "")
-DOCKER_BIN=$(which docker 2>/dev/null || echo "")
+load_env
+choose_mode
 
-# Checks for Docker availability
-require_docker() {
-    if [ -z "$DOCKER_BIN" ]; then
-        echo -e "${RED}Docker is not installed or not in PATH.${NC}" >&2
-        exit 1
-    fi
-    if ! docker compose version >/dev/null 2>&1; then
-        echo -e "${RED}Docker Compose v2 is required (docker compose).${NC}" >&2
-        exit 1
-    fi
-}
-
-# Source docker-list.sh for compose args/services
-load_compose_args() {
-    if [ ! -x "$PROJECT_DIR/docker-list.sh" ]; then
-        echo -e "${RED}Missing $PROJECT_DIR/docker-list.sh${NC}" >&2
-        exit 1
-    fi
-
-    COMPOSE_ARGS_RAW="$($PROJECT_DIR/docker-list.sh --compose-args)"
-    # shellcheck disable=SC2206
-    COMPOSE_ARGS=( $COMPOSE_ARGS_RAW )
-
-    # determine DB service name (for logs/info)
-    if [ "${DB:-mariadb}" = "postgres" ]; then
-        DB_SERVICE=postgres
-    else
-        DB_SERVICE=mariadb
-    fi
-}
-
-# Ask for migrations if files exist
-# $1: command to execute php (e.g., "$PHP_BIN" or "docker compose ... exec ...")
-ask_and_run_migrations() {
-    local exec_cmd="$1"
-
-    # Check for migration files
-    if [ -d "migrations" ] && [ -n "$(find migrations -maxdepth 1 -type f -name '*.php' -print -quit 2>/dev/null)" ]; then
-        echo
-        echo -e "${YELLOW}Migrations found. Run them now? (y/N)${NC}"
-        read -r response
-        if [[ "$response" =~ ^[Yy]$ ]]; then
-            echo -e "${YELLOW}Running migrations...${NC}"
-            # shellcheck disable=2086
-            $exec_cmd bin/console doctrine:migrations:migrate --no-interaction
-        else
-            echo -e "${GREEN}Migrations skipped.${NC}"
-        fi
-    else
-        echo -e "${GREEN}No migrations found.${NC}"
-    fi
-}
-
-# Print generic service list with defaults from .env if possible
-print_service_info() {
-    if [ -f .env ]; then
-        set -o allexport
-        # shellcheck disable=SC1091
-        source .env
-        set +o allexport
-    fi
-
-    local app_url="http://localhost:${APP_PORT:-8000}"
-    local assets_url="http://localhost:${NODE_PORT:-8080}"
-
-    echo -e "${GREEN}Development environment is running and provides following endpoints:${NC}"
-    echo "${YELLOW} → App:        $app_url${NC}"
-    echo "${YELLOW} → Assets:     $assets_url (via Yarn)${NC}"
-}
-
-run_docker_stack() {
-    require_docker
-    load_compose_args
-
-    echo -e "${YELLOW}Starting Docker dev stack (detached init)...${NC}"
-
-    # 1. Bring up stack in detached mode first to ensure services correspond
-    #    and to allow running migrations interactively.
-    docker compose "${COMPOSE_ARGS[@]}" up -d --build --remove-orphans
-
-    echo -e "${GREEN}Docker containers are up.${NC}"
-
-    # 2. Migration prompt
-    #    We use docker executable directly to ensure interactive input works if needed,
-    #    though 'migrate --no-interaction' is passed.
-    #    The 'ask_and_run_migrations' function handles the prompt logic.
-    ask_and_run_migrations "docker compose ${COMPOSE_ARGS[*]} exec php php"
-
-    # 3. Print Services using docker-test.sh for detailed health/endpoint info
-    if [ -x "./docker-test.sh" ]; then
-        ./docker-test.sh || true
-    else
-        print_service_info
-    fi
-
-    # 4. Handle Attached vs Detached
-    if [ "$DETACHED" = true ]; then
-        echo -e "${GREEN}Running in detached mode. Use './docker-stop.sh' to stop.${NC}"
-        exit 0
-    else
-        echo
-        echo -e "${YELLOW}Attaching to logs...${NC}"
-        echo -e "${YELLOW}Press Ctrl+C to stop the stack and clean up.${NC}"
-        echo
-
-        # We define a trap to catch Ctrl+C (SIGINT)
-        # When caught, we explicitly stop the containers to mimic 'docker compose up' behavior
-        trap 'echo -e "\n${YELLOW}Stopping stack...${NC}"; docker compose "${COMPOSE_ARGS[@]}" stop; exit 0' INT TERM
-
-        # Follow logs. This blocks until Ctrl+C.
-        docker compose "${COMPOSE_ARGS[@]}" logs -f
-    fi
-}
-
-run_local_stack() {
-    echo -e "${GREEN}Starting local Symfony + Webpack Encore development environment...${NC}"
-    echo -e "${YELLOW}Checking dependencies...${NC}"
-
-    if [ -z "$PHP_BIN" ]; then
-        echo -e "${RED}PHP is not installed or not in PATH.${NC}" >&2
-        exit 1
-    fi
-
-    if [ -z "$SYMFONY_BIN" ]; then
-        echo -e "${RED}Symfony CLI is not installed. Install with: curl -sS https://get.symfony.com/cli/installer | bash${NC}" >&2
-        exit 1
-    fi
-
-    if [ -z "$COMPOSER_BIN" ]; then
-        echo -e "${RED}Composer is not installed.${NC}" >&2
-        exit 1
-    fi
-
-    if [ -z "$NODE_BIN" ]; then
-        echo -e "${RED}Node.js is not installed.${NC}" >&2
-        exit 1
-    fi
-
-    if [ -z "$YARN_BIN" ]; then
-        echo -e "${RED}Yarn is not installed. Install with: npm install -g yarn${NC}" >&2
-        exit 1
-    fi
-
-    require_docker
-    load_compose_args
-
-    echo -e "${GREEN}All dependencies are available.${NC}"
-
-    echo -e "${YELLOW}Starting database (Docker)...${NC}"
-    docker compose "${COMPOSE_ARGS[@]}" up -d "$DB_SERVICE"
-
-    echo -e "${YELLOW}Running Composer install...${NC}"
-    $COMPOSER_BIN install --working-dir="$PROJECT_DIR" --prefer-dist --no-progress
-
-    echo -e "${YELLOW}Running Yarn install...${NC}"
-    $YARN_BIN install --cwd "$PROJECT_DIR"
-
-    echo -e "${YELLOW}Clearing and warming up cache...${NC}"
-    $PHP_BIN bin/console cache:clear --no-warmup
-    $PHP_BIN bin/console cache:warmup
-
-    # Ask for migrations (local PHP)
-    ask_and_run_migrations "$PHP_BIN"
-
-    trap 'echo -e "${YELLOW}Stopping local development environment...${NC}"; kill $YARN_PID $PHP_PID 2>/dev/null; exit 0' INT TERM
-
-    echo
-    echo -e "${GREEN}Starting development servers...${NC}"
-    echo
-    print_service_info
-    echo
-    echo -e "${YELLOW}Press Ctrl+C to stop.${NC}"
-    echo
-
-    $YARN_BIN encore dev-server --port "${NODE_PORT:-8080}" --host 127.0.0.1 --hot &
-    YARN_PID=$!
-
-    sleep 2
-
-    $PHP_BIN -S "127.0.0.1:${APP_PORT:-8000}" -t public &
-    PHP_PID=$!
-
-    wait
-}
-
-echo -e "${YELLOW}Select environment:${NC}"
-echo "1) Local (host tools) + MariaDB via Docker"
-echo "2) Docker Compose (full dev stack)"
-read -rp "Choice [1/2]: " ENV_CHOICE
-
-case "$ENV_CHOICE" in
-    2) run_docker_stack ;;
-    *) run_local_stack ;;
+case "$MODE" in
+  local)
+    run_local_mode
+    ;;
+  docker)
+    run_docker_mode
+    ;;
+  *)
+    echo -e "${RED}Invalid mode: $MODE${NC}" >&2
+    exit 2
+    ;;
 esac

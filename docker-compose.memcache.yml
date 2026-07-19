@@ -3,6 +3,7 @@ services:
     image: memcached:1.6-alpine
     container_name: '${APP_NAME:-tg-freispiel}_memcached'
     hostname: memcached
+    profiles: ['memcache']
     restart: unless-stopped
     environment:
       MEMCACHED_MEMORY_LIMIT: 128

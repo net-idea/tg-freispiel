@@ -44,16 +44,6 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# Load compose args from docker-list.sh (single source of truth)
-if [ ! -x "$PROJECT_DIR/docker-list.sh" ]; then
-  echo "Missing $PROJECT_DIR/docker-list.sh. Please ensure it exists and is executable." >&2
-  exit 1
-fi
-
-COMPOSE_ARGS_RAW="$($PROJECT_DIR/docker-list.sh --compose-args)"
-# shellcheck disable=SC2206
-COMPOSE_ARGS=( $COMPOSE_ARGS_RAW )
-
 if [ "$ENGINE" = "postgres" ]; then
   DB_SERVICE="postgres"
 else
@@ -61,8 +51,8 @@ else
 fi
 
 # Check if DB service is running
-if ! docker compose "${COMPOSE_ARGS[@]}" ps "$DB_SERVICE" --format json 2>/dev/null | grep -q '"State":"running"'; then
-  echo "❌ Database service '$DB_SERVICE' is not running. Start it with: ./docker-start.sh" >&2
+if ! "$PROJECT_DIR/docker.sh" raw --dev --db "$ENGINE" -- ps "$DB_SERVICE" --format json 2>/dev/null | grep -q '"State":"running"'; then
+  echo "❌ Database service '$DB_SERVICE' is not running. Start it with: ./docker.sh up --dev" >&2
   exit 1
 fi
 
@@ -72,11 +62,11 @@ if [ "$MODE" = "backup" ]; then
 
   if [ "$ENGINE" = "postgres" ]; then
     echo "Creating Postgres backup to $FILE..."
-    docker compose "${COMPOSE_ARGS[@]}" exec -T "$DB_SERVICE" pg_dump -U "${DB_USER:-Theatergruppe Freispiel}" "${DB_NAME:-Theatergruppe Freispiel}" > "$FILE"
+    "$PROJECT_DIR/docker.sh" raw --dev --db "$ENGINE" -- exec -T "$DB_SERVICE" pg_dump -U "${DB_USER:-Theatergruppe Freispiel}" "${DB_NAME:-Theatergruppe Freispiel}" > "$FILE"
   else
     echo "Creating MariaDB backup to $FILE..."
     # Use mariadb-dump (newer MariaDB) or fall back to mysqldump
-    docker compose "${COMPOSE_ARGS[@]}" exec -T "$DB_SERVICE" sh -c "mariadb-dump -u'${DB_USER:-Theatergruppe Freispiel}' -p'${DB_PASSWORD:-nopassword}' '${DB_NAME:-Theatergruppe Freispiel}'" > "$FILE"
+    "$PROJECT_DIR/docker.sh" raw --dev --db "$ENGINE" -- exec -T "$DB_SERVICE" sh -c "mariadb-dump -u'${DB_USER:-Theatergruppe Freispiel}' -p'${DB_PASSWORD:-nopassword}' '${DB_NAME:-Theatergruppe Freispiel}'" > "$FILE"
   fi
 
   echo "✅ Backup written: $FILE ($(du -h "$FILE" | cut -f1))"
@@ -107,17 +97,17 @@ else
   if [ "$ENGINE" = "postgres" ]; then
     echo "Restoring Postgres backup from $RESTORE_FILE..."
     # Drop and recreate database, then restore
-    docker compose "${COMPOSE_ARGS[@]}" exec -T "$DB_SERVICE" psql -U "${DB_USER:-Theatergruppe Freispiel}" -c "DROP DATABASE IF EXISTS ${DB_NAME:-Theatergruppe Freispiel};" || true
-    docker compose "${COMPOSE_ARGS[@]}" exec -T "$DB_SERVICE" psql -U "${DB_USER:-Theatergruppe Freispiel}" -c "CREATE DATABASE ${DB_NAME:-Theatergruppe Freispiel};"
-    docker compose "${COMPOSE_ARGS[@]}" exec -T "$DB_SERVICE" psql -U "${DB_USER:-Theatergruppe Freispiel}" "${DB_NAME:-Theatergruppe Freispiel}" < "$RESTORE_FILE"
+    "$PROJECT_DIR/docker.sh" raw --dev --db "$ENGINE" -- exec -T "$DB_SERVICE" psql -U "${DB_USER:-Theatergruppe Freispiel}" -c "DROP DATABASE IF EXISTS ${DB_NAME:-Theatergruppe Freispiel};" || true
+    "$PROJECT_DIR/docker.sh" raw --dev --db "$ENGINE" -- exec -T "$DB_SERVICE" psql -U "${DB_USER:-Theatergruppe Freispiel}" -c "CREATE DATABASE ${DB_NAME:-Theatergruppe Freispiel};"
+    "$PROJECT_DIR/docker.sh" raw --dev --db "$ENGINE" -- exec -T "$DB_SERVICE" psql -U "${DB_USER:-Theatergruppe Freispiel}" "${DB_NAME:-Theatergruppe Freispiel}" < "$RESTORE_FILE"
   else
     echo "Restoring MariaDB backup from $RESTORE_FILE..."
     # Copy file into container and restore from there
     RESTORE_BASENAME=$(basename "$RESTORE_FILE")
-    docker compose "${COMPOSE_ARGS[@]}" cp "$RESTORE_FILE" "$DB_SERVICE:/tmp/$RESTORE_BASENAME"
+    "$PROJECT_DIR/docker.sh" raw --dev --db "$ENGINE" -- cp "$RESTORE_FILE" "$DB_SERVICE:/tmp/$RESTORE_BASENAME"
     # Disable SSL for local restore and use batch mode with force
-    docker compose "${COMPOSE_ARGS[@]}" exec -T "$DB_SERVICE" sh -c "MYSQL_PWD='${DB_PASSWORD:-nopassword}' mariadb --skip-ssl --batch --force --user='${DB_USER:-Theatergruppe Freispiel}' '${DB_NAME:-Theatergruppe Freispiel}' </tmp/$RESTORE_BASENAME"
-    docker compose "${COMPOSE_ARGS[@]}" exec -T "$DB_SERVICE" rm "/tmp/$RESTORE_BASENAME"
+    "$PROJECT_DIR/docker.sh" raw --dev --db "$ENGINE" -- exec -T "$DB_SERVICE" sh -c "MYSQL_PWD='${DB_PASSWORD:-nopassword}' mariadb --skip-ssl --batch --force --user='${DB_USER:-Theatergruppe Freispiel}' '${DB_NAME:-Theatergruppe Freispiel}' </tmp/$RESTORE_BASENAME"
+    "$PROJECT_DIR/docker.sh" raw --dev --db "$ENGINE" -- exec -T "$DB_SERVICE" rm "/tmp/$RESTORE_BASENAME"
   fi
 
   echo "✅ Database restored from: $RESTORE_FILE"

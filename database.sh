@@ -1,17 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Get environment variables
-if [ -f .env ]; then
+if [ -f "$SCRIPT_DIR/.env" ]; then
   set -o allexport
-  source .env
+  source "$SCRIPT_DIR/.env"
   set +o allexport
 fi
 
 # Dynamic container naming based on APP_NAME from .env
 APP_NAME="${APP_NAME:-Theatergruppe Freispiel}"
-PROJECT_NAME="$APP_NAME"
 ENGINE="${DB:-mariadb}"
-COMPOSE_FILES=()
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -25,21 +27,13 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [ "$ENGINE" = "postgres" ]; then
-  COMPOSE_FILES+=(
-    -f docker-compose.postgresql.yml
-    -f docker-compose.postgresql.dev.yml
-  )
   DB_SERVICE=postgres
 else
-  COMPOSE_FILES+=(
-    -f docker-compose.mariadb.yml
-    -f docker-compose.mariadb.dev.yml
-  )
   DB_SERVICE=mariadb
 fi
 
 echo "Starting DB stack ($ENGINE)..."
-docker compose -p "$PROJECT_NAME" "${COMPOSE_FILES[@]}" up -d --build --force-recreate
+"$SCRIPT_DIR/docker.sh" raw --dev --db "$ENGINE" -- up -d --build --force-recreate "$DB_SERVICE"
 
 # quick state info
-docker compose -p "$PROJECT_NAME" "${COMPOSE_FILES[@]}" ps "$DB_SERVICE"
+"$SCRIPT_DIR/docker.sh" raw --dev --db "$ENGINE" -- ps "$DB_SERVICE"

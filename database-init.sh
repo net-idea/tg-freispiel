@@ -34,15 +34,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# Load compose args and services from docker-list.sh (single source of truth)
 if [ "$MODE" != "local" ]; then
-  if [ ! -x "$PROJECT_DIR/docker-list.sh" ]; then
-    echo "Missing $PROJECT_DIR/docker-list.sh. Please ensure it exists and is executable." >&2
-    exit 1
-  fi
-  COMPOSE_ARGS_RAW="$($PROJECT_DIR/docker-list.sh --compose-args)"
-  # shellcheck disable=SC2206
-  COMPOSE_ARGS=( $COMPOSE_ARGS_RAW )
   if [ "$ENGINE" = "postgres" ]; then
     DB_SERVICE="postgres"
   else
@@ -59,7 +51,7 @@ run_php() {
   if [ "$MODE" = "local" ]; then
     php "$@"
   else
-    docker compose "${COMPOSE_ARGS[@]}" exec php php "$@"
+    "$PROJECT_DIR/docker.sh" exec --dev --db "$ENGINE" php php "$@"
   fi
 }
 
@@ -67,10 +59,10 @@ wait_for_db() {
   local tries=${1:-60}
   local delay=${2:-1}
   if [ "$ENGINE" = "postgres" ]; then
-    local check_cmd=(docker compose "${COMPOSE_ARGS[@]}" exec -T "$DB_SERVICE" pg_isready -U "${POSTGRES_USER:-Theatergruppe Freispiel}")
+    local check_cmd=("$PROJECT_DIR/docker.sh" raw --dev --db "$ENGINE" -- exec -T "$DB_SERVICE" pg_isready -U "${POSTGRES_USER:-Theatergruppe Freispiel}")
   else
     local pw="${DB_ROOT_PASSWORD:-nopassword}"
-    local check_cmd=(docker compose "${COMPOSE_ARGS[@]}" exec -T "$DB_SERVICE" sh -lc "(command -v mariadb >/dev/null 2>&1 && mariadb -uroot -p\"$pw\" -h\"$DB_SERVICE\" -e 'SELECT 1' >/dev/null) || (command -v mysql >/dev/null 2>&1 && mysql -uroot -p\"$pw\" -h\"$DB_SERVICE\" -e 'SELECT 1' >/dev/null)")
+    local check_cmd=("$PROJECT_DIR/docker.sh" raw --dev --db "$ENGINE" -- exec -T "$DB_SERVICE" sh -lc "(command -v mariadb >/dev/null 2>&1 && mariadb -uroot -p\"$pw\" -h\"$DB_SERVICE\" -e 'SELECT 1' >/dev/null) || (command -v mysql >/dev/null 2>&1 && mysql -uroot -p\"$pw\" -h\"$DB_SERVICE\" -e 'SELECT 1' >/dev/null)")
   fi
   for ((i=1; i<=tries; i++)); do
     if "${check_cmd[@]}" >/dev/null 2>&1; then
@@ -86,16 +78,16 @@ if [ "$MODE" = "local" ]; then
 else
   if $RESET_DB; then
     echo "Resetting database stack (compose down -v + removing local data dirs)..."
-    docker compose "${COMPOSE_ARGS[@]}" down -v || true
+    "$PROJECT_DIR/docker.sh" destroy --dev --db "$ENGINE" || true
     rm -rf "$PROJECT_DIR"/mariadb/data "$PROJECT_DIR"/mariadb/log "$PROJECT_DIR"/mariadb/backup
     rm -rf "$PROJECT_DIR"/postgresql/data "$PROJECT_DIR"/postgresql/log "$PROJECT_DIR"/postgresql/backup
   fi
   echo "Ensuring DB and PHP services are up ($ENGINE)..."
   # If php is missing, start full stack similar to docker-start
-  if ! docker compose "${COMPOSE_ARGS[@]}" ps php --format json 2>/dev/null | grep -q '"State":"running"'; then
-    docker compose "${COMPOSE_ARGS[@]}" up -d --build --force-recreate
+  if ! "$PROJECT_DIR/docker.sh" raw --dev --db "$ENGINE" -- ps php --format json 2>/dev/null | grep -q '"State":"running"'; then
+    "$PROJECT_DIR/docker.sh" up --dev --db "$ENGINE" --build
   else
-    docker compose "${COMPOSE_ARGS[@]}" up -d --build --force-recreate "$DB_SERVICE" php
+    "$PROJECT_DIR/docker.sh" raw --dev --db "$ENGINE" -- up -d --build --force-recreate "$DB_SERVICE" php
   fi
   if ! wait_for_db 120 1; then
     echo "Database did not become ready in time." >&2

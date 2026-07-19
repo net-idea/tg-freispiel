@@ -3,6 +3,7 @@ services:
     image: phpmyadmin/phpmyadmin:latest
     container_name: '${APP_NAME:-tg-freispiel}_phpmyadmin'
     hostname: phpmyadmin
+    profiles: ['phpmyadmin']
     restart: unless-stopped
     environment:
       PMA_HOST: mariadb

@@ -3,6 +3,7 @@ services:
     image: redis:8-alpine
     container_name: '${APP_NAME:-tg-freispiel}_redis'
     hostname: redis
+    profiles: ['redis']
     restart: unless-stopped
     volumes:
       - ./redis/data:/data

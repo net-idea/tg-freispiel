@@ -86,75 +86,109 @@ Security: Do not commit production secrets. Prefer real env vars or Symfony Secr
 
 ## 🐳 Docker development
 
-If you prefer Docker for a fully containerized setup, see:
+Docker operations are centralized in `./docker.sh` and use **Docker Compose v2** (`docker compose`).
+The legacy scripts (`docker-start.sh`, `docker-stop.sh`, `docker-delete.sh`, `docker-list.sh`,
+`docker-test.sh`, `develop.sh`) are now thin wrappers around this CLI.
 
-- docs/docker.md
+### Standard operation
 
-### Docker and Docker Compose
+```bash
+# build images only
+./docker.sh build
 
-To start the application with services like _MariaDB_, _Adminer_ and _PHPMyAdmin_ the **Docker Compose** is used:
+# start stack (detached by default)
+./docker.sh up
 
-```shell
-# Start only the basic web application
-docker compose -p tg-freispiel -f docker-compose.yml up -d --build --force-recreate
-# Start the basic web application with MariaDB
-docker compose -p tg-freispiel -f docker-compose.yml -f docker-compose.mariadb.yml up -d --build --force-recreate
-# Start the full environment with MariaDB, Adminer and PHPMyAdmin
-docker compose -p tg-freispiel -f docker-compose.yml -f docker-compose.mariadb.yml -f docker-compose.adminer.yml -f docker-compose.phpmyadmin.yml up -d --build --force-recreate
+# stop/remove containers
+./docker.sh down
+
+# pull + build + up
+./docker.sh update
+
+# destroy stack including volumes (+ optional local images)
+./docker.sh destroy
+./docker.sh destroy --rmi-local
 ```
 
-### Database migrations (inside the Docker container)
+### Development mode
 
-All Doctrine console commands run inside the `php` container of the running dev stack:
+Development mode loads `*.dev.yml` overrides (local ports, bind mounts, dev container targets):
 
-```shell
-# Show which migrations are available/executed
-docker compose -p tg-freispiel exec php php bin/console doctrine:migrations:status
-
-# Migrate UP to the latest version
-docker compose -p tg-freispiel exec php php bin/console doctrine:migrations:migrate --no-interaction
-
-# Migrate DOWN one step (revert the most recent migration)
-docker compose -p tg-freispiel exec php php bin/console doctrine:migrations:migrate prev --no-interaction
-
-# Migrate UP/DOWN a single specific migration
-docker compose -p tg-freispiel exec php php bin/console doctrine:migrations:execute --up 'DoctrineMigrations\Version20260712000000'
-docker compose -p tg-freispiel exec php php bin/console doctrine:migrations:execute --down 'DoctrineMigrations\Version20260712000000'
-
-# Generate a new migration from entity changes / verify schema is in sync
-docker compose -p tg-freispiel exec php php bin/console doctrine:migrations:diff --no-interaction
-docker compose -p tg-freispiel exec php php bin/console doctrine:schema:validate
+```bash
+./docker.sh up --dev
+./docker.sh down --dev
+./docker.sh logs --dev
 ```
 
-> ⚠️ On macOS the MariaDB data directory is a bind mount (`./mariadb/data`). `ALTER`/`DROP TABLE`
-> statements can occasionally crash the MariaDB container (it restarts automatically, and the
-> statement usually **has** been applied). Check the actual state with
-> `doctrine:migrations:status` / `doctrine:schema:validate` before re-running a failed migration.
+`./develop.sh` is now equivalent to `./docker.sh up --dev`.
 
-### Debugging with Adminer, phpMyAdmin and Mailpit
+### Attached mode
 
-The dev stack ships three debugging UIs (host ports are configured in `.env`):
+`up` is detached by default. Use attached mode explicitly:
 
-| Tool       | URL                   | Purpose                                |
-| ---------- | --------------------- | -------------------------------------- |
-| Adminer    | http://127.0.0.1:8091 | Lightweight DB client (quick queries)  |
-| phpMyAdmin | http://127.0.0.1:8092 | Full-featured DB client                |
-| Mailpit    | http://127.0.0.1:8025 | Catches all outgoing mail from the app |
+```bash
+./docker.sh up --attach
+# or
+./docker.sh up -a
+```
 
-**Adminer** — log in with: System `MySQL`, Server `mariadb` (the compose service name, not
-localhost), user/password/database from `.env` (`DB_USER`, `DB_PASSWORD`, `DB_NAME`). Useful to
-inspect form submissions (`form_contact`, `form_registration`), the `date` table or
-`doctrine_migration_versions` after a migration.
+### Optional service profiles
 
-**phpMyAdmin** — pre-wired to the `mariadb` service; log in with `DB_USER`/`DB_PASSWORD` (or
-`root`/`DB_ROOT_PASSWORD` for schema-level work). Prefer it over Adminer for browsing/editing
-rows, exports and index/FK inspection.
+Optional services are profile-based and can be activated per command:
 
-**Mailpit** — the dev `MAILER_DSN` points at the `mailer` service, so no real mail leaves the
-machine. Every mail the app sends (contact form, registration confirmations) shows up in the web
-UI at http://127.0.0.1:8025 with full HTML/text source and headers. SMTP listens on
-`127.0.0.1:1025` if you want to test with an external client. The REST API is handy in scripts,
-e.g. `curl http://127.0.0.1:8025/api/v1/messages`.
+```bash
+./docker.sh up --dev --adminer --phpmyadmin
+./docker.sh up --redis
+./docker.sh up --memcache
+# generic profile switch
+./docker.sh up --profile redis
+```
+
+Profiles currently used:
+
+- `adminer` → `docker-compose.adminer.yml`
+- `phpmyadmin` → `docker-compose.phpmyadmin.yml`
+- `redis` → `docker-compose.redis.yml`
+- `memcache` → `docker-compose.memcache.yml`
+
+### Available commands
+
+```bash
+./docker.sh build
+./docker.sh up [--attach] [--dev]
+./docker.sh down [--dev]
+./docker.sh restart [SERVICE]
+./docker.sh pull
+./docker.sh update
+./docker.sh destroy [--rmi-local]
+./docker.sh ps
+./docker.sh logs [SERVICE]
+./docker.sh exec SERVICE
+./docker.sh test
+./docker.sh config
+./docker.sh help
+```
+
+### Compose file strategy
+
+- Base/prod files: `docker-compose*.yml` / `docker-compose*.yaml`
+- Local overrides only: `docker-compose*.dev.yml` / `docker-compose.dev.yaml`
+
+Resolution logic in `docker.sh`:
+
+1. `docker-compose.yaml`
+2. `docker-compose.dev.yaml` (only with `--dev`)
+3. `docker-compose.mariadb.yml` or `docker-compose.postgresql.yml` (based on `DB`)
+4. `docker-compose.mariadb.dev.yml` or `docker-compose.postgresql.dev.yml` (only with `--dev`)
+5. Optional compose fragments (adminer/phpmyadmin/redis/memcache), activated by profiles
+
+### Adding a new Docker service
+
+1. Add a dedicated compose fragment: `docker-compose.<service>.yml`
+2. Keep production-safe defaults in that file
+3. Put local-only ports/mounts/debug options into `docker-compose.<service>.dev.yml` (if needed)
+4. Add the service profile in the compose fragment (`profiles: ['<service>']`)
+5. Register the compose file/profile once in `docker.sh` (central source of truth)
 
 ## 🧹 Code Quality & Linting
 
@@ -254,25 +288,23 @@ yarn build
 
 ## 🛠 Helper scripts
 
-### develop.sh
+### docker.sh / develop.sh
 
-Local development helper that:
+`./docker.sh` is the central Docker CLI.
 
-- Installs dependencies (Yarn and Composer)
-- Clears Symfony cache (dev)
-- Builds front-end assets
-- Starts Webpack Encore watch and Symfony local server in parallel
-
-Usage:
+`./develop.sh` now supports both development workflows:
 
 ```bash
+# local (no Docker, default)
 ./develop.sh
+./develop.sh --local
+
+# Docker dev stack
+./develop.sh --docker
+./develop.sh --docker --attach
 ```
 
-Notes:
-
-- Requires Node/Yarn (or NPM), PHP and Composer available on your machine.
-- Press Ctrl+C to stop both background processes.
+In both modes, `develop.sh` includes an optional migration step when migration files exist.
 
 ### deploy.sh
 
@@ -316,7 +348,7 @@ Short wrappers for the running Docker dev stack — no local PHP/Node required. 
 ./bin/yarn tsc:check
 ```
 
-The stack must be running (`./docker-start.sh`), since the scripts `exec` into the existing
+The stack must be running (`./docker.sh up --dev`), since the scripts `exec` into the existing
 containers.
 
 ## ⚙️ App console commands

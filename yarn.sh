@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Usage: ./yarn.sh encore dev --watch
 
@@ -12,9 +12,7 @@ if [ -f .env ]; then
   set +o allexport
 fi
 
-# Dynamic container naming based on APP_NAME from .env
-APP_NAME="${APP_NAME:-tg-freispiel}"
-PROJECT_NAME="$APP_NAME"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SERVICE_NAME="node"
 
 # Ensure Docker and the target container are running
@@ -23,11 +21,11 @@ if ! command -v docker >/dev/null 2>&1 || ! docker compose version >/dev/null 2>
   exit 1
 fi
 
-if ! docker compose -p "$PROJECT_NAME" ps "$SERVICE_NAME" --format json 2>/dev/null | grep -q '"State":"running"'; then
-  echo "Service '$SERVICE_NAME' is not running. Start it with: ./docker-start.sh" >&2
+if ! "$SCRIPT_DIR/docker.sh" raw --dev -- ps "$SERVICE_NAME" --format json 2>/dev/null | grep -q '"State":"running"'; then
+  echo "Service '$SERVICE_NAME' is not running. Start it with: ./docker.sh up --dev" >&2
   exit 1
 fi
 
 # Always run in Docker via service name to honor project flag
 echo "🐳 Running Yarn command in Docker ($SERVICE_NAME service)..."
-docker compose -p "$PROJECT_NAME" exec "$SERVICE_NAME" yarn "$@"
+"$SCRIPT_DIR/docker.sh" exec --dev "$SERVICE_NAME" yarn "$@"
