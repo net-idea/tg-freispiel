@@ -51,6 +51,21 @@ Available profiles:
 - `redis`
 - `memcache`
 
+## Port block schema (15000)
+
+Host port mappings use env vars with 15000-block defaults directly in compose files:
+
+- `APP_PORT=15080` (nginx)
+- `NODE_PORT=15081` (encore dev server)
+- `MAILER_WEB_PORT=15082` (mailpit UI)
+- `ADMINER_PORT=15083`
+- `PHPMYADMIN_PORT=15084`
+- `DB_HOST_PORT=15085` (MariaDB host mapping)
+- `POSTGRES_HOST_PORT=15086` (PostgreSQL host mapping)
+- `MAILER_SMTP_PORT=15087` (mailpit SMTP)
+
+`DB_PORT` remains the internal DB service port (MariaDB default `3308`).
+
 ## Compose file strategy
 
 - `docker-compose*.yml` / `docker-compose*.yaml`: base/prod-safe config

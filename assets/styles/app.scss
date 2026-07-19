@@ -663,3 +663,116 @@ footer {
     transition: none;
   }
 }
+
+/* --------------------------------------------------------------------------
+   17. Page-specific: Proben gallery
+   -------------------------------------------------------------------------- */
+.proben-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.proben-media-card {
+  display: block;
+  width: 100%;
+  border: 1px solid rgb(212 175 55 / 35%);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: rgb(0 0 0 / 45%);
+  padding: 0;
+  text-align: left;
+  color: inherit;
+  box-shadow: 0 8px 20px rgb(0 0 0 / 35%);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-2px);
+    border-color: rgb(212 175 55 / 70%);
+    box-shadow: 0 14px 28px rgb(0 0 0 / 50%);
+  }
+}
+
+.proben-media-thumb {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  object-fit: cover;
+  background: rgb(13 13 13 / 90%);
+}
+
+.proben-media-label {
+  display: block;
+  padding: 0.75rem 0.9rem;
+  font-weight: 600;
+  color: var(--theater-gold);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.proben-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.proben-overlay.is-open {
+  display: flex;
+}
+
+.proben-overlay-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgb(0 0 0 / 88%);
+}
+
+.proben-overlay-content {
+  position: relative;
+  z-index: 1;
+  width: min(1200px, 100%);
+  max-height: 96vh;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid rgb(212 175 55 / 35%);
+  background: rgb(12 12 12 / 94%);
+  box-shadow: 0 22px 40px rgb(0 0 0 / 65%);
+}
+
+.proben-overlay-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.75rem;
+  border: 0;
+  background: transparent;
+  color: var(--theater-gold);
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.proben-overlay-title {
+  padding-right: 2rem;
+  color: var(--theater-gold);
+  font-weight: 700;
+}
+
+.proben-overlay-image,
+.proben-overlay-video {
+  display: block;
+  width: 100%;
+  max-height: calc(96vh - 120px);
+  object-fit: contain;
+  border-radius: 0.5rem;
+  background: #000;
+}

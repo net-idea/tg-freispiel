@@ -10,7 +10,7 @@ services:
       PMA_PORT: '${DB_PORT:-3308}'
       MYSQL_ROOT_PASSWORD: '${DB_ROOT_PASSWORD:-nopassword}'
     ports:
-      - '${PHPMYADMIN_PORT:-8092}:80'
+      - '${PHPMYADMIN_PORT:-15084}:80'
     networks:
       - internal
       - external

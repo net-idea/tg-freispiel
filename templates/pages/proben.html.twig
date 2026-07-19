@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+  {{ pageMeta.title|default('Theatergruppe Freispiel') }}
+{% endblock %}
+
+{% block body %}
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="text-center mb-5">
+        <h1 class="display-4 hero-title">Proben & Schauspieltraining</h1>
+        <p class="hero-lead mb-0">
+          Schauspieltraining, Improvisation und Probenausschnitte der Theatergruppe Freispiel in Dormagen.
+        </p>
+      </div>
+
+      <div class="card shadow-lg mb-5">
+        <div class="card-body p-4 p-md-5">
+          <h2 class="card-title h3 section-title mb-4">Schauspieltraining bei Freispiel</h2>
+          <p class="card-text fs-5 mb-3">
+            In unseren Proben arbeiten wir an Ausdruck, Präsenz und Zusammenspiel auf der Bühne. Von Stimm- und Körperarbeit über Improvisationsübungen bis zu konkreten Szenen entsteht Schritt für Schritt ein lebendiges Stück.
+          </p>
+          <p class="card-text fs-5 mb-0">
+            Die Galerie zeigt Eindrücke aus unserem Training und kurze Videoausschnitte aus den Proben. Ein Klick auf ein Element öffnet die Vollbildansicht.
+          </p>
+        </div>
+      </div>
+
+      <section class="mb-5">
+        <h2 class="h3 section-title mb-4">📸 Fotogalerie</h2>
+        {% if photos is not empty %}
+          <div class="proben-gallery-grid" data-proben-gallery>
+            {% for photo in photos %}
+              <a href="{{ photo.url }}" class="proben-media-card" data-media-open data-media-type="image" data-media-src="{{ photo.url }}" data-media-title="{{ photo.name }}" aria-label="Foto {{ photo.name }} in Vollbild öffnen">
+                <img src="{{ photo.thumbUrl }}" alt="Probe: {{ photo.name }}" loading="lazy" class="proben-media-thumb" />
+                <!-- <span class="proben-media-label">{{ photo.name }}</span> -->
+              </a>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="alert alert-info">
+            Keine Fotos gefunden. Lege Bilddateien in <code>{{ photosDir }}</code> ab.
+          </div>
+        {% endif %}
+      </section>
+
+      <section class="mb-4">
+        <h2 class="h3 section-title mb-4">🎥 Videogalerie</h2>
+        {% if videos is not empty %}
+          <div class="proben-gallery-grid" data-proben-gallery>
+            {% for video in videos %}
+              <a href="{{ video.url }}" class="proben-media-card" data-media-open data-media-type="video" data-media-src="{{ video.url }}" data-media-title="{{ video.name }}" aria-label="Video {{ video.name }} in Vollbild öffnen">
+                <img src="{{ video.thumbUrl }}" alt="Video-Vorschau: {{ video.name }}" loading="lazy" class="proben-media-thumb" />
+                <!-- <span class="proben-media-label">{{ video.name }}</span> -->
+              </a>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="alert alert-info">
+            Keine Videos gefunden. Lege Videodateien in <code>{{ videosDir }}</code> ab.
+          </div>
+        {% endif %}
+      </section>
+    </div>
+  </div>
+
+  <div class="proben-overlay" data-media-overlay aria-hidden="true">
+    <button type="button" class="proben-overlay-backdrop" data-media-close aria-label="Vollbildansicht schließen"></button>
+    <div class="proben-overlay-content" role="dialog" aria-modal="true" aria-label="Medien-Vollbildansicht">
+      <button type="button" class="proben-overlay-close" data-media-close aria-label="Schließen">×</button>
+      <p class="proben-overlay-title mb-3" data-media-title></p>
+
+      <img src="" alt="" class="proben-overlay-image" data-media-image hidden />
+      <video class="proben-overlay-video" controls playsinline data-media-video hidden>
+        <source src="" />Dein Browser unterstützt kein HTML5-Video.
+      </video>
+    </div>
+  </div>
+{% endblock %}

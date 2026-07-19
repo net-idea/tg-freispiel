@@ -33,9 +33,9 @@ services:
       sh -lc "corepack enable &&
       corepack prepare yarn@1.22.22 --activate &&
       yarn install --frozen-lockfile &&
-      yarn encore dev-server --host 0.0.0.0 --port 8080 --hot --public http://127.0.0.1:8080"
+      yarn encore dev-server --host 0.0.0.0 --port ${NODE_INTERNAL_PORT:-8080} --hot --public http://127.0.0.1:${NODE_PORT:-15081}"
     ports:
-      - '${NODE_PORT:-8080}:8080'
+      - '${NODE_PORT:-15081}:${NODE_INTERNAL_PORT:-8080}'
     networks:
       - internal
 
@@ -45,8 +45,8 @@ services:
     hostname: mailer
     restart: unless-stopped
     ports:
-      - '${MAILER_SMTP_PORT:-1025}:1025'
-      - '${MAILER_WEB_PORT:-8025}:8025'
+      - '${MAILER_SMTP_PORT:-15087}:1025'
+      - '${MAILER_WEB_PORT:-15082}:8025'
     environment:
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1

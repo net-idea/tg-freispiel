@@ -94,3 +94,9 @@ phpstan.neon
 adminer.php
 adminer.css
 adminer*.*
+
+## Media (images, videos, audio, etc.)
+/public/media/proben/photos/*
+!/public/media/proben/photos/.gitkeep
+/public/media/proben/videos/*
+!/public/media/proben/videos/.gitkeep

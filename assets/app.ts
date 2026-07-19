@@ -27,6 +27,7 @@ import './bootstrap';
 // Import Navbar functionality (TypeScript)
 import './scripts/contacts';
 import './scripts/navbar-shrink';
+import './scripts/proben-gallery';
 import './scripts/theme-toggle';
 
 // Turbo removed

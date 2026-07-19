@@ -25,6 +25,22 @@ tg-freispiel.de/
 
 For the detailed layout see [docs/structure.md](docs/structure.md).
 
+### Proben-Medienablage
+
+Die Unterseite **Proben** liest Medien direkt aus:
+
+- `public/media/proben/photos/` (Bilder)
+- `public/media/proben/videos/` (Videos)
+
+Diese Ordner sind für den späteren Admin-Upload vorbereitet.
+
+Für die Proben-Fotogalerie gilt:
+
+- Originalbild: `dateiname.webp`
+- Thumbnail für die Übersicht: `dateiname.thumb.webp`
+
+In der Galerie wird automatisch das `.thumb`-Bild als Vorschau verwendet; beim Klick öffnet die Vollbildansicht das Originalbild.
+
 ## ✅ Local development (recommended)
 
 ### Prerequisites
@@ -120,7 +136,22 @@ Development mode loads `*.dev.yml` overrides (local ports, bind mounts, dev cont
 ./docker.sh logs --dev
 ```
 
-`./develop.sh` is now equivalent to `./docker.sh up --dev`.
+`./develop.sh` supports both local mode (without Docker) and Docker mode (`--docker`).
+
+### Port block schema (15000)
+
+Externe Port-Mappings nutzen einen festen 15000er Block über Umgebungsvariablen mit Compose-Fallbacks:
+
+- `APP_PORT` → `15080`
+- `NODE_PORT` → `15081`
+- `MAILER_WEB_PORT` → `15082`
+- `ADMINER_PORT` → `15083`
+- `PHPMYADMIN_PORT` → `15084`
+- `DB_HOST_PORT` (MariaDB Host-Port) → `15085`
+- `POSTGRES_HOST_PORT` (PostgreSQL Host-Port) → `15086`
+- `MAILER_SMTP_PORT` → `15087`
+
+Interne Datenbank-Kommunikation bleibt getrennt über `DB_PORT` (Default `3308` für MariaDB).
 
 ### Attached mode
 

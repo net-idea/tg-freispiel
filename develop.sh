@@ -113,8 +113,8 @@ require_local_deps() {
 }
 
 print_local_overview() {
-  local app_port="${APP_PORT:-8000}"
-  local node_port="${NODE_PORT:-8080}"
+  local app_port="${APP_PORT:-15080}"
+  local node_port="${NODE_PORT:-15081}"
 
   echo
   echo -e "${GREEN}Local development is running:${NC}"
@@ -127,11 +127,11 @@ print_local_overview() {
 print_docker_overview() {
   local db="${DB:-mariadb}"
   local db_service="mariadb"
-  local app_port="${APP_PORT:-8000}"
-  local node_port="${NODE_PORT:-8080}"
-  local mailer_web_port="${MAILER_WEB_PORT:-8025}"
-  local adminer_port="${ADMINER_PORT:-8091}"
-  local phpmyadmin_port="${PHPMYADMIN_PORT:-8092}"
+  local app_port="${APP_PORT:-15080}"
+  local node_port="${NODE_PORT:-15081}"
+  local mailer_web_port="${MAILER_WEB_PORT:-15082}"
+  local adminer_port="${ADMINER_PORT:-15083}"
+  local phpmyadmin_port="${PHPMYADMIN_PORT:-15084}"
 
   if [ "$db" = "postgres" ]; then
     db_service="postgres"
@@ -178,12 +178,12 @@ run_local_mode() {
   print_local_overview
   echo -e "${YELLOW}Press Ctrl+C to stop.${NC}"
 
-  yarn encore dev-server --port "${NODE_PORT:-8080}" --host 127.0.0.1 --hot &
+  yarn encore dev-server --port "${NODE_PORT:-15081}" --host 127.0.0.1 --hot &
   yarn_pid="$!"
 
   sleep 2
 
-  php -S "127.0.0.1:${APP_PORT:-8000}" -t public &
+  php -S "127.0.0.1:${APP_PORT:-15080}" -t public &
   php_pid="$!"
 
   wait
